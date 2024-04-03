@@ -10,6 +10,9 @@ FrontEnd/[Bb]uilds/
 FrontEnd/[Ll]ogs/
 FrontEnd/[Mm]emoryCaptures/
 
+SignalRServer/ChatAppSignalRServer/bin/
+SignalRServer/ChatAppSignalRServer/obj/
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
