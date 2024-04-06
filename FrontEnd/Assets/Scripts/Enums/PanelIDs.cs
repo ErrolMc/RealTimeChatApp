@@ -6,6 +6,8 @@ namespace ChatApp.Enums
         None = -1,
         Login = 0,
         Chat = 1,
+        Settings = 2,
+        AddFriend = 3,
     }
 }
 
