@@ -16,11 +16,12 @@ namespace ChatApp.UI
     {
         [Header("Shared")] 
         [SerializeField] private TextMeshProUGUI responseText;
+        [SerializeField] private GameObject loadingIcon;
         
         [Header("Login")] 
         [SerializeField] private GameObject loginPanel;
-
         [SerializeField] private Button loginButton;
+        [SerializeField] private Button registerButton_LoginPanel;
         [SerializeField] private TMP_InputField loginUsernameInputField;
         [SerializeField] private TMP_InputField loginPasswordInputField;
 
@@ -34,6 +35,9 @@ namespace ChatApp.UI
             if (talkingToServer) return;
             talkingToServer = true;
             
+            loadingIcon.gameObject.SetActive(true);
+            registerButton_LoginPanel.enabled = false;
+            
             string username = loginUsernameInputField.text;
             string password = loginPasswordInputField.text;
 
@@ -45,6 +49,8 @@ namespace ChatApp.UI
                 _panelManagementService.ShowPanel(PanelID.Chat);
             }
 
+            loadingIcon.gameObject.SetActive(false);
+            registerButton_LoginPanel.enabled = true;
             talkingToServer = false;
         }
 
@@ -92,7 +98,7 @@ namespace ChatApp.UI
                 loginPanel.SetActive(true);
                 registerPanel.SetActive(false);   
             }
-
+            
             responseText.SetText("");
             loginUsernameInputField.SetTextWithoutNotify("");
             loginPasswordInputField.SetTextWithoutNotify("");
@@ -102,6 +108,7 @@ namespace ChatApp.UI
 
             loginButton.enabled = false;
             registerButton_RegisterPanel.enabled = false;
+            loadingIcon.gameObject.SetActive(false);
         }
     }   
 }
