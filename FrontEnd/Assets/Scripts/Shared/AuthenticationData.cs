@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
+using ChatApp.Shared.Tables;
 
 namespace ChatApp.Shared.Authentication
 {
@@ -16,5 +17,6 @@ namespace ChatApp.Shared.Authentication
     {
         [JsonProperty("A")] public bool Status { get; set; }
         [JsonProperty("B")] public string Message { get; set; }
+        [JsonProperty("C")] public User User { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ChatApp.Enums;
 using ChatApp.Services;
+using ChatApp.Shared.Tables;
 using ChatApp.Utils;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -41,11 +42,13 @@ namespace ChatApp.UI
             string username = loginUsernameInputField.text;
             string password = loginPasswordInputField.text;
 
-            (bool, string) result = await _authenticationService.TryLogin(username, password);
+            (bool, string, User) result = await _authenticationService.TryLogin(username, password);
             responseText.text = result.Item2;
 
             if (result.Item1)
             {
+                _authenticationService.CurrentUser = result.Item3;
+                _authenticationService.IsLoggedIn = true;
                 _panelManagementService.ShowPanel(PanelID.Chat);
             }
 
@@ -63,6 +66,7 @@ namespace ChatApp.UI
         
         public override void OnShow()
         {
+            _authenticationService.IsLoggedIn = false;
             ResetFields();
             base.OnShow();
         }

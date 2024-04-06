@@ -7288,9 +7288,9 @@ RectTransform:
   - {fileID: 151192365}
   m_Father: {fileID: 547476229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 810, y: -75}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1620, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1712489373
@@ -8005,7 +8005,7 @@ GameObject:
   - component: {fileID: 1870677277}
   - component: {fileID: 1870677276}
   m_Layer: 5
-  m_Name: Header
+  m_Name: UserNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9346,6 +9346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelID: 1
+  userNameText: {fileID: 1870677276}
   inputField: {fileID: 1041229617}
   templateMessage: {fileID: 1712489375}
 --- !u!114 &2066151219

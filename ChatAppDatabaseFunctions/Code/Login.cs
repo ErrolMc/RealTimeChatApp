@@ -39,7 +39,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (!users.Any())
             {
-                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "No user with that username!" });
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "No user with that username!", User = null });
             }
 
             User user = users.First();
@@ -47,10 +47,10 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (correctPassword)
             {
-                return new OkObjectResult(new UserLoginResponseData { Status = true, Message = "Logged in successfully!" });
+                return new OkObjectResult(new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = user });
             }
 
-            return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Wrong password!" });
+            return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Wrong password!", User = null });
         }
     }
 }

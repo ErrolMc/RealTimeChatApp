@@ -38,7 +38,6 @@ namespace ChatApp.Services.Concrete
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    Debug.LogError("BroadcastService OnMessageReceive: " + message);
                     OnMessageReceived?.Invoke(message); 
                 });
             });
