@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.1" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Code\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs.meta" Link="Code\Shared\AuthenticationData.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Code\Shared\TableData.cs.meta" />
+  </ItemGroup>
+</Project>

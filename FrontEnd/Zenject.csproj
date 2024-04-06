@@ -740,9 +740,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="BCrypt.Net-Next">
-      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\BCrypt.Net-Next.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Android.Types">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2023.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
     </Reference>

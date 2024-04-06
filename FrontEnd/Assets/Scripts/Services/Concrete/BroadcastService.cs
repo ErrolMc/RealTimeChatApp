@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using Zenject;
 using ChatApp.Utils;
+using Cysharp.Threading.Tasks;
 
 namespace ChatApp.Services.Concrete
 {
@@ -19,7 +20,7 @@ namespace ChatApp.Services.Concrete
 
         public void Initialize()
         {
-            Debug.LogError("BroadcastService: Initialize");
+            Debug.LogWarning("BroadcastService: Initialize");
 
             try
             {
@@ -45,7 +46,7 @@ namespace ChatApp.Services.Concrete
             _connection.StartAsync();
         }
         
-        public async Task BroadcastMessage(string message)
+        public async UniTask BroadcastMessage(string message)
         {
             await _connection.SendAsync("BroadcastMessage", message);
         }

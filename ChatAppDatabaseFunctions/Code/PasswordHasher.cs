@@ -1,5 +1,10 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ChatApp.Utils
+namespace ChatAppDatabaseFunctions.Code
 {
     public static class PasswordHasher
     {
@@ -12,5 +17,5 @@ namespace ChatApp.Utils
         {
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }
-    }   
+    }
 }
