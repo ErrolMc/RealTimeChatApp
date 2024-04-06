@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace ChatApp.Services.Concrete
@@ -9,14 +10,14 @@ namespace ChatApp.Services.Concrete
     {
         public async Task<(bool, string)> TryLogin()
         {
-            await Task.Delay(1000);
+            await UniTask.Yield();
             
             return (false, "");
         }
 
         public async Task<(bool, string)> TryRegister()
         {
-            await Task.Delay(1000);
+            await UniTask.Yield();
 
             return (false, "");
         }
