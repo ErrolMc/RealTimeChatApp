@@ -4,20 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Zenject;
+using ChatApp.Services;
 
 namespace ChatApp.UI
 {
-    public class ChatWindow : MonoBehaviour
+    public class ChatPanel : Panel
     {
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private ChatMessage templateMessage;
 
         [Inject] private IBroadcastService _broadcastService;
 
-        void Start()
+        public override void OnShow()
         {
             _broadcastService.OnMessageReceived += ReceiveMessage;
             templateMessage.gameObject.SetActive(false);
+            
+            base.OnShow();
+        }
+
+        public override void OnHide()
+        {
+            base.OnHide();
         }
 
         private void Update()

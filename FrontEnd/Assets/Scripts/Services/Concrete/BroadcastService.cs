@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using UnityEngine;
 using Zenject;
+using ChatApp.Utils;
 
-namespace ChatApp.Services
+namespace ChatApp.Services.Concrete
 {
     public class BroadcastService : IBroadcastService, IInitializable
     {
