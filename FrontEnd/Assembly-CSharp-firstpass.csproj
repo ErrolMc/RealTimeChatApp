@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\UniTask\package.json" />
+    <None Include="Assets\Plugins\MessagePipe\package.json" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2023.2.10f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
