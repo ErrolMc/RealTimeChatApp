@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using ChatApp.Shared.Constants;
 using UnityEngine;
 using Zenject;
 using ChatApp.Utils;
@@ -12,9 +12,7 @@ namespace ChatApp.Services.Concrete
 {
     public class BroadcastService : IBroadcastService, IInitializable
     {
-        private const string ServerAddress = "https://localhost:7003";
         private const string Hub = "/NotificationHub";
-        
         private HubConnection _connection;
         public event Action<string> OnMessageReceived;
 
@@ -25,7 +23,7 @@ namespace ChatApp.Services.Concrete
             try
             {
                 _connection = new HubConnectionBuilder()
-                    .WithUrl(ServerAddress + Hub)
+                    .WithUrl(NetworkConstants.SIGNALR_URI + Hub)
                     .Build();
             }
             catch (Exception e)

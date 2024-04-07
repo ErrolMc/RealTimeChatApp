@@ -14,5 +14,6 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("hashedPassword")] public string HashedPassword { get; set; }
         [JsonProperty("isOnline")] public bool IsOnline { get; set; }
         [JsonProperty("rtChatConId")] public string RealTimeChatConnectionID { get; set; }
+        [JsonProperty("friends")] public List<string> Friends { get; set; } = new List<string>();
     }
 }

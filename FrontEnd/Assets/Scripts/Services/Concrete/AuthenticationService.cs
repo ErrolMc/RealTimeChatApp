@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.Networking;
 using ChatApp.Shared.Authentication;
 using ChatApp.Shared.Tables;
-using ChatApp.Utils;
+using ChatApp.Shared.Constants;
 
 namespace ChatApp.Services.Concrete
 {
@@ -38,7 +36,7 @@ namespace ChatApp.Services.Concrete
             string json = JsonConvert.SerializeObject(loginData);
             byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
             
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + endPoint, jsonToSend);
+            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/" + endPoint, jsonToSend);
             request.method = UnityWebRequest.kHttpVerbPOST;
             request.SetRequestHeader("Content-Type", "application/json");
             

@@ -15,14 +15,14 @@ namespace ChatApp.UI
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private ChatMessage templateMessage;
 
-        [Inject] private IBroadcastService _broadcastService;
+        //[Inject] private IBroadcastService _broadcastService;
         [Inject] private IAuthenticationService _authenticationService;
 
         private bool loadedUserData = false;
         
         public override void OnShow()
         {
-            _broadcastService.OnMessageReceived += ReceiveMessage;
+            //_broadcastService.OnMessageReceived += ReceiveMessage;
             templateMessage.gameObject.SetActive(false);
             
             if (!loadedUserData)
@@ -55,7 +55,7 @@ namespace ChatApp.UI
                 {
                     msg = $"{_authenticationService.CurrentUser.Username}: " + msg;
                     CreateMessage(msg);
-                    _broadcastService.BroadcastMessage(msg);
+                    //_broadcastService.BroadcastMessage(msg);
                     inputField.text = "";
                 }
             }

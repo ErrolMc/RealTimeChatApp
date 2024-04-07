@@ -16,11 +16,20 @@ namespace ChatApp.Services.Concrete
         
         public void ShowPanel(PanelID panelID)
         {
+            Debug.LogError("ShowPanel " + panelID);
+            
             if (panelID == CurrentPanel)
                 return;
             
             foreach (Panel panel in panels)
             {
+                if (panel == null)
+                {
+                    Debug.LogError("Panel " + panelID + "is null");
+                    continue;
+                }
+
+                
                 if (panel.PanelID == panelID)
                     panel.OnShow();
                 else

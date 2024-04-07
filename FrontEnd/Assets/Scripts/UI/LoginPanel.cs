@@ -28,6 +28,7 @@ namespace ChatApp.UI
 
         [Inject] private IAuthenticationService _authenticationService;
         [Inject] private IPanelManagementService _panelManagementService;
+        [Inject] private INotificationService _notificationService;
 
         private bool talkingToServer = false;
 
@@ -47,9 +48,18 @@ namespace ChatApp.UI
 
             if (result.Item1)
             {
-                _authenticationService.CurrentUser = result.Item3;
-                _authenticationService.IsLoggedIn = true;
-                _panelManagementService.ShowPanel(PanelID.Chat);
+                User user = result.Item3;
+                (bool, string) signalRConnectionResp= await _notificationService.ConnectToSignalR(user);
+                if (signalRConnectionResp.Item1)
+                {
+                    _authenticationService.CurrentUser = user;
+                    _authenticationService.IsLoggedIn = true;
+                    _panelManagementService.ShowPanel(PanelID.Chat);
+                }
+                else
+                {
+                    responseText.text = signalRConnectionResp.Item2;
+                }
             }
 
             loadingIcon.gameObject.SetActive(false);
@@ -59,6 +69,9 @@ namespace ChatApp.UI
 
         public void OnClick_Register_FromLogin()
         {
+            if (talkingToServer)
+                return;
+            
             ResetFields(true);
             registerPanel.SetActive(true);
             loginPanel.SetActive(false);

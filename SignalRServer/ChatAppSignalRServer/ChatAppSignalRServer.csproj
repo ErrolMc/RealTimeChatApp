@@ -8,11 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Other\Keys.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Other\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Other\Keys.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Other\NetworkConstants.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Other\NotificationData.cs.meta" />
   </ItemGroup>
 
 </Project>
