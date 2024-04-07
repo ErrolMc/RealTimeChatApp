@@ -47,8 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\Internal\PoolStack.cs" />
-    <Compile Include="Assets\Plugins\MessagePipe\Runtime\Internal\TaskExtensions.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\IgnoreAutoRegistration.cs" />
+    <Compile Include="Assets\Plugins\MessagePipe\Runtime\Internal\TaskExtensions.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\Unity\InternalVisibleTo.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\FilterAttachedAsyncMessageHandlerFactory.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\SubscriberExtensions.FirstAsync.cs" />
@@ -56,8 +56,8 @@
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\FilterAttachedMessageHandlerFactory.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\Internal\AsyncRequestHandlerWhenAll.Awaiter.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\Internal\AsyncHandlerWhenAll.cs" />
-    <Compile Include="Assets\Plugins\MessagePipe\Runtime\DistributedSubscriberExtensions.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\Unity\DependencyInjectionShims.cs" />
+    <Compile Include="Assets\Plugins\MessagePipe\Runtime\DistributedSubscriberExtensions.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\MessagePipeDiagnosticsInfo.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\IRequestHandler.cs" />
     <Compile Include="Assets\Plugins\MessagePipe\Runtime\AsyncRequestHandler.cs" />
@@ -99,6 +99,9 @@
     </Reference>
     <Reference Include="Zenject-usage">
       <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Zenject\Source\Usage\Zenject-usage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
@@ -196,8 +199,17 @@
     <Reference Include="System.IO.Pipelines">
       <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\System.IO.Pipelines.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Abstractions">
+      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging">
+      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens">
+      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Cng">
+      <HintPath>D:\Personal Projects\Cloud\ChatApp\FrontEnd\Assets\Plugins\System.Security.Cryptography.Cng.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Android.Types">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2023.2.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
