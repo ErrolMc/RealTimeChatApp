@@ -37,7 +37,7 @@ namespace ChatApp.UI
             (bool, string) result = await _friendService.AddFriend(addFriendInputField.text);
             
             addFriendResponseText.text = result.Item2;
-            
+
             _talkingToServer = false;
         }
 

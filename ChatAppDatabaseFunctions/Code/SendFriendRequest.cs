@@ -57,17 +57,22 @@ namespace ChatAppDatabaseFunctions.Code
 
             NotificationData notificationData = new NotificationData()
             {
-                NotificationTypeInt = (int)NotificationType.FriendRequest,
-                RecipientUserID = toUser.Username,
+                NotificationType = (int)NotificationType.FriendRequest,
+                RecipientUserID = toUser.UserID,
                 NotificationJson = JsonConvert.SerializeObject(requestData)
             };
 
-            using (var httpClient = new HttpClient())
+            string notificationJSON = JsonConvert.SerializeObject(notificationData);
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+            using (var httpClient = new HttpClient(httpClientHandler))
             {
-                // Replace with your SignalR server's endpoint
-                string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/notifications/send-notification";
-                var response = await httpClient.PostAsync(signalRServerEndpoint,
-                    new StringContent(JsonConvert.SerializeObject(notificationData), Encoding.UTF8, "application/json"));
+                string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/Notifications/send-notification";
+
+                HttpContent content = new StringContent(notificationJSON, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(signalRServerEndpoint, content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -75,9 +80,11 @@ namespace ChatAppDatabaseFunctions.Code
                 }
                 else
                 {
-                    return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Error connecting to SignalR server" });
+                    return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Error connecting to SignalR server: " + response.ReasonPhrase });
                 }
             }
         }
+
+
     }
 }

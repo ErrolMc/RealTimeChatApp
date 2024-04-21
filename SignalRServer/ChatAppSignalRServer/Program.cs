@@ -27,15 +27,15 @@ namespace ChatAppSignalRServer
             // Register the custom IUserIdProvider
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIDProvider>();
 
-            // Configure CORS to allow specific origins, replacing "http://example.com" with your client's origin
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder => builder
-            //        .WithOrigins("http://example.com") // The URL of your Unity client
-            //        .AllowAnyMethod()
-            //        .AllowAnyHeader()
-            //        .AllowCredentials());
-            //});
+            // Configure CORS to allow specific origins
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => builder
+                    .WithOrigins(NetworkConstants.FUNCTIONS_URI)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
 
             // This registers JWT bearer token services to the DI container and sets up authentication.
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -71,6 +71,7 @@ namespace ChatAppSignalRServer
                 app.UseSwaggerUI();
             }
 
+            app.UseRouting();
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy"); // Apply the CORS policy

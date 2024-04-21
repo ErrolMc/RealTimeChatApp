@@ -14,44 +14,38 @@ namespace ChatApp.Shared.Notifications
     [Serializable]
     public class AuthenticateRequestData
     {
-        [JsonProperty("A")] public string UserID { get; set; }
-        [JsonProperty("B")] public string UserName { get; set; }
+        public string UserID { get; set; }
+        public string UserName { get; set; }
     }
 
     [Serializable]
     public class AuthenticateResponseData
     {
-        [JsonProperty("A")] public bool Status { get; set; }
-        [JsonProperty("B")] public string Message { get; set; }
-        [JsonProperty("C")] public string AccessToken { get; set; }
+        public bool Status { get; set; }
+        public string Message { get; set; }
+        public string AccessToken { get; set; }
     }
 
     [Serializable]
     public class NotificationData
     {
-        [JsonProperty("A")] public int NotificationTypeInt { get; set; }
-        [JsonProperty("B")] public string RecipientUserID { get; set; }
-        [JsonProperty("C")] public string NotificationJson { get; set; }
-
-        public NotificationType NotificationType
-        {
-            get => (NotificationType)NotificationTypeInt;
-            set => NotificationTypeInt = (int)value;
-        }
+        public int NotificationType { get; set; }
+        public string RecipientUserID { get; set; }
+        public string NotificationJson { get; set; }
     }
 
     [Serializable]
     public class FriendRequestNotification
     {
-        [JsonProperty("A")] public string FromUserID { get; set; }
-        [JsonProperty("B")] public string FromUserName { get; set; }
-        [JsonProperty("C")] public string ToUserName { get; set; }
+        public string FromUserID { get; set; }
+        public string FromUserName { get; set; }
+        public string ToUserName { get; set; }
     }
 
     [Serializable]
     public class FriendRequestNotificationResponseData
     {
-        [JsonProperty("A")] public bool Status { get; set; }
-        [JsonProperty("B")] public string Message { get; set; }
+        public bool Status { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -16,26 +16,42 @@ namespace ChatAppDatabaseFunctions.Code
     {
         public static async Task<User> GetUserFromUsername(string username)
         {
-            IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == username);
-            FeedIterator<User> iterator = query.ToFeedIterator();
-            FeedResponse<User> users = await iterator.ReadNextAsync();
+            try
+            {
+                IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == username);
+                FeedIterator<User> iterator = query.ToFeedIterator();
+                FeedResponse<User> users = await iterator.ReadNextAsync();
 
-            if (!users.Any())
+                if (!users.Any())
+                    return null;
+
+                return users.First();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetUserFromUserName Error {ex.Message}");
                 return null;
-
-            return users.First();
+            }
         }
 
         public static async Task<User> GetUserFromUserID(string userID)
         {
-            IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.UserID == userID);
-            FeedIterator<User> iterator = query.ToFeedIterator();
-            FeedResponse<User> users = await iterator.ReadNextAsync();
+            try
+            {
+                IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.UserID == userID);
+                FeedIterator<User> iterator = query.ToFeedIterator();
+                FeedResponse<User> users = await iterator.ReadNextAsync();
 
-            if (!users.Any())
+                if (!users.Any())
+                    return null;
+
+                return users.First();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetUserFromUserID Error {ex.Message}");
                 return null;
-
-            return users.First();
+            }
         }
     }
 }

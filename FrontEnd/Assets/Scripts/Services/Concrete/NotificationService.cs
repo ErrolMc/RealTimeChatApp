@@ -97,7 +97,7 @@ namespace ChatApp.Services.Concrete
             if (notificationData == null)
                 return false;
 
-            NotificationType notificationType = notificationData.NotificationType;
+            NotificationType notificationType = (NotificationType)notificationData.NotificationType;
             switch (notificationType)
             {
                 case NotificationType.FriendRequest:
