@@ -6,8 +6,9 @@ using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Constants;
 using ChatApp.Shared.Tables;
 using ChatApp.Utils;
+using MessagePipe;
 using Microsoft.AspNetCore.SignalR.Client;
-using Unity.VisualScripting;
+using Zenject;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,6 +16,8 @@ namespace ChatApp.Services.Concrete
 {
     public class NotificationService : INotificationService
     {
+        [Inject] private IFriendService _friendService;
+        
         private const string Hub = "NotificationHub";
         private HubConnection _connection;
         private bool _connected = false;
@@ -104,7 +107,7 @@ namespace ChatApp.Services.Concrete
                     var friendRequestNotification = JsonConvert.DeserializeObject<FriendRequestNotification>(notificationData.NotificationJson);
                     
                     Debug.LogError("Friend request from " + friendRequestNotification.FromUserName);
-                    
+                    _friendService.OnReceiveFriendRequestNotification(friendRequestNotification);
                     break;
             }
 

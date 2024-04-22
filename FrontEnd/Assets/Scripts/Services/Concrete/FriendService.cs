@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ChatApp.Shared.Constants;
 using ChatApp.Shared.Notifications;
 using Cysharp.Threading.Tasks;
@@ -8,13 +10,27 @@ using Zenject;
 
 namespace ChatApp.Services.Concrete
 {
-    public class FriendService : IFriendService
+    public class FriendService : IFriendService, IInitializable
     {
         [Inject] private IAuthenticationService _authenticationService;
         
+        public List<FriendRequestNotification> ReceivedFriendRequestsThisSession { get; set; }
+        public event Action<FriendRequestNotification> OnFriendRequestReceived;
+
+        public void Initialize()
+        {
+            ReceivedFriendRequestsThisSession = new List<FriendRequestNotification>();
+        }
+        
+        public void OnReceiveFriendRequestNotification(FriendRequestNotification notification)
+        {
+            ReceivedFriendRequestsThisSession.Add(notification);
+            OnFriendRequestReceived?.Invoke(notification);
+        }
+
         public async UniTask<(bool, string)> AddFriend(string userName)
         {
-            FriendRequestNotification notificationData = new FriendRequestNotification()
+            var notificationData = new FriendRequestNotification()
             {   
                 FromUserID = _authenticationService.CurrentUser.UserID,
                 FromUserName = _authenticationService.CurrentUser.Username,

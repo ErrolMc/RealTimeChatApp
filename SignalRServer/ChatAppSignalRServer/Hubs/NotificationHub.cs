@@ -9,8 +9,6 @@ namespace ChatAppSignalRServer.Hubs
 
         public override Task OnConnectedAsync()
         {
-            System.Console.WriteLine("[NotificationHub] OnConnectedAsync");
-
             string? userId = Context.User?.Claims.FirstOrDefault(c => c.Type == "userid")?.Value;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -23,7 +21,6 @@ namespace ChatAppSignalRServer.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            System.Console.WriteLine("[NotificationHub] OnDisconnectedAsync");
             if (_connectedUsers.ContainsKey(Context.ConnectionId))
             {
                 System.Console.WriteLine("[NotificationHub] User Disconnected: " + _connectedUsers[Context.ConnectionId]);

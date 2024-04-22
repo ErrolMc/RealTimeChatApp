@@ -1820,6 +1820,7 @@ MonoBehaviour:
   addFriendInputField: {fileID: 2021922873}
   addFriendResponseText: {fileID: 1185731719}
   addFriendButton: {fileID: 889149474}
+  templateFriendRequestItem: {fileID: 1575911314}
 --- !u!114 &266632126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3488,7 +3489,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 549382980}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1575911314}
+        m_TargetAssemblyTypeName: FriendRequestItem, Assembly-CSharp
+        m_MethodName: OnClickResult
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &549382980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8827,7 +8840,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1542150349}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1575911314}
+        m_TargetAssemblyTypeName: FriendRequestItem, Assembly-CSharp
+        m_MethodName: OnClickResult
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1542150349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9327,8 +9352,9 @@ GameObject:
   - component: {fileID: 1575911311}
   - component: {fileID: 1575911313}
   - component: {fileID: 1575911312}
+  - component: {fileID: 1575911314}
   m_Layer: 5
-  m_Name: UserParent
+  m_Name: FriendRequestTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9395,6 +9421,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575911310}
   m_CullTransparentMesh: 1
+--- !u!114 &1575911314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575911310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b278a371b15c74fbb137f260eea587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 1556234710}
 --- !u!1 &1578347583
 GameObject:
   m_ObjectHideFlags: 0
