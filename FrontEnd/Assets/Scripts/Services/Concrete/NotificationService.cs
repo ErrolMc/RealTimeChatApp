@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Constants;
+using ChatApp.Shared.Misc;
 using ChatApp.Shared.Tables;
 using ChatApp.Utils;
 using MessagePipe;
@@ -115,6 +116,14 @@ namespace ChatApp.Services.Concrete
                         var notification = JsonConvert.DeserializeObject<FriendRequestRespondNotification>(notificationData.NotificationJson);
                         Debug.LogError($"Friend request responded from {notification.ToUser.UserName}: {notification.Status}");
                         _friendService.ProcessFriendRequestResponse(notification);
+                    }
+                    break;
+                case NotificationType.FriendRequestCancel:
+                    {
+                        var fromUser = JsonConvert.DeserializeObject<UserSimple>(notificationData.NotificationJson);
+                        
+                        Debug.LogError($"Friend request canceled from: {fromUser.UserName}");
+                        _friendService.CancelFriendRequest(fromUser);
                     }
                     break;
             }

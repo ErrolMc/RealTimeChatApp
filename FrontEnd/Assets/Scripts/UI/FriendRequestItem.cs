@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using TMPro;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace ChatApp.UI
     {
         [SerializeField] private TextMeshProUGUI nameText;
 
-        public FriendRequestNotification Notification { get; set; }
+        public UserSimple User { get; set; }
     
         private bool _hasClicked = false;
         private System.Action<FriendRequestItem, bool> _callback;
@@ -24,11 +25,11 @@ namespace ChatApp.UI
             _callback.Invoke(this, result);
         }
 
-        public void Setup(FriendRequestNotification notification, System.Action<FriendRequestItem, bool> callback)
+        public void Setup(UserSimple user, System.Action<FriendRequestItem, bool> callback)
         {
             _callback = callback;
-            Notification = notification;
-            nameText.text = notification.FromUser.UserName;
+            User = user;
+            nameText.text = User.UserName;
         }
     }
 }

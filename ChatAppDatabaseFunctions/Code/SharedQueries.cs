@@ -55,5 +55,35 @@ namespace ChatAppDatabaseFunctions.Code
                 return null;
             }
         }
+
+        public static async Task<(bool, string, List<UserSimple>)> GetUsers(List<string> userIDs)
+        {
+            if (userIDs == null || userIDs.Count() == 0)
+                return (false, "No user ids provided", new List<UserSimple>());
+
+            try
+            {
+                string inClause = string.Join(", ", userIDs.Select(id => $"'{id}'"));
+                string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
+                QueryDefinition queryDefinition = new QueryDefinition(queryString);
+                FeedIterator<User> queryResultSetIterator = DatabaseStatics.UsersContainer.GetItemQueryIterator<User>(queryDefinition);
+
+                List<UserSimple> friends = new List<UserSimple>();
+                while (queryResultSetIterator.HasMoreResults)
+                {
+                    FeedResponse<User> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                    foreach (var friend in currentResultSet)
+                    {
+                        friends.Add(new UserSimple(friend));
+                    }
+                }
+
+                return (true, "Successfully got users", friends);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, new List<UserSimple>());
+            }
+        }
     }
 }

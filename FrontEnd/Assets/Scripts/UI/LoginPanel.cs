@@ -29,6 +29,7 @@ namespace ChatApp.UI
         [Inject] private IAuthenticationService _authenticationService;
         [Inject] private IPanelManagementService _panelManagementService;
         [Inject] private INotificationService _notificationService;
+        [Inject] private IFriendService _friendService;
 
         private bool talkingToServer = false;
 
@@ -54,6 +55,9 @@ namespace ChatApp.UI
                 {
                     _authenticationService.CurrentUser = user;
                     _authenticationService.IsLoggedIn = true;
+                    
+                    await _friendService.GetFriendRequests();
+                    
                     _panelManagementService.ShowPanel(PanelID.Chat);
                 }
                 else

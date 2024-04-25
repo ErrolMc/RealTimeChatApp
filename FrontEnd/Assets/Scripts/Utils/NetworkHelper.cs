@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,22 +17,30 @@ namespace ChatApp.Utils
             where T : class 
             where U : class
         {
-            string json = JsonConvert.SerializeObject(requestData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-            
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/" + functionName, jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
-            
-            await request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            try
             {
-                return (false, request.error, null);
+                string json = JsonConvert.SerializeObject(requestData);
+                byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+
+                using UnityWebRequest request =
+                    UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/" + functionName, jsonToSend);
+                request.method = UnityWebRequest.kHttpVerbPOST;
+                request.SetRequestHeader("Content-Type", "application/json");
+
+                await request.SendWebRequest();
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    return (false, request.error, null);
+                }
+
+                U responseData = JsonConvert.DeserializeObject<U>(request.downloadHandler.text);
+                return (true, "Request Success", responseData);
             }
-            
-            U responseData = JsonConvert.DeserializeObject<U>(request.downloadHandler.text);
-            return (true, "Request Success", responseData);
+            catch (Exception ex)
+            {
+                return (false, $"Exception: {ex.Message}", null);
+            }
         }
     }
 }

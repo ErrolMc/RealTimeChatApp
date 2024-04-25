@@ -31,6 +31,7 @@ namespace ChatApp.Shared.Misc
         public string ToUserID { get; set; }
         public string FromUserID { get; set; }
         public bool Status { get; set; }
+        public bool isCanceling { get; set; }
     }
     
     [Serializable]
@@ -46,5 +47,14 @@ namespace ChatApp.Shared.Misc
         public bool Success { get; set; }
         public string Message { get; set; }
         public List<UserSimple> Friends { get; set; } = new List<UserSimple>();
+    }
+
+    [Serializable]
+    public class GetFriendRequestsResponseData
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public List<UserSimple> FriendRequests { get; set; } = new List<UserSimple>();
+        public List<UserSimple> OutgoingFriendRequests { get; set; } = new List<UserSimple>();
     }
 }

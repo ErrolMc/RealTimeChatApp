@@ -41,35 +41,20 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
             }
 
-            try
+            if (user.Friends == null || user.Friends.Count == 0)
             {
-                if (user.Friends == null || user.Friends.Count == 0)
-                {
-                    return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = "No friends found" });
-                }
-
-                string inClause = string.Join(", ", user.Friends.Select(id => $"'{id}'"));
-                string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
-                QueryDefinition queryDefinition = new QueryDefinition(queryString);
-                FeedIterator<User> queryResultSetIterator = DatabaseStatics.UsersContainer.GetItemQueryIterator<User>(queryDefinition);
-
-                List<UserSimple> friends = new List<UserSimple>();
-                while (queryResultSetIterator.HasMoreResults)
-                {
-                    FeedResponse<User> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-                    foreach (var friend in currentResultSet)
-                    {
-                        friends.Add(new UserSimple(friend));
-                    }
-                }
-
-                return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends });
+                return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = "No friends found" });
             }
-            catch (Exception ex)
+
+            (bool success, string message, List<UserSimple> friends) = await SharedQueries.GetUsers(user.Friends);
+
+            if (success == false)
             {
-                System.Console.WriteLine($"An error occurred: {ex.Message}");
+                System.Console.WriteLine($"An error occurred: {message}");
                 return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while processing your request." });
             }
+
+            return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends });
         }
     }
 }

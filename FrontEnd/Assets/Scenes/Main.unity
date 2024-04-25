@@ -1127,10 +1127,10 @@ RectTransform:
   - {fileID: 214970635}
   m_Father: {fileID: 1454922431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 60}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -4}
+  m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &197290092
 MonoBehaviour:
@@ -2049,6 +2049,7 @@ MonoBehaviour:
   addFriendResponseText: {fileID: 1185731719}
   addFriendButton: {fileID: 889149474}
   templateFriendRequestItem: {fileID: 1575911314}
+  templateOutgoingFriendRequestItem: {fileID: 292771985}
 --- !u!114 &266632126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2280,6 +2281,7 @@ GameObject:
   - component: {fileID: 292771982}
   - component: {fileID: 292771984}
   - component: {fileID: 292771983}
+  - component: {fileID: 292771985}
   m_Layer: 5
   m_Name: UserParent
   m_TagString: Untagged
@@ -2347,6 +2349,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292771981}
   m_CullTransparentMesh: 1
+--- !u!114 &292771985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292771981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b278a371b15c74fbb137f260eea587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 349004571}
 --- !u!1 &301232803
 GameObject:
   m_ObjectHideFlags: 0
@@ -9103,7 +9118,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1522899275}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 292771985}
+        m_TargetAssemblyTypeName: ChatApp.UI.FriendRequestItem, Assembly-CSharp
+        m_MethodName: OnClickResult
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1522899275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11197,9 +11224,9 @@ RectTransform:
   - {fileID: 151192365}
   m_Father: {fileID: 547476229}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 810, y: -75}
   m_SizeDelta: {x: 1620, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1712489373

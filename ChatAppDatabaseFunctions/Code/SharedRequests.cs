@@ -20,26 +20,33 @@ namespace ChatAppDatabaseFunctions.Code
     {
         public static async Task<(bool, string)> SendNotificationThroughSignalR(NotificationData notification)
         {
-            string notificationJSON = JsonConvert.SerializeObject(notification);
-
-            var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-
-            using (var httpClient = new HttpClient(httpClientHandler))
+            try
             {
-                string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/Notifications/send-notification";
+                string notificationJSON = JsonConvert.SerializeObject(notification);
 
-                HttpContent content = new StringContent(notificationJSON, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(signalRServerEndpoint, content);
+                var httpClientHandler = new HttpClientHandler();
+                httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
-                if (response.IsSuccessStatusCode)
+                using (var httpClient = new HttpClient(httpClientHandler))
                 {
-                    return (true, "Notification sent successfully");
+                    string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/Notifications/send-notification";
+
+                    HttpContent content = new StringContent(notificationJSON, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync(signalRServerEndpoint, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return (true, "Notification sent successfully");
+                    }
+                    else
+                    {
+                        return (false, $"Error Sending Notification To SignalR Server: {response.ReasonPhrase}");
+                    }
                 }
-                else
-                {
-                    return (false, $"Error Sending Notification To SignalR Server: {response.ReasonPhrase}");
-                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"SendNotificationThroughSignalR Exception: {ex.Message}");
             }
         }
     }

@@ -11,6 +11,7 @@ namespace ChatApp.Shared.Notifications
         FriendRequest = 1,
         ServerMessage = 2,
         FriendRequestRespond = 3, // telling a sender the result of their sent friend request
+        FriendRequestCancel = 4, // telling the recipient of a friend request it was cancelled
     }
     
     [Serializable]
@@ -55,5 +56,6 @@ namespace ChatApp.Shared.Notifications
     {
         public bool Status { get; set; }
         public string Message { get; set; }
+        public UserSimple ToUser { get; set; }
     }
 }

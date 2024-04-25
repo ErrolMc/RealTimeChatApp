@@ -38,7 +38,7 @@ namespace ChatApp.Services.Concrete
                 await NetworkHelper.PerformFunctionPostRequest<UserLoginData, UserLoginResponseData>(functionName, loginData);
 
             if (success == false)
-                return (false, "Register failed", null);
+                return (false, functionName + " failed", null);
             
             return (responseData.Status, responseData.Message, responseData.User);
         }

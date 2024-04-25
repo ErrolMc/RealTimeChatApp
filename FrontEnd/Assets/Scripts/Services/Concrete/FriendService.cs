@@ -18,44 +18,52 @@ namespace ChatApp.Services.Concrete
         [Inject] private IAuthenticationService _authenticationService;
 
         public List<UserSimple> Friends { get; set; }
-        public List<FriendRequestNotification> ReceivedFriendRequestsThisSession { get; set; }
-        public event Action<FriendRequestNotification> OnFriendRequestReceived;
+        public List<UserSimple> FriendRequests { get; set; }
+        public List<UserSimple> OutgoingFriendRequests { get; set; }
+        public event Action<UserSimple> OnFriendRequestReceived;
+        public event Action<UserSimple> OnFriendRequestCanceled;
         public event Action<FriendRequestRespondNotification> OnFriendRequestRespondedTo;
 
         public void Initialize()
         {
             Friends = new List<UserSimple>();
-            ReceivedFriendRequestsThisSession = new List<FriendRequestNotification>();
+            OutgoingFriendRequests = new List<UserSimple>();
+            FriendRequests = new List<UserSimple>();
         }
 
         public void OnReceiveFriendRequestNotification(FriendRequestNotification notification)
         {
-            ReceivedFriendRequestsThisSession.Add(notification);
-            OnFriendRequestReceived?.Invoke(notification);
+            FriendRequests.Add(notification.FromUser);
+            OnFriendRequestReceived?.Invoke(notification.FromUser);
         }
         
+        /// <summary>
+        /// When a friend request that this client sent gets responded to
+        /// </summary>
+        /// <param name="response">The response data</param>
         public void ProcessFriendRequestResponse(FriendRequestRespondNotification response)
         {
             if (response.Status)
             {
                 AddFriendToFriendsList(response.ToUser);
             }
-            
+
+            OutgoingFriendRequests.Remove(response.ToUser);
             OnFriendRequestRespondedTo?.Invoke(response);
         }
 
         public void AddFriendToFriendsList(UserSimple user)
         {
-            Friends.Add(user);
+            if (!Friends.Contains(user))
+                Friends.Add(user);
         }
 
-        public void RespondToFriendRequest(FriendRequestNotification notification, bool status)
+        public void CancelFriendRequest(UserSimple user)
         {
-            ReceivedFriendRequestsThisSession.Remove(notification);
-            if (status)
-                AddFriendToFriendsList(notification.FromUser);
+            FriendRequests.Remove(user);
+            OnFriendRequestCanceled?.Invoke(user);
         }
-        
+
         public async UniTask<bool> UpdateFriendsList()
         {
             Friends.Clear();
@@ -69,8 +77,33 @@ namespace ChatApp.Services.Concrete
             return response.Success;
         }
 
-        public async UniTask<(bool, string)> AddFriend(string userName)
+        public async UniTask<bool> GetFriendRequests()
         {
+            if (_authenticationService?.CurrentUser == null)
+                return false;
+            
+            (bool success, string message, GetFriendRequestsResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendRequestsResponseData>("getfriendrequests", _authenticationService.CurrentUser.ToUserSimple());
+            
+            if (success)
+            {
+                FriendRequests = responseData.FriendRequests;
+                OutgoingFriendRequests = responseData.OutgoingFriendRequests;
+                return true;
+            }
+            
+            Debug.LogError($"GetFriendRequests Error: {message}");
+            return false;
+        }
+
+        public async UniTask<(bool, string, UserSimple)> SendFriendRequest(string userName)
+        {
+            if (_authenticationService?.CurrentUser == null)
+                return (false, "Current user is null", null);
+
+            if (userName == _authenticationService.CurrentUser.Username)
+                return (false, "Cant send a friend request to yourself!", null);
+            
             var notificationData = new FriendRequestNotification()
             {   
                 FromUser = _authenticationService.CurrentUser.ToUserSimple(),
@@ -83,20 +116,21 @@ namespace ChatApp.Services.Concrete
             if (success == false)
             {
                 Debug.LogError("FriendService: Request failed");
-                return (false, "Request failed");
+                return (false, "Request failed", null);
             }
             
             Debug.LogError("FriendService - AddFriend: " + responseData.Message);
-            return (responseData.Status, responseData.Message);
+            return (responseData.Status, responseData.Message, responseData.ToUser);
         }
         
-        public async UniTask<(bool, string)> RespondToFriendRequest(string fromUserID, bool status)
+        public async UniTask<(bool, string)> RespondToFriendRequest(string fromUserID, string toUserID, bool status, bool isCanceling = false)
         {
             var notificationData = new RespondToFriendRequestData()
             {   
                 FromUserID = fromUserID,
-                ToUserID = _authenticationService.CurrentUser.UserID,
-                Status = status
+                ToUserID = toUserID,
+                Status = status,
+                isCanceling = isCanceling
             };
             
             (bool success, string message, RespondToFriendRequestResponseData responseData) = 
@@ -114,6 +148,9 @@ namespace ChatApp.Services.Concrete
         
         private async UniTask<GetFriendsResponseData> GetFriends()
         {
+            if (_authenticationService?.CurrentUser == null)
+                return new GetFriendsResponseData() { Success = false, Message = "Current User is null"};
+            
             UserSimple requestData = new UserSimple
             {   
                 UserName = _authenticationService.CurrentUser.Username,

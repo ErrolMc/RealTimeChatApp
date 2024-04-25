@@ -16,6 +16,7 @@ using Microsoft.Azure.Cosmos;
 using System.Linq;
 using Microsoft.Azure.Cosmos.Linq;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared.Misc;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -48,7 +49,7 @@ namespace ChatAppDatabaseFunctions.Code
             {
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that userID!" });
             }
-
+            
             // check friends already
             if (fromUser.Friends.Contains(toUser.UserID))
             {
@@ -56,9 +57,26 @@ namespace ChatAppDatabaseFunctions.Code
             }
 
             // check sent request already
-            if (toUser.FriendRequests.Contains(fromUser.UserID))
+            if (toUser.FriendRequests.Contains(fromUser.UserID) || fromUser.OutgoingFriendRequests.Contains(toUser.UserID))
             {
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Friend request already sent to this user!" });
+            }
+
+            toUser.FriendRequests.Add(fromUser.UserID);
+            fromUser.OutgoingFriendRequests.Add(toUser.UserID);
+
+            try
+            {
+                var toUserReplaceResponse = await DatabaseStatics.UsersContainer.ReplaceItemAsync(toUser, toUser.UserID, new PartitionKey(toUser.UserID));
+                var fromUserReplaceResponse = await DatabaseStatics.UsersContainer.ReplaceItemAsync(fromUser, fromUser.UserID, new PartitionKey(fromUser.UserID));
+                if (toUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK || fromUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"Couldnt get users from database - ToUser: {toUser.UserID} Status: {toUserReplaceResponse.StatusCode} FromUser: {fromUser.UserID} Status: {fromUserReplaceResponse.StatusCode}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"SendFriendRequest Replace Exception: {ex.Message}"});
             }
 
             NotificationData notificationData = new NotificationData()
@@ -72,7 +90,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (result == true)
             {
-                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = message });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = message, ToUser = toUser.ToUserSimple() });
             }
 
             return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = message });
