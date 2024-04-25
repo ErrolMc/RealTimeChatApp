@@ -37,18 +37,29 @@ namespace ChatApp.Services.Concrete
         {
             if (response.Status)
             {
-                Friends.Add(response.ToUser);
+                AddFriendToFriendsList(response.ToUser);
             }
             
             OnFriendRequestRespondedTo?.Invoke(response);
+        }
+
+        public void AddFriendToFriendsList(UserSimple user)
+        {
+            Friends.Add(user);
+        }
+
+        public void RespondToFriendRequest(FriendRequestNotification notification, bool status)
+        {
+            ReceivedFriendRequestsThisSession.Remove(notification);
+            if (status)
+                AddFriendToFriendsList(notification.FromUser);
         }
 
         public async UniTask<(bool, string)> AddFriend(string userName)
         {
             var notificationData = new FriendRequestNotification()
             {   
-                FromUserID = _authenticationService.CurrentUser.UserID,
-                FromUserName = _authenticationService.CurrentUser.Username,
+                FromUser = _authenticationService.CurrentUser.ToUserSimple(),
                 ToUserName = userName
             };
             
@@ -77,13 +88,13 @@ namespace ChatApp.Services.Concrete
             var notificationData = new RespondToFriendRequestData()
             {   
                 FromUserID = fromUserID,
-                ToUserID = _authenticationService.CurrentUser.Username,
+                ToUserID = _authenticationService.CurrentUser.UserID,
                 Status = status
             };
             
             string json = JsonConvert.SerializeObject(notificationData);
             byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-            
+
             using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/respondtofriendrequest", jsonToSend);
             request.method = UnityWebRequest.kHttpVerbPOST;
             request.SetRequestHeader("Content-Type", "application/json");

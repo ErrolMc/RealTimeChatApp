@@ -65,7 +65,13 @@ namespace ChatApp.Services.Concrete
             Debug.LogError(responseData.Message);
             return (false, responseData.Message);
         }
-        
+
+        public void OnApplicationQuit()
+        {
+            if (_connected && _connection != null) 
+                _connection.StopAsync();
+        }
+
         private async UniTask<AuthenticateResponseData> PerformTokenRequest(User user)
         {
             AuthenticateRequestData requestData = new AuthenticateRequestData()
@@ -107,7 +113,7 @@ namespace ChatApp.Services.Concrete
                     {
                         var notification = JsonConvert.DeserializeObject<FriendRequestNotification>(notificationData.NotificationJson);
                         
-                        Debug.LogError("Friend request from " + notification.FromUserName);
+                        Debug.LogError("Friend request from " + notification.FromUser.UserName);
                         _friendService.OnReceiveFriendRequestNotification(notification);   
                     }
                     break;

@@ -5,6 +5,7 @@ using ChatApp.Services;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -74,6 +75,8 @@ namespace ChatApp.UI
         {
             FriendListItem item = Instantiate(templateFriendListItem, templateFriendListItem.transform.parent);
             item.Setup(friend);
+            item.gameObject.SetActive(true);
+            
             _friendListItems.Add(item);
         }
 
@@ -85,13 +88,19 @@ namespace ChatApp.UI
         
         private void ClearItems()
         {
-            if (_friendListItems != null)
+            if (_friendListItems == null)
             {
-                for (int i = 0; i < _friendListItems.Count; i++)
-                    Destroy(_friendListItems[i].gameObject);
-            }
-            else
                 _friendListItems = new List<FriendListItem>();
+                return;
+            }
+
+            foreach (var item in _friendListItems)
+            {
+                if (item != null)
+                    Destroy(item.gameObject);
+            }
+
+            _friendListItems.Clear(); 
         }
     }   
 }

@@ -43,7 +43,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No to user with that username!" });
             }
 
-            User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
+            User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUser.UserID);
             if (fromUser == null)
             {
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that userID!" });

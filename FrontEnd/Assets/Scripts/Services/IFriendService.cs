@@ -18,5 +18,7 @@ namespace ChatApp.Services
         public void ProcessFriendRequestResponse(FriendRequestRespondNotification response);
         public void OnReceiveFriendRequestNotification(FriendRequestNotification notification);
         public UniTask<bool> UpdateFriendsList();
+        public void AddFriendToFriendsList(UserSimple user);
+        public void RespondToFriendRequest(FriendRequestNotification notification, bool status);
     }
 }

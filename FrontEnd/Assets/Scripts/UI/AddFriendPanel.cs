@@ -64,14 +64,19 @@ namespace ChatApp.UI
 
         private void ClearFriendRequests()
         {
-            if (_friendRequestItems != null)
+            if (_friendRequestItems == null)
             {
-                for (int i = 0; i < _friendRequestItems.Count; i++)
-                    Destroy(_friendRequestItems[i].gameObject);
-                _friendRequestItems.Clear();
-            }
-            else
                 _friendRequestItems = new List<FriendRequestItem>();
+                return;
+            }
+
+            foreach (var item in _friendRequestItems)
+            {
+                if (item != null)
+                    Destroy(item.gameObject);
+            }
+
+            _friendRequestItems.Clear();  
         }
 
         private void SpawnFriendRequests()
@@ -94,11 +99,11 @@ namespace ChatApp.UI
         private async void OnRespondToRequest(FriendRequestItem item, bool result)
         {
             FriendRequestNotification notification = item.Notification;
-            Destroy(item);
+            Destroy(item.gameObject);
 
-            (bool, string) res = await _friendService.RespondToFriendRequest(notification.FromUserID, result);
-            
-            
+            (bool, string) res = await _friendService.RespondToFriendRequest(notification.FromUser.UserID, result);
+
+            _friendService.RespondToFriendRequest(notification, result);
         }
     }
 }

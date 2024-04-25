@@ -39,8 +39,7 @@ namespace ChatApp.Shared.Notifications
     [Serializable]
     public class FriendRequestNotification
     {
-        public string FromUserID { get; set; }
-        public string FromUserName { get; set; }
+        public UserSimple FromUser { get; set; }
         public string ToUserName { get; set; }
     }
 

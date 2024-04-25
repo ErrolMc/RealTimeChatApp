@@ -28,7 +28,7 @@ namespace ChatApp.UI
         {
             _callback = callback;
             Notification = notification;
-            nameText.text = notification.FromUserName;
+            nameText.text = notification.FromUser.UserName;
         }
     }
 }

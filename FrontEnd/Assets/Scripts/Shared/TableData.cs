@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
+using ChatApp.Shared.Misc;
 
 namespace ChatApp.Shared.Tables
 {
@@ -18,5 +19,10 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("friendrequests")] public List<string> FriendRequests { get; set; } = new List<string>();
         [JsonProperty("outgoingfriendrequests")] public List<string> OutgoingFriendRequests { get; set; } = new List<string>();
         // profile image (id?)
+
+        public UserSimple ToUserSimple()
+        {
+            return new UserSimple() { UserName = Username, UserID = UserID };
+        }
     }
 }
