@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KeyButtonPresser : MonoBehaviour
+namespace ChatApp.UI
 {
-    [SerializeField] private KeyCode key;
-    [SerializeField] private Button button;
-    
-    void Update()
+    public class KeyButtonPresser : MonoBehaviour
     {
-        if (Input.GetKeyDown(key) && button.gameObject.activeInHierarchy)
+        [SerializeField] private KeyCode key;
+        [SerializeField] private Button button;
+    
+        void Update()
         {
-            button.onClick.Invoke();
+            if (Input.GetKeyDown(key) && button.gameObject.activeInHierarchy)
+            {
+                button.onClick.Invoke();
+            }
         }
     }
 }
+

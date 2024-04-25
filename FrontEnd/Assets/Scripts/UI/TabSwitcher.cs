@@ -3,31 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class TabSwitcher : MonoBehaviour
+namespace ChatApp.UI
 {
-    public TMP_InputField[] inputFields;
-    
-    void Update()
+    public class TabSwitcher : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            FocusNextInputField();
-        }
-    }
+        public TMP_InputField[] inputFields;
     
-    void FocusNextInputField()
-    {
-        for (int i = 0; i < inputFields.Length; i++)
+        private void Update()
         {
-            if (inputFields[i].isFocused)
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
-                int nextIndex = (i + 1) % inputFields.Length;
-                
-                inputFields[nextIndex].Select();
-                inputFields[nextIndex].ActivateInputField();
-
-                break;
+                FocusNextInputField();
             }
         }
-    }
+    
+        private void FocusNextInputField()
+        {
+            for (int i = 0; i < inputFields.Length; i++)
+            {
+                if (inputFields[i].isFocused)
+                {
+                    int nextIndex = (i + 1) % inputFields.Length;
+                
+                    inputFields[nextIndex].Select();
+                    inputFields[nextIndex].ActivateInputField();
+
+                    break;
+                }
+            }
+        }
+    }   
 }

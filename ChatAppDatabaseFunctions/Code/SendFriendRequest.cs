@@ -62,29 +62,14 @@ namespace ChatAppDatabaseFunctions.Code
                 NotificationJson = JsonConvert.SerializeObject(requestData)
             };
 
-            string notificationJSON = JsonConvert.SerializeObject(notificationData);
+            (bool, string) notificationResult = await SharedRequests.SendNotificationThroughSignalR(notificationData);
 
-            var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-
-            using (var httpClient = new HttpClient(httpClientHandler))
+            if (notificationResult.Item1 == true)
             {
-                string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/Notifications/send-notification";
-
-                HttpContent content = new StringContent(notificationJSON, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(signalRServerEndpoint, content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = "Sent friend request!" });
-                }
-                else
-                {
-                    return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Error connecting to SignalR server: " + response.ReasonPhrase });
-                }
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = notificationResult.Item2 });
             }
+
+            return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = notificationResult.Item2 });
         }
-
-
     }
 }

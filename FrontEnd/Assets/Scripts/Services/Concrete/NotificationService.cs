@@ -104,10 +104,19 @@ namespace ChatApp.Services.Concrete
             switch (notificationType)
             {
                 case NotificationType.FriendRequest:
-                    var friendRequestNotification = JsonConvert.DeserializeObject<FriendRequestNotification>(notificationData.NotificationJson);
-                    
-                    Debug.LogError("Friend request from " + friendRequestNotification.FromUserName);
-                    _friendService.OnReceiveFriendRequestNotification(friendRequestNotification);
+                    {
+                        var notification = JsonConvert.DeserializeObject<FriendRequestNotification>(notificationData.NotificationJson);
+                        
+                        Debug.LogError("Friend request from " + notification.FromUserName);
+                        _friendService.OnReceiveFriendRequestNotification(notification);   
+                    }
+                    break;
+                case NotificationType.FriendRequestRespond:
+                    {
+                        var notification = JsonConvert.DeserializeObject<FriendRequestRespondNotification>(notificationData.NotificationJson);
+                        Debug.LogError($"Friend request responded from {notification.ToUser.UserName}: {notification.Status}");
+                        _friendService.ProcessFriendRequestResponse(notification);
+                    }
                     break;
             }
 

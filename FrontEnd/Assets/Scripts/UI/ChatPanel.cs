@@ -11,6 +11,7 @@ namespace ChatApp.UI
 {
     public class ChatPanel : Panel
     {
+        [SerializeField] private FriendsListUI friendsListUI;
         [SerializeField] private TextMeshProUGUI userNameText;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private ChatMessage templateMessage;
@@ -25,24 +26,33 @@ namespace ChatApp.UI
             //_broadcastService.OnMessageReceived += ReceiveMessage;
             templateMessage.gameObject.SetActive(false);
             
+            PopulateUserData(!loadedUserData);
             if (!loadedUserData)
             {
-                // populate user data
                 loadedUserData = true;
-                PopulateUserData();
             }
             
             base.OnShow();
         }
 
-        private void PopulateUserData()
+        private async void PopulateUserData(bool firstRun = false)
         {
             User user = _authenticationService.CurrentUser;
+            if (user == null)
+            {
+                Debug.LogError("ChatPanel: Current user is null");
+                return;
+            }
+            
             userNameText.text = user.Username;
+
+            friendsListUI.OnShow();
+            bool friendsResult = await friendsListUI.PopulateFriendsList(firstRun);
         }
 
         public override void OnHide()
         {
+            friendsListUI.OnHide();
             base.OnHide();
         }
 

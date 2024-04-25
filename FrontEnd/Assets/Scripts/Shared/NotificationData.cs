@@ -1,4 +1,5 @@
 using System;
+using ChatApp.Shared.Misc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
@@ -6,9 +7,10 @@ namespace ChatApp.Shared.Notifications
 {
     public enum NotificationType
     {
-        DirectMessage = 0,
+        DirectMessage = 0, 
         FriendRequest = 1,
         ServerMessage = 2,
+        FriendRequestRespond = 3, // telling a sender the result of their sent friend request
     }
     
     [Serializable]
@@ -40,6 +42,13 @@ namespace ChatApp.Shared.Notifications
         public string FromUserID { get; set; }
         public string FromUserName { get; set; }
         public string ToUserName { get; set; }
+    }
+
+    [Serializable]
+    public class FriendRequestRespondNotification
+    {
+        public UserSimple ToUser { get; set; }
+        public bool Status { get; set; }
     }
 
     [Serializable]

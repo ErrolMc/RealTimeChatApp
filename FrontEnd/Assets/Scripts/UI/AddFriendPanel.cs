@@ -85,10 +85,20 @@ namespace ChatApp.UI
         private void SpawnFriendRequestItem(FriendRequestNotification notification)
         {
             FriendRequestItem item = Instantiate(templateFriendRequestItem, templateFriendRequestItem.transform.parent);
-            item.Setup(notification);
+            item.Setup(notification, OnRespondToRequest);
             item.gameObject.SetActive(true);
             
             _friendRequestItems.Add(item);
+        }
+
+        private async void OnRespondToRequest(FriendRequestItem item, bool result)
+        {
+            FriendRequestNotification notification = item.Notification;
+            Destroy(item);
+
+            (bool, string) res = await _friendService.RespondToFriendRequest(notification.FromUserID, result);
+            
+            
         }
     }
 }

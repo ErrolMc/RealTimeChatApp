@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Code\Shared\Keys.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Code\Shared\Misc.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <None Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs.meta" Link="Code\Shared\AuthenticationData.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Code\Shared\Keys.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Code\Shared\Misc.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Code\Shared\NetworkConstants.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Code\Shared\NotificationData.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Code\Shared\TableData.cs.meta" />

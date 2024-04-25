@@ -1,16 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Other\Keys.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Other\Misc.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Other\TableData.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,13 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Other\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Other\Keys.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Other\Misc.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Other\NetworkConstants.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Other\NotificationData.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Other\TableData.cs.meta" />
   </ItemGroup>
 
 </Project>

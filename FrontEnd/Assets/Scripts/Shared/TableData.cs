@@ -15,5 +15,8 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("isOnline")] public bool IsOnline { get; set; }
         [JsonProperty("rtChatConId")] public string RealTimeChatConnectionID { get; set; }
         [JsonProperty("friends")] public List<string> Friends { get; set; } = new List<string>();
+        [JsonProperty("friendrequests")] public List<string> FriendRequests { get; set; } = new List<string>();
+        [JsonProperty("outgoingfriendrequests")] public List<string> OutgoingFriendRequests { get; set; } = new List<string>();
+        // profile image (id?)
     }
 }

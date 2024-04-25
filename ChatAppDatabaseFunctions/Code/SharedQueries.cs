@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared.Misc;
 
 namespace ChatAppDatabaseFunctions.Code
 {
