@@ -36,16 +36,12 @@ namespace ChatAppDatabaseFunctions.Code
 
             try
             {
-                // update the table
-                var toUserResponse = await DatabaseStatics.UsersContainer.ReadItemAsync<User>(requestData.ToUserID, new PartitionKey(requestData.ToUserID));
-                var fromUserResponse = await DatabaseStatics.UsersContainer.ReadItemAsync<User>(requestData.FromUserID, new PartitionKey(requestData.FromUserID));
-                if (toUserResponse.StatusCode != System.Net.HttpStatusCode.OK || fromUserResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                User toUser = await SharedQueries.GetUserFromUserID(requestData.ToUserID);
+                User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
+                if (toUser == null || fromUser == null)
                 {
-                    return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} Status: {toUserResponse.StatusCode} FromUser: {requestData.FromUserID} Status: {fromUserResponse.StatusCode}" });
+                    return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });
                 }
-                
-                User toUser = toUserResponse.Resource;
-                User fromUser = fromUserResponse.Resource;
 
                 toUser.FriendRequests.Remove(fromUser.UserID);
                 fromUser.OutgoingFriendRequests.Remove(toUser.UserID);

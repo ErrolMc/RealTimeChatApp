@@ -79,22 +79,15 @@ namespace ChatApp.Services.Concrete
                 UserName = user.Username, 
                 UserID = user.UserID
             };
-
-            string json = JsonConvert.SerializeObject(requestData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
             
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/AuthenticateSignalR", jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
+            (bool success, string message, AuthenticateResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<AuthenticateRequestData, AuthenticateResponseData>("AuthenticateSignalR", requestData);
             
-            await request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            if (success == false)
             {
-                return new AuthenticateResponseData() { Status = false, Message = $"Request Failed: \n{request.error}", AccessToken = string.Empty };
+                return new AuthenticateResponseData() { Status = false, Message = $"PerformTokenRequest - Request Failed: \n{message}", AccessToken = string.Empty };
             }
             
-            AuthenticateResponseData responseData = JsonConvert.DeserializeObject<AuthenticateResponseData>(request.downloadHandler.text);
             return responseData;
         }
         

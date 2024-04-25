@@ -55,6 +55,12 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "The 2 users are already friends!" });
             }
 
+            // check sent request already
+            if (toUser.FriendRequests.Contains(fromUser.UserID))
+            {
+                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Friend request already sent to this user!" });
+            }
+
             NotificationData notificationData = new NotificationData()
             {
                 NotificationType = (int)NotificationType.FriendRequest,
@@ -62,14 +68,14 @@ namespace ChatAppDatabaseFunctions.Code
                 NotificationJson = JsonConvert.SerializeObject(requestData)
             };
 
-            (bool, string) notificationResult = await SharedRequests.SendNotificationThroughSignalR(notificationData);
+            (bool result, string message) = await SharedRequests.SendNotificationThroughSignalR(notificationData);
 
-            if (notificationResult.Item1 == true)
+            if (result == true)
             {
-                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = notificationResult.Item2 });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = message });
             }
 
-            return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = notificationResult.Item2 });
+            return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = message });
         }
     }
 }

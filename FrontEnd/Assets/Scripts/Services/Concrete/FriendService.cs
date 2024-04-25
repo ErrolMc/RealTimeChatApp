@@ -4,6 +4,7 @@ using ChatApp.Shared.Constants;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
+using ChatApp.Utils;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -54,6 +55,19 @@ namespace ChatApp.Services.Concrete
             if (status)
                 AddFriendToFriendsList(notification.FromUser);
         }
+        
+        public async UniTask<bool> UpdateFriendsList()
+        {
+            Friends.Clear();
+            
+            GetFriendsResponseData response = await GetFriends();
+            if (response.Success)
+            {
+                Friends = response.Friends;
+            }
+
+            return response.Success;
+        }
 
         public async UniTask<(bool, string)> AddFriend(string userName)
         {
@@ -63,22 +77,15 @@ namespace ChatApp.Services.Concrete
                 ToUserName = userName
             };
             
-            string json = JsonConvert.SerializeObject(notificationData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-            
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/sendfriendrequest", jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
-            
-            await request.SendWebRequest();
+            (bool success, string message, FriendRequestNotificationResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>("sendfriendrequest", notificationData);
 
-            if (request.result != UnityWebRequest.Result.Success)
+            if (success == false)
             {
                 Debug.LogError("FriendService: Request failed");
                 return (false, "Request failed");
             }
             
-            FriendRequestNotificationResponseData responseData = JsonConvert.DeserializeObject<FriendRequestNotificationResponseData>(request.downloadHandler.text);
             Debug.LogError("FriendService - AddFriend: " + responseData.Message);
             return (responseData.Status, responseData.Message);
         }
@@ -92,37 +99,17 @@ namespace ChatApp.Services.Concrete
                 Status = status
             };
             
-            string json = JsonConvert.SerializeObject(notificationData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+            (bool success, string message, RespondToFriendRequestResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>("respondtofriendrequest", notificationData);
 
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/respondtofriendrequest", jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
-            
-            await request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            if (success == false)
             {
                 Debug.LogError("FriendService - Failed to respond to friend request");
                 return (false, "Request failed");
             }
             
-            RespondToFriendRequestResponseData responseData = JsonConvert.DeserializeObject<RespondToFriendRequestResponseData>(request.downloadHandler.text);
             Debug.LogError("FriendService - Respond to request: " + responseData.Message);
             return (responseData.Success, responseData.Message);
-        }
-
-        public async UniTask<bool> UpdateFriendsList()
-        {
-            Friends.Clear();
-            
-            GetFriendsResponseData response = await GetFriends();
-            if (response.Success)
-            {
-                Friends = response.Friends;
-            }
-
-            return response.Success;
         }
         
         private async UniTask<GetFriendsResponseData> GetFriends()
@@ -133,22 +120,15 @@ namespace ChatApp.Services.Concrete
                 UserID = _authenticationService.CurrentUser.UserID,
             };
             
-            string json = JsonConvert.SerializeObject(requestData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-            
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/getfriends", jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
-            
-            await request.SendWebRequest();
+            (bool success, string message, GetFriendsResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendsResponseData>("getfriends", requestData);
 
-            if (request.result != UnityWebRequest.Result.Success)
+            if (success == false)
             {
                 Debug.LogError("FriendService - Failed to respond to friend request");
                 return new GetFriendsResponseData() { Success = false, Message = "Request failed" };
             }
             
-            GetFriendsResponseData responseData = JsonConvert.DeserializeObject<GetFriendsResponseData>(request.downloadHandler.text);
             Debug.LogError("FriendService - GetFriends: " + responseData.Message);
             return responseData;
         }

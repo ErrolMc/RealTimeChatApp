@@ -33,11 +33,9 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
-            IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == loginData.UserName);
-            FeedIterator<User> iterator = query.ToFeedIterator();
-            FeedResponse<User> existingUsers = await iterator.ReadNextAsync();
+            User user = await SharedQueries.GetUserFromUsername(loginData.UserName);
 
-            if (existingUsers.Any())
+            if (user != null)
             {
                 return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Username already exists!" });
             }

@@ -35,13 +35,11 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            var userResponse = await DatabaseStatics.UsersContainer.ReadItemAsync<User>(requestData.UserID, new PartitionKey(requestData.UserID));
-            if (userResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            User user = await SharedQueries.GetUserFromUserID(requestData.UserID);
+            if (user == null)
             {
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.UserID} Status: {userResponse.StatusCode}" });
+                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
             }
-
-            User user = userResponse.Resource;
 
             try
             {

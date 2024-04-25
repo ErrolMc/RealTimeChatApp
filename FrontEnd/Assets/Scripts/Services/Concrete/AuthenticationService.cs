@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using ChatApp.Shared.Authentication;
 using ChatApp.Shared.Tables;
 using ChatApp.Shared.Constants;
+using ChatApp.Utils;
 
 namespace ChatApp.Services.Concrete
 {
@@ -25,7 +26,7 @@ namespace ChatApp.Services.Concrete
             return (resp.Item1, resp.Item2);
         }
 
-        private async UniTask<(bool, string, User)> PerformRequest(string endPoint, string username, string password)
+        private async UniTask<(bool, string, User)> PerformRequest(string functionName, string username, string password)
         {
             UserLoginData loginData = new UserLoginData()
             {
@@ -33,21 +34,12 @@ namespace ChatApp.Services.Concrete
                 Password = password
             };
 
-            string json = JsonConvert.SerializeObject(loginData);
-            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-            
-            using UnityWebRequest request = UnityWebRequest.Put(NetworkConstants.FUNCTIONS_URI + "api/" + endPoint, jsonToSend);
-            request.method = UnityWebRequest.kHttpVerbPOST;
-            request.SetRequestHeader("Content-Type", "application/json");
-            
-            await request.SendWebRequest();
+            (bool success, string message, UserLoginResponseData responseData) = 
+                await NetworkHelper.PerformFunctionPostRequest<UserLoginData, UserLoginResponseData>(functionName, loginData);
 
-            if (request.result != UnityWebRequest.Result.Success)
-            {
+            if (success == false)
                 return (false, "Register failed", null);
-            }
             
-            UserLoginResponseData responseData = JsonConvert.DeserializeObject<UserLoginResponseData>(request.downloadHandler.text);
             return (responseData.Status, responseData.Message, responseData.User);
         }
     }

@@ -33,16 +33,13 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
-            IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == loginData.UserName);
-            FeedIterator<User> iterator = query.ToFeedIterator();
-            FeedResponse<User> users = await iterator.ReadNextAsync();
+            User user = await SharedQueries.GetUserFromUsername(loginData.UserName);
 
-            if (!users.Any())
+            if (user == null)
             {
                 return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "No user with that username!", User = null });
             }
 
-            User user = users.First();
             bool correctPassword = PasswordHasher.VerifyPassword(loginData.Password, user.HashedPassword);
 
             if (correctPassword)

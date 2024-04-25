@@ -39,14 +39,15 @@ namespace ChatAppDatabaseFunctions.Code
         {
             try
             {
-                IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.UserID == userID);
-                FeedIterator<User> iterator = query.ToFeedIterator();
-                FeedResponse<User> users = await iterator.ReadNextAsync();
+                var userResponse = await DatabaseStatics.UsersContainer.ReadItemAsync<User>(userID, new PartitionKey(userID));
 
-                if (!users.Any())
+                if (userResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"GetUserFromUserID Error {userResponse.StatusCode}");
                     return null;
+                }
 
-                return users.First();
+                return userResponse.Resource;
             }
             catch (Exception ex)
             {
