@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using ChatApp.Shared.Tables;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using ChatApp.Shared.Messages;
+using ChatApp.Shared.Notifications;
 
 namespace ChatAppSignalRServer.Hubs
 {
@@ -19,7 +23,7 @@ namespace ChatAppSignalRServer.Hubs
             return base.OnConnectedAsync();
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
             if (_connectedUsers.ContainsKey(Context.ConnectionId))
             {
@@ -28,6 +32,18 @@ namespace ChatAppSignalRServer.Hubs
             }
 
             return base.OnDisconnectedAsync(exception);
+        }
+
+        public async void SendDirectMessage(string toUserID, string messageJson)
+        {
+            NotificationData notificationData = new NotificationData()
+            {
+                RecipientUserID = toUserID,
+                NotificationType = (int)NotificationType.DirectMessage,
+                NotificationJson = messageJson,
+            };
+
+            await Clients.User(toUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(notificationData));
         }
     }
 }

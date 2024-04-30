@@ -13,6 +13,7 @@
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Other\TableData.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Other\MessageData.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Other\NetworkConstants.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Other\NotificationData.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Other\TableData.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Other\MessageData.cs.meta" />
   </ItemGroup>
 
 </Project>

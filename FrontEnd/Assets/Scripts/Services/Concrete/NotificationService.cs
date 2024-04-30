@@ -17,11 +17,14 @@ namespace ChatApp.Services.Concrete
 {
     public class NotificationService : INotificationService
     {
+        [Inject] private IChatService _chatService;
         [Inject] private IFriendService _friendService;
         
         private const string Hub = "NotificationHub";
         private HubConnection _connection;
         private bool _connected = false;
+        
+        public HubConnection Connection => _connection;
         
         public async UniTask<(bool, string)> ConnectToSignalR(User user)
         {
@@ -106,7 +109,8 @@ namespace ChatApp.Services.Concrete
                 case NotificationType.FriendRequest:
                     {
                         var notification = JsonConvert.DeserializeObject<FriendRequestNotification>(notificationData.NotificationJson);
-                        
+                        if (notification == null)
+                            return false;
                         Debug.LogError("Friend request from " + notification.FromUser.UserName);
                         _friendService.OnReceiveFriendRequestNotification(notification);   
                     }
@@ -124,6 +128,14 @@ namespace ChatApp.Services.Concrete
                         
                         Debug.LogError($"Friend request canceled from: {fromUser.UserName}");
                         _friendService.CancelFriendRequest(fromUser);
+                    }
+                    break;
+                case NotificationType.DirectMessage:
+                    {
+                        var message = JsonConvert.DeserializeObject<Message>(notificationData.NotificationJson);
+                        
+                        Debug.LogError($"Message from {message.FromUser.UserName}");
+                        _chatService.ProcessMessage(message);
                     }
                     break;
             }

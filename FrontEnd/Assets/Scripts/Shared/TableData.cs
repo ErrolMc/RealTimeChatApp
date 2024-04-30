@@ -25,4 +25,16 @@ namespace ChatApp.Shared.Tables
             return new UserSimple() { UserName = Username, UserID = UserID };
         }
     }
+
+    [Serializable]
+    public class Message
+    {
+        [JsonProperty("id")] public string ID { get; set; }
+        [JsonProperty("threadid")] public string ThreadID { get; set; }
+        [JsonProperty("fromuser")] public UserSimple FromUser { get; set; }
+        [JsonProperty("messagecontents")] public string MessageContents { get; set; }
+        [JsonProperty("messagetype")] public int MessageType { get; set; }
+        [JsonProperty("timestamp")] public long TimeStamp { get; set; }
+        // attachments ?
+    }
 }

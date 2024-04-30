@@ -15,6 +15,7 @@ public class DIController : MonoInstaller
         Container.Bind(typeof(IInitializable), typeof(IPanelManagementService)).To<PanelManagementService>().FromInstance(panelManager).AsSingle().NonLazy();
         Container.Bind<IAuthenticationService>().To<AuthenticationService>().AsSingle().NonLazy();
         Container.Bind<INotificationService>().To<NotificationService>().AsSingle().NonLazy();
+        Container.Bind<IChatService>().To<ChatService>().AsSingle().NonLazy();
         Container.Bind(typeof(IInitializable), typeof(IFriendService)).To<FriendService>().AsSingle().NonLazy();
     }
 }

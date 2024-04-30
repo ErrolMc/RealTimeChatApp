@@ -6,9 +6,11 @@ using UnityEngine;
 
 namespace ChatApp.UI
 {
-    public class FriendListItem : MonoBehaviour
+    public class UserDisplayItem : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI nameText;
+
+        public System.Action<UserSimple> OnSelectUser { get; set; }
 
         private UserSimple _user;
         
@@ -20,7 +22,7 @@ namespace ChatApp.UI
 
         public void OnClick_SelectUser()
         {
-            Debug.Log("Select User");
+            OnSelectUser?.Invoke(_user);
         }
     }   
 }

@@ -5,27 +5,27 @@ using UnityEngine;
 using TMPro;
 using Zenject;
 using ChatApp.Services;
+using ChatApp.Shared.Misc;
 using ChatApp.Shared.Tables;
 
 namespace ChatApp.UI
 {
     public class ChatPanel : Panel
     {
+        [Header("Sidebar")]
         [SerializeField] private FriendsListUI friendsListUI;
         [SerializeField] private TextMeshProUGUI userNameText;
-        [SerializeField] private TMP_InputField inputField;
-        [SerializeField] private ChatMessage templateMessage;
 
-        //[Inject] private IBroadcastService _broadcastService;
+        [Header("Chat Window")] 
+        [SerializeField] private ChatHistory chatHistory;
+        [SerializeField] private UserDisplayItem friendInfoItem;
+        
         [Inject] private IAuthenticationService _authenticationService;
-
+        
         private bool loadedUserData = false;
         
         public override void OnShow()
         {
-            //_broadcastService.OnMessageReceived += ReceiveMessage;
-            templateMessage.gameObject.SetActive(false);
-            
             PopulateUserData(!loadedUserData);
             if (!loadedUserData)
             {
@@ -46,41 +46,29 @@ namespace ChatApp.UI
             
             userNameText.text = user.Username;
 
-            friendsListUI.OnShow();
+            friendsListUI.OnShow(OnSelectUser);
             bool friendsResult = await friendsListUI.PopulateFriendsList(firstRun);
+            
+            chatHistory.gameObject.SetActive(false);
         }
 
+        private async void OnSelectUser(UserSimple user)
+        {
+            if (chatHistory.OtherUser == user)
+                return;
+            
+            
+            await chatHistory.OnShow(user);
+            friendInfoItem.Setup(user);
+            chatHistory.gameObject.SetActive(true);
+        }
+        
         public override void OnHide()
         {
             friendsListUI.OnHide();
+            chatHistory.OnHide();
+            
             base.OnHide();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                string msg = inputField.text;
-                if (!string.IsNullOrEmpty(msg))
-                {
-                    msg = $"{_authenticationService.CurrentUser.Username}: " + msg;
-                    CreateMessage(msg);
-                    //_broadcastService.BroadcastMessage(msg);
-                    inputField.text = "";
-                }
-            }
-        }
-
-        public void ReceiveMessage(string message)
-        {
-            CreateMessage(message);
-        }
-
-        public void CreateMessage(string message)
-        {
-            ChatMessage chatMessage = Instantiate(templateMessage, templateMessage.transform.parent);
-            chatMessage.SetMessageText(message);
-            chatMessage.gameObject.SetActive(true);
         }
     }   
 }

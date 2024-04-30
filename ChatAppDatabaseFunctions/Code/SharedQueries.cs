@@ -85,5 +85,27 @@ namespace ChatAppDatabaseFunctions.Code
                 return (false, ex.Message, new List<UserSimple>());
             }
         }
+
+        public static async Task<(bool, List<Message>)> GetMessagesByThreadID(string threadID)
+        {
+            List<Message> messages = new List<Message>();
+            try
+            {
+                IQueryable<Message> query = DatabaseStatics.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID);
+                FeedIterator<Message> iterator = query.ToFeedIterator();
+
+                while (iterator.HasMoreResults)
+                {
+                    FeedResponse<Message> response = await iterator.ReadNextAsync();
+                    messages.AddRange(response.ToList());
+                }
+                return (true, messages);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
+            }
+            return (false, messages);
+        }
     }
 }

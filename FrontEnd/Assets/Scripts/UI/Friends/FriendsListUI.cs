@@ -7,29 +7,32 @@ using ChatApp.Shared.Notifications;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace ChatApp.UI
 {
     public class FriendsListUI : MonoBehaviour
     {
-        [SerializeField] private FriendListItem templateFriendListItem;
+        [FormerlySerializedAs("templateFriendListItem")] [SerializeField] private UserDisplayItem templateUserDisplayItem;
         
         [Inject] private IFriendService _friendService;
 
-        private List<FriendListItem> _friendListItems;
+        private System.Action<UserSimple> _onSelectUser;
+        private List<UserDisplayItem> _friendListItems;
         private bool _isLiveUpdating = false;
 
         private void Awake()
         {
-            templateFriendListItem.gameObject.SetActive(false);
+            templateUserDisplayItem.gameObject.SetActive(false);
         }
 
-        public void OnShow()
+        public void OnShow(System.Action<UserSimple> onSelectUser)
         {
             if (_isLiveUpdating == true)
                 return;
-            
+
+            _onSelectUser = onSelectUser;
             _friendService.OnFriendRequestRespondedTo += OnFriendRequestRespondedTo;
             _isLiveUpdating = true;
         }
@@ -73,11 +76,17 @@ namespace ChatApp.UI
 
         private void CreateFriendListItem(UserSimple friend)
         {
-            FriendListItem item = Instantiate(templateFriendListItem, templateFriendListItem.transform.parent);
+            UserDisplayItem item = Instantiate(templateUserDisplayItem, templateUserDisplayItem.transform.parent);
             item.Setup(friend);
+            item.OnSelectUser += OnSelectItem;
             item.gameObject.SetActive(true);
             
             _friendListItems.Add(item);
+        }
+
+        private void OnSelectItem(UserSimple user)
+        {
+            _onSelectUser?.Invoke(user);
         }
 
         private void OnFriendRequestRespondedTo(FriendRequestRespondNotification notification)
@@ -90,7 +99,7 @@ namespace ChatApp.UI
         {
             if (_friendListItems == null)
             {
-                _friendListItems = new List<FriendListItem>();
+                _friendListItems = new List<UserDisplayItem>();
                 return;
             }
 
