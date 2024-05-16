@@ -1,7 +1,5 @@
 using System;
 using ChatApp.Shared.Misc;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace ChatApp.Shared.Notifications
 {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
         <LangVersion>latest</LangVersion>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
@@ -19,9 +19,33 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.3.24172.9" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Source\" />
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs">
+        <Link>Source\Shared\AuthenticationData.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs">
+        <Link>Source\Shared\Keys.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs">
+        <Link>Source\Shared\MessageData.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs">
+        <Link>Source\Shared\Misc.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs">
+        <Link>Source\Shared\NetworkConstants.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs">
+        <Link>Source\Shared\NotificationData.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs">
+        <Link>Source\Shared\SharedStaticMethods.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs">
+        <Link>Source\Shared\TableData.cs</Link>
+      </Compile>
     </ItemGroup>
 </Project>

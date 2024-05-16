@@ -24,11 +24,13 @@ namespace ChatAppFrontEnd
         private void ConfigureServices()
         {
             IServiceCollection collection = new ServiceCollection();
-            
+
+            collection.AddSingleton<IAuthenticationService, AuthenticationService>();
             collection.AddSingleton<INavigationService, NavigationService>();
             collection.AddSingleton<MasterWindowViewModel>(new MasterWindowViewModel());
             
-            collection.AddTransient<LoginRegisterPanelViewModel>();
+            collection.AddTransient<LoginPanelViewModel>();
+            collection.AddTransient<RegisterPanelViewModel>();
             collection.AddTransient<SettingsPanelViewModel>();
             collection.AddTransient<FriendsPanelViewModel>();
             collection.AddTransient<ChatViewModel>();
@@ -68,7 +70,7 @@ namespace ChatAppFrontEnd
             }
             
             var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
-            navigationService.Navigate<LoginRegisterPanelViewModel>();
+            navigationService.Navigate<LoginPanelViewModel>();
             
             base.OnFrameworkInitializationCompleted();
         }

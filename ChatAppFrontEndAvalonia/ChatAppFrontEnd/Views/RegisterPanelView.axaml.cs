@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class RegisterView : UserControl
+    public partial class RegisterPanelView : UserControl
     {
-        public RegisterView()
+        public RegisterPanelView()
         {
             InitializeComponent();
         }
