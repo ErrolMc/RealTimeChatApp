@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChatAppFrontEnd.Views.SidebarBottomView"
+             x:DataType="vm:SidebarBottomViewModel"
+             Background="#232428">
+
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="33"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="Name" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Bounds="10, 10, 10, 10"/>
+        <Button Command="{Binding FriendsCommand}" Grid.Column="1" Width="30" Height="30"  Background="Transparent" Margin="0,0,0,0">
+            <Image Source="/Assets/AddFriendIcon.png" Width="20" Height="20"/>
+        </Button>
+        <Button Command="{Binding SettingsCommand}" Grid.Column="2" Width="30" Height="30"  Background="Transparent">
+            <Image Source="/Assets/SettingsIcon.png" Width="20" Height="20"/>
+        </Button>
+    </Grid>
+    
+</UserControl>

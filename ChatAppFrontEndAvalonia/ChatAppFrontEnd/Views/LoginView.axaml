@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChatAppFrontEnd.Views.LoginView"
+             x:DataType="vm:LoginViewModel"
+             Background="#1e1f22">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Background="#313338" CornerRadius="3" Padding="16">
+            <StackPanel>
+                <TextBlock Text="Login" Foreground="White" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" Margin="40,5,40,20"/>
+                
+                <TextBlock Text="Username" Foreground="White" FontSize="14" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                <TextBox Watermark="Enter text..." Margin="0,0,0,10"/>
+                
+                <TextBlock Text="Password" Foreground="White" FontSize="14" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                <TextBox Watermark="Enter text..." Margin="0,0,0,20"/>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Register" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,5,0" Command="{Binding GoToRegisterCommand}"/>
+                    <Button Content="Login" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5,0,0,0" Command="{Binding LoginCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+    
+</UserControl>
