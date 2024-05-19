@@ -31,11 +31,12 @@ namespace ChatAppFrontEnd
             collection.AddSingleton<IChatService, ChatService>();
             collection.AddSingleton<IFriendService, FriendService>();
             collection.AddSingleton<INavigationService, NavigationService>();
+            collection.AddTransient<ISignalRService, SignalRService>();
             
-            // have to use lazy to avoid circular dependency
+            // using lazy to get around circular dependency (SignalRService -> NotificationService -> ChatService -> SignalRService)
             collection.AddTransient<INotificationService, NotificationService>(provider =>
             {
-                var friendService = provider.GetRequiredService<IFriendService>();
+                var friendService = new Lazy<IFriendService>(provider.GetRequiredService<IFriendService>);
                 var chatService = new Lazy<IChatService>(provider.GetRequiredService<IChatService>);
                 return new NotificationService(friendService, chatService);
             });
@@ -93,8 +94,8 @@ namespace ChatAppFrontEnd
         
         private void OnApplicationExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
-            var notificationService = _serviceProvider.GetService<INotificationService>();
-            notificationService?.OnApplicationQuit();
+            var signalRService = _serviceProvider.GetService<ISignalRService>();
+            signalRService?.OnApplicationQuit();
         }
     }
 }

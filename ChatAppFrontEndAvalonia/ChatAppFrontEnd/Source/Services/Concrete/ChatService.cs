@@ -12,15 +12,15 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 {
     public class ChatService : IChatService
     {
-        private readonly INotificationService _notificationService;
+        private readonly ISignalRService _signalRService;
         
-        private HubConnection Connection => _notificationService.Connection();
+        private HubConnection Connection => _signalRService.Connection;
 
         public event Action<Message> OnMessageReceived;
 
-        public ChatService(INotificationService notificationService)
+        public ChatService(ISignalRService signalRService)
         {
-            _notificationService = notificationService;
+            _signalRService = signalRService;
         }
         
         public void OnReceiveMessage(Message message)

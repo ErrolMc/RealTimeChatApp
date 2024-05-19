@@ -11,7 +11,7 @@ namespace ChatAppFrontEnd.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
-        private readonly INotificationService _notificationService;
+        private readonly ISignalRService _signalRService;
         private readonly IFriendService _friendService;
 
         private string _username;
@@ -47,11 +47,11 @@ namespace ChatAppFrontEnd.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
         
-        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, INotificationService notificationService, IFriendService friendService)
+        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, ISignalRService signalRService, IFriendService friendService)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
-            _notificationService = notificationService;
+            _signalRService = signalRService;
             _friendService = friendService;
 
             ResponseText = string.Empty;
@@ -84,8 +84,8 @@ namespace ChatAppFrontEnd.ViewModels
                 return;
             }
 
-            var notificationResponse = await _notificationService.ConnectToSignalR(loginResponse.user);
-            if (notificationResponse.status == false)
+            var notificationResponse = await _signalRService.ConnectToSignalR(loginResponse.user);
+            if (notificationResponse.success == false)
             {
                 ResponseText = notificationResponse.message;
                 TalkingToServer = false;

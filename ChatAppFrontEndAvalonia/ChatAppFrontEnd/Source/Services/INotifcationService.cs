@@ -6,8 +6,6 @@ namespace ChatAppFrontEnd.Source.Services
 {
     public interface INotificationService
     {
-        public Task<(bool status, string message)> ConnectToSignalR(User user);
-        public void OnApplicationQuit();
-        public HubConnection Connection();
+        public bool HandleNotification(string json);
     }
 }
