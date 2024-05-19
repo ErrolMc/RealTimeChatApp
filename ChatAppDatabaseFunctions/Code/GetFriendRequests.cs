@@ -10,12 +10,13 @@ using Newtonsoft.Json;
 using ChatApp.Shared.Misc;
 using User = ChatApp.Shared.Tables.User;
 using System.Collections.Generic;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class GetFriendRequests
     {
-        [FunctionName("GetFriendRequests")]
+        [FunctionName(FunctionNames.GET_FRIEND_REQUESTS)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

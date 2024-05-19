@@ -14,12 +14,13 @@ using System.Linq;
 using User = ChatApp.Shared.Tables.User;
 using System.ComponentModel;
 using ChatApp.Shared.Notifications;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class RespondToFriendRequest
     {
-        [FunctionName("RespondToFriendRequest")]
+        [FunctionName(FunctionNames.RESPOND_TO_FRIEND_REQUEST)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

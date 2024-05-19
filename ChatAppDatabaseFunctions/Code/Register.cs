@@ -13,12 +13,13 @@ using System.Linq;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class Register
     {
-        [FunctionName("Register")]
+        [FunctionName(FunctionNames.REGISTER)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

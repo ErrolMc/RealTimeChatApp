@@ -17,12 +17,13 @@ using System.Text;
 using ChatApp.Shared.Keys;
 using ChatApp.Shared.Constants;
 using System.Security.Cryptography.Xml;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class AuthenticateSignalRFunction
     {
-        [FunctionName("AuthenticateSignalR")]
+        [FunctionName(FunctionNames.AUTHENTICATE_SIGNALR)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

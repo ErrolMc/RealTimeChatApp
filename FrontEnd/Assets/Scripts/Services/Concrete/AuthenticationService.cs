@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChatApp.Shared;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine.Networking;
@@ -17,12 +18,12 @@ namespace ChatApp.Services.Concrete
 
         public async UniTask<(bool, string, User)> TryLogin(string username, string password)
         {
-            return await PerformRequest("login", username, password);
+            return await PerformRequest(FunctionNames.LOGIN, username, password);
         }
 
         public async UniTask<(bool, string)> TryRegister(string username, string password)
         {
-            (bool, string, User) resp = await PerformRequest("register", username, password);
+            (bool, string, User) resp = await PerformRequest(FunctionNames.REGISTER, username, password);
             return (resp.Item1, resp.Item2);
         }
 

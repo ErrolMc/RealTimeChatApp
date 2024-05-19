@@ -12,13 +12,14 @@ using ChatApp.Shared.Tables;
 using System.Linq;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos;
+using ChatApp.Shared;
 using User = ChatApp.Shared.Tables.User;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class Login
     {
-        [FunctionName("Login")]
+        [FunctionName(FunctionNames.LOGIN)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

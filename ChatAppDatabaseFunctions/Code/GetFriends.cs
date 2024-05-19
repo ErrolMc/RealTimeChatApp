@@ -15,12 +15,13 @@ using User = ChatApp.Shared.Tables.User;
 using System.ComponentModel;
 using ChatApp.Shared.Notifications;
 using System.Collections.Generic;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class GetFriends
     {
-        [FunctionName("GetFriends")]
+        [FunctionName(FunctionNames.GET_FRIENDS)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

@@ -13,12 +13,13 @@ using ChatApp.Shared.Messages;
 using ChatApp.Shared.Tables;
 using Microsoft.Azure.Cosmos;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class SaveMessageToDB
     {
-        [FunctionName("SaveMessageToDB")]
+        [FunctionName(FunctionNames.SAVE_MESSAGE_TO_DB)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

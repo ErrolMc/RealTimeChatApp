@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ChatApp.Shared;
 using ChatApp.Shared.Constants;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
@@ -83,7 +84,7 @@ namespace ChatApp.Services.Concrete
                 return false;
             
             (bool success, string message, GetFriendRequestsResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendRequestsResponseData>("getfriendrequests", _authenticationService.CurrentUser.ToUserSimple());
+                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendRequestsResponseData>(FunctionNames.GET_FRIEND_REQUESTS, _authenticationService.CurrentUser.ToUserSimple());
             
             if (success)
             {
@@ -111,7 +112,7 @@ namespace ChatApp.Services.Concrete
             };
             
             (bool success, string message, FriendRequestNotificationResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>("sendfriendrequest", notificationData);
+                await NetworkHelper.PerformFunctionPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>(FunctionNames.SEND_FRIEND_REQUEST, notificationData);
 
             if (success == false)
             {
@@ -134,7 +135,7 @@ namespace ChatApp.Services.Concrete
             };
             
             (bool success, string message, RespondToFriendRequestResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>("respondtofriendrequest", notificationData);
+                await NetworkHelper.PerformFunctionPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>(FunctionNames.RESPOND_TO_FRIEND_REQUEST, notificationData);
 
             if (success == false)
             {
@@ -158,7 +159,7 @@ namespace ChatApp.Services.Concrete
             };
             
             (bool success, string message, GetFriendsResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendsResponseData>("getfriends", requestData);
+                await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendsResponseData>(FunctionNames.GET_FRIENDS, requestData);
 
             if (success == false)
             {

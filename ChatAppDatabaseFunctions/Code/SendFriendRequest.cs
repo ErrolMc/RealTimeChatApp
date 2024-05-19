@@ -17,12 +17,13 @@ using System.Linq;
 using Microsoft.Azure.Cosmos.Linq;
 using User = ChatApp.Shared.Tables.User;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class SendFriendRequest
     {
-        [FunctionName("SendFriendRequest")]
+        [FunctionName(FunctionNames.SEND_FRIEND_REQUEST)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

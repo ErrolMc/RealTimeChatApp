@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using ChatApp.Shared;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using ChatApp.Shared.Notifications;
@@ -85,7 +86,7 @@ namespace ChatApp.Services.Concrete
             };
             
             (bool success, string message, AuthenticateResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<AuthenticateRequestData, AuthenticateResponseData>("AuthenticateSignalR", requestData);
+                await NetworkHelper.PerformFunctionPostRequest<AuthenticateRequestData, AuthenticateResponseData>(FunctionNames.AUTHENTICATE_SIGNALR, requestData);
             
             if (success == false)
             {

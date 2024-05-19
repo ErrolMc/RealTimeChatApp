@@ -38,7 +38,7 @@ namespace ChatApp.Services.Concrete
                 };
                 
                 (bool success, string message, SaveMessageResponseData responseData) = 
-                    await NetworkHelper.PerformFunctionPostRequest<SaveMessageRequestData, SaveMessageResponseData>("SaveMessageToDB", requestData);
+                    await NetworkHelper.PerformFunctionPostRequest<SaveMessageRequestData, SaveMessageResponseData>(FunctionNames.SAVE_MESSAGE_TO_DB, requestData);
 
                 if (success == false)
                 {
@@ -75,7 +75,7 @@ namespace ChatApp.Services.Concrete
             };
 
             (bool success, string message, GetMessagesResponseData responseData) = 
-                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>("GetMessages", requestData);
+                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
 
             if (!success)
             {

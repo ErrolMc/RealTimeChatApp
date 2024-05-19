@@ -11,12 +11,13 @@ using ChatApp.Shared.Misc;
 using System.Collections.Generic;
 using ChatApp.Shared.Messages;
 using ChatApp.Shared.Tables;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class GetMessages
     {
-        [FunctionName("GetMessages")]
+        [FunctionName(FunctionNames.GET_MESSAGES)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
