@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using ChatApp.Shared;
 using ChatApp.Shared.Authentication;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Utils;
@@ -12,13 +13,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         public async Task<(bool success, string message, User user)> TryLogin(string username, string password)
         {
-            var resp = await PerformRequest("login", username, password);
+            var resp = await PerformRequest(FunctionNames.LOGIN, username, password);
             return (resp.Success, resp.Message, resp.ResponseData.User);
         }
 
         public async Task<(bool success, string message)> TryRegister(string username, string password)
         {
-            var resp = await PerformRequest("register", username, password);
+            var resp = await PerformRequest(FunctionNames.REGISTER, username, password);
             return (resp.Success, resp.Message);
         }
         

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Input;
+using ChatApp.Services;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Views;
 using ReactiveUI;
@@ -10,6 +11,8 @@ namespace ChatAppFrontEnd.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly INotificationService _notificationService;
+        private readonly IFriendService _friendService;
 
         private string _username;
         private string _password;
@@ -44,10 +47,12 @@ namespace ChatAppFrontEnd.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
         
-        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService)
+        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, INotificationService notificationService, IFriendService friendService)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
+            _notificationService = notificationService;
+            _friendService = friendService;
 
             ResponseText = string.Empty;
             TalkingToServer = false;
@@ -61,6 +66,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (TalkingToServer) return;
             TalkingToServer = true;
 
+            
             if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
                 ResponseText = "Please fill in all fields!";
@@ -70,18 +76,30 @@ namespace ChatAppFrontEnd.ViewModels
             
             ResponseText = "Trying to login...";
             
-            var resp = await _authenticationService.TryLogin(Username, Password);
-            if (resp.success)
+            var loginResponse = await _authenticationService.TryLogin(Username, Password);
+            if (loginResponse.success == false)
             {
-                _authenticationService.CurrentUser = resp.user;
-                
+                ResponseText = loginResponse.message;
                 TalkingToServer = false;
-                _navigationService.Navigate<MainPanelViewModel>();
+                return;
+            }
+
+            var notificationResponse = await _notificationService.ConnectToSignalR(loginResponse.user);
+            if (notificationResponse.status == false)
+            {
+                ResponseText = notificationResponse.message;
+                TalkingToServer = false;
                 return;
             }
             
-            ResponseText = resp.message;
+            // setup data that other viewmodels will use
+            _authenticationService.CurrentUser = loginResponse.user;
+            bool friendRequestResponse = await _friendService.GetFriendRequests();
+            bool getFriendsResponse = await _friendService.UpdateFriendsList();
+            
+            // navigate to the main panel
             TalkingToServer = false;
+            _navigationService.Navigate<MainPanelViewModel>();
         }
 
         private void GoToRegister()

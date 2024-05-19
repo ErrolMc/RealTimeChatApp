@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using ChatApp.Services;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Source.Services.Concrete;
 using ChatAppFrontEnd.ViewModels;
@@ -14,7 +15,7 @@ namespace ChatAppFrontEnd
 {
     public partial class App : Application
     {
-        private IServiceProvider? _serviceProvider;
+        private IServiceProvider _serviceProvider;
         
         public override void Initialize()
         {
@@ -24,9 +25,22 @@ namespace ChatAppFrontEnd
         private void ConfigureServices()
         {
             IServiceCollection collection = new ServiceCollection();
-
+            
+            // register services
             collection.AddSingleton<IAuthenticationService, AuthenticationService>();
+            collection.AddSingleton<IChatService, ChatService>();
+            collection.AddSingleton<IFriendService, FriendService>();
             collection.AddSingleton<INavigationService, NavigationService>();
+            
+            // have to use lazy to avoid circular dependency
+            collection.AddTransient<INotificationService, NotificationService>(provider =>
+            {
+                var friendService = provider.GetRequiredService<IFriendService>();
+                var chatService = new Lazy<IChatService>(provider.GetRequiredService<IChatService>);
+                return new NotificationService(friendService, chatService);
+            });
+            
+            // register viewmodels
             collection.AddSingleton<MasterWindowViewModel>(new MasterWindowViewModel());
             
             collection.AddTransient<LoginPanelViewModel>();
@@ -60,6 +74,8 @@ namespace ChatAppFrontEnd
                 {
                     DataContext = masterWindowViewModel
                 };
+                
+                desktop.Exit += OnApplicationExit;
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
             {
@@ -73,6 +89,12 @@ namespace ChatAppFrontEnd
             navigationService.Navigate<LoginPanelViewModel>();
             
             base.OnFrameworkInitializationCompleted();
+        }
+        
+        private void OnApplicationExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            var notificationService = _serviceProvider.GetService<INotificationService>();
+            notificationService?.OnApplicationQuit();
         }
     }
 }

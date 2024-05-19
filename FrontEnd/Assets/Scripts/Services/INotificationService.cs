@@ -6,7 +6,7 @@ namespace ChatApp.Services
 {
     public interface INotificationService
     {
-        public UniTask<(bool, string)> ConnectToSignalR(User user);
+        public UniTask<(bool status, string message)> ConnectToSignalR(User user);
         public void OnApplicationQuit();
         public HubConnection Connection { get; }
     }

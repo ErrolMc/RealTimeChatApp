@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="1000"
              x:Class="ChatAppFrontEnd.Views.SidebarView"
              x:DataType="vm:SidebarViewModel"
              Background="#2b2d31">
@@ -14,8 +15,16 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
                         
-        <Grid Grid.Row="0"/>
-        <Grid Grid.Row="1"/>
+        <ScrollViewer Grid.Row="0" Margin="0, 2.5, 0, 0" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding Friends}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <views:FriendListItemView />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Grid Grid.Row="1" Background="Black"/>
                 
         <ContentControl Grid.Row="1" Content="{Binding BottomViewModel}"/>
     </Grid>
