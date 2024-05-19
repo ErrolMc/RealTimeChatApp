@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="100"
+             x:Class="ChatAppFrontEnd.Views.FriendRequestItemView"
+             x:DataType="vm:FriendRequestItemViewModel"
+             Background="Transparent">
+
+    <Border Background="#313338" CornerRadius="5" Height="40" Margin="5, 2.5, 5, 2.5">
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Name" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            
+            <Grid Grid.Column="1" HorizontalAlignment="Right" Margin="0, 0, 5, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="27"/>
+                    <ColumnDefinition Width="27"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Y" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="25" Background="LimeGreen" Foreground="White" Margin="0,0,2,0" FontSize="15" FontWeight="Bold" Padding="0" IsVisible="{Binding IsIncoming}"/>
+                <Button Content="N" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="25" Background="OrangeRed" Foreground="White" Margin="2,0,0,0" FontSize="15" FontWeight="Bold" Padding="0"/>
+            </Grid>
+        </Grid>
+    </Border>
+    
+</UserControl>
