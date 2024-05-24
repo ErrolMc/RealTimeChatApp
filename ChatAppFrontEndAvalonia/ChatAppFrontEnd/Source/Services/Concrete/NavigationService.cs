@@ -23,6 +23,9 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public void Navigate<TPageViewModel>(bool clearBackStack = false) where TPageViewModel : PanelViewModelBase
         {
+            if (_navigationStack.Count > 0)
+                _navigationStack.Peek().OnHide();
+            
             try
             {
                 var viewModel = _serviceProvider.GetRequiredService<TPageViewModel>();
@@ -44,7 +47,8 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             if (!CanGoBack) return;
             
-            _navigationStack.Pop();
+            var prev = _navigationStack.Pop();
+            prev.OnHide();
             GotoCurrentWindow();
         }
 
@@ -59,6 +63,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         private void GotoCurrentWindow()
         {
+            CurrentPanel.OnShow();
             _masterWindowViewModel.CurrentPanel = CurrentPanel;
         }
     }

@@ -68,6 +68,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         private async Task<AuthenticateResponseData> PerformTokenRequest(User user)
         {
+            if (user == null)
+            {
+                return new AuthenticateResponseData() { Status = false, Message = "User is null" };
+            }
+            
             AuthenticateRequestData requestData = new AuthenticateRequestData()
             {
                 UserName = user.Username, 

@@ -95,7 +95,6 @@ namespace ChatAppFrontEnd.ViewModels
             // setup data that other viewmodels will use
             _authenticationService.CurrentUser = loginResponse.user;
             bool friendRequestResponse = await _friendService.GetFriendRequests();
-            bool getFriendsResponse = await _friendService.UpdateFriendsList();
             
             // navigate to the main panel
             TalkingToServer = false;

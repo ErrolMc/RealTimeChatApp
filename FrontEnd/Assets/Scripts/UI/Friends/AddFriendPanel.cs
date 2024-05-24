@@ -143,11 +143,20 @@ namespace ChatApp.UI
         
         private void OnFriendRequestRespondedTo(FriendRequestRespondNotification notification)
         {
-            FriendRequestItem item = _outgoingFriendRequestItems.Find(item => item.User.UserID.Equals(notification.ToUser.UserID));
-            if (item == null)
+            FriendRequestItem item = _friendRequestItems.Find(it => it.User.UserID.Equals(notification.ToUser.UserID));
+            if (item != null)
+            {
+                _friendRequestItems.Remove(item);
+                Destroy(item.gameObject);
                 return;
+            }
             
-            Destroy(item.gameObject);
+            item = _outgoingFriendRequestItems.Find(it => it.User.UserID.Equals(notification.ToUser.UserID));
+            if (item != null)
+            {
+                _outgoingFriendRequestItems.Remove(item);
+                Destroy(item.gameObject);
+            }
         }
 
         private void SpawnFriendRequestItem(UserSimple user)
@@ -192,7 +201,7 @@ namespace ChatApp.UI
         {
             UserSimple user = item.User;
             
-            _friendRequestItems.Remove(item);
+            _outgoingFriendRequestItems.Remove(item);
             Destroy(item.gameObject);
             
             (bool, string) res = await _friendService.RespondToFriendRequest(_authenticationService.CurrentUser.UserID, user.UserID, false, isCanceling: true);

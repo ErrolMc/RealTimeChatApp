@@ -24,9 +24,13 @@ namespace ChatAppFrontEnd.ViewModels
         {
             BottomViewModel = bottomViewModel;
             _friendService = friendService;
-            
+        }
+
+        public async void Setup()
+        {
             Friends = new ObservableCollection<FriendListItemViewModel>();
             
+            await _friendService.UpdateFriendsList();
             if (_friendService?.Friends == null)
                 return;
             

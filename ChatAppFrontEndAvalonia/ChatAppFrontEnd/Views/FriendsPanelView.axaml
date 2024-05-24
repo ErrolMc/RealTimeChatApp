@@ -18,15 +18,12 @@
             <TextBlock Text="Friends" Foreground="White" FontSize="60" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0"/>
         </Grid>
         <Grid Background="#313338" Grid.Column="1">
-            <Button Command="{Binding BackCommand}" Width="70" Height="70" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0">
-                <Image Source="/Assets/ExitIcon.png"/>
-            </Button>
             <ScrollViewer Grid.Row="0" Margin="40, 40, 0, 0">
                 <StackPanel>
                     <TextBlock Text="Add Friend" Foreground="White" FontSize="40" FontWeight="Bold" HorizontalAlignment="Left"/>
-                    <TextBox Watermark="Enter text..." HorizontalAlignment="Left" Width="200" Margin="0, 10, 0, 10"/>
-                    <Button Content="Send Friend Request" HorizontalAlignment="Left" />
-                    <TextBlock Text="add friend error text" Foreground="Red" FontSize="10" FontWeight="Regular" HorizontalAlignment="Left" Margin="0, 5, 0, 0"/>
+                    <TextBox Watermark="Enter text..." HorizontalAlignment="Left" Width="200" Margin="0, 10, 0, 10" Text="{Binding FriendNameInputValue, Mode=TwoWay}"/>
+                    <Button Command="{Binding AddFriendCommand}" Content="Send Friend Request" HorizontalAlignment="Left" />
+                    <TextBlock Text="{Binding AddFriendResponseValue}" Foreground="Red" FontSize="10" FontWeight="Regular" HorizontalAlignment="Left" Margin="0, 5, 0, 0"/>
                     
                     <TextBlock Text="Friend Requests" Foreground="White" FontSize="40" FontWeight="Bold" HorizontalAlignment="Left" Margin="0, 30, 0, 10"/>
                     <Border Background="#2b2d31" CornerRadius="3" Padding="5" Width="250" Height="300" HorizontalAlignment="Left">
@@ -55,6 +52,10 @@
                     </Border>
                 </StackPanel>
             </ScrollViewer>
+            
+            <Button Command="{Binding BackCommand}" Width="70" Height="70" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0">
+                <Image Source="/Assets/ExitIcon.png"/>
+            </Button>
         </Grid>
     </Grid>
     

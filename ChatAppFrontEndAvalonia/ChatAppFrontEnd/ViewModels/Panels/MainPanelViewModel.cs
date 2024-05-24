@@ -4,16 +4,16 @@ namespace ChatAppFrontEnd.ViewModels
 {
     public class MainPanelViewModel : PanelViewModelBase
     {
-        private ViewModelBase _chatView;
-        private ViewModelBase _sideBarView;
+        private ChatViewModel _chatView;
+        private SidebarViewModel _sideBarView;
 
-        public ViewModelBase ChatView
+        public ChatViewModel ChatView
         {
             get => _chatView;
             set => this.RaiseAndSetIfChanged(ref _chatView, value);
         }
         
-        public ViewModelBase SideBarView
+        public SidebarViewModel SideBarView
         {
             get => _sideBarView;
             set => this.RaiseAndSetIfChanged(ref _sideBarView, value);
@@ -23,6 +23,11 @@ namespace ChatAppFrontEnd.ViewModels
         {
             ChatView = chatView;
             SideBarView = sideBar;
+        }
+
+        public override void OnShow()
+        {
+            _sideBarView.Setup();
         }
     }
 }

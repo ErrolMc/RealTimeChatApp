@@ -35,16 +35,14 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         if (notification == null)
                             return false;
                         Console.WriteLine("Friend request from " + notification.FromUser.UserName);
-                        if (_friendService.IsValueCreated)
-                            _friendService.Value?.OnReceiveFriendRequestNotification(notification);   
+                        _friendService.Value?.OnReceiveFriendRequestNotification(notification);   
                     }
                     break;
                 case NotificationType.FriendRequestRespond:
                     {
                         var notification = JsonConvert.DeserializeObject<FriendRequestRespondNotification>(notificationData.NotificationJson);
                         Console.WriteLine($"Friend request responded from {notification.ToUser.UserName}: {notification.Status}");
-                        if (_friendService.IsValueCreated)
-                            _friendService.Value.ProcessFriendRequestResponse(notification);
+                        _friendService.Value?.ProcessFriendRequestResponse(notification);
                     }
                     break;
                 case NotificationType.FriendRequestCancel:
@@ -52,8 +50,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         var fromUser = JsonConvert.DeserializeObject<UserSimple>(notificationData.NotificationJson);
                         
                         Console.WriteLine($"Friend request canceled from: {fromUser.UserName}");
-                        if (_friendService.IsValueCreated)
-                            _friendService.Value.OnCancelFriendRequest(fromUser);
+                        _friendService.Value?.OnCancelFriendRequest(fromUser);
                     }
                     break;
                 case NotificationType.DirectMessage:
@@ -61,8 +58,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         var message = JsonConvert.DeserializeObject<Message>(notificationData.NotificationJson);
                         
                         Console.WriteLine($"Message from {message.FromUser.UserName}");
-                        if (_chatService.IsValueCreated)
-                            _chatService.Value.OnReceiveMessage(message);
+                        _chatService.Value?.OnReceiveMessage(message);
                     }
                     break;
             }
