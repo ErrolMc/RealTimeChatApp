@@ -39,18 +39,31 @@ namespace ChatAppDatabaseFunctions.Code
             }
 
             // get the users
-            User toUser = await SharedQueries.GetUserFromUsername(requestData.ToUserName);
-            if (toUser == null)
+            var toUserResp = await SharedQueries.GetUserFromUsername(requestData.ToUserName);
+            if (toUserResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = toUserResp.message });
+            }
+
+            if (toUserResp.user == null)
             {
                 return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No to user with that username!" });
             }
 
-            User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUser.UserID);
-            if (fromUser == null)
+            var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUser.UserID);
+            if (fromUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that userID!" });
+                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = fromUserResp.message });
             }
-            
+
+            if (fromUserResp.user == null)
+            {
+                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that username!" });
+            }
+
+            User toUser = toUserResp.user;
+            User fromUser = fromUserResp.user;
+
             // check friends already
             if (fromUser.Friends.Contains(toUser.UserID))
             {

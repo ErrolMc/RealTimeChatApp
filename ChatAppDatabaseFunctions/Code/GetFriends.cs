@@ -36,23 +36,23 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            User user = await SharedQueries.GetUserFromUserID(requestData.UserID);
-            if (user == null)
+            var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);
+            if (userResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
+                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = userResp.message });
             }
 
-            if (user.Friends == null || user.Friends.Count == 0)
+            if (userResp.user.Friends == null || userResp.user.Friends.Count == 0)
             {
                 return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = "No friends found" });
             }
 
-            (bool success, string message, List<UserSimple> friends) = await SharedQueries.GetUsers(user.Friends);
+            (bool success, string message, List<UserSimple> friends) = await SharedQueries.GetUsers(userResp.user.Friends);
 
             if (success == false)
             {
                 System.Console.WriteLine($"An error occurred: {message}");
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while processing your request." });
+                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
             }
 
             return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends });

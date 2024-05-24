@@ -34,9 +34,14 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
-            User user = await SharedQueries.GetUserFromUsername(loginData.UserName);
+            var userResp = await SharedQueries.GetUserFromUsername(loginData.UserName);
 
-            if (user != null)
+            if (userResp.connectionSuccess == false)
+            {
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = userResp.message });
+            }
+
+            if (userResp.user != null)
             {
                 return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Username already exists!" });
             }

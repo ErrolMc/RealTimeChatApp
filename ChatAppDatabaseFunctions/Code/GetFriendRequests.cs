@@ -31,17 +31,32 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            User user = await SharedQueries.GetUserFromUserID(requestData.UserID);
+            var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);
 
-            if (user == null)
+            if (userResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = userResp.message });
+            }
+
+            if (userResp.user == null)
             {
                 return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
             }
 
-            (bool reqStatus, string reqMsg, List<UserSimple> friendRequests) = await SharedQueries.GetUsers(user.FriendRequests);
-            (bool outStatus, string outMsg, List<UserSimple> outgoingFriendRequests) = await SharedQueries.GetUsers(user.OutgoingFriendRequests);
+            var reqResp = await SharedQueries.GetUsers(userResp.user.FriendRequests);
+            var outResp = await SharedQueries.GetUsers(userResp.user.OutgoingFriendRequests);
 
-            return new OkObjectResult(new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = friendRequests, OutgoingFriendRequests =  outgoingFriendRequests });
+            if (reqResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = reqResp.message });
+            }
+
+            if (outResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = outResp.message });
+            }
+
+            return new OkObjectResult(new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.users, OutgoingFriendRequests = outResp.users });
         }
     }
 }

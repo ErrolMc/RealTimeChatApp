@@ -35,8 +35,21 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            User toUser = await SharedQueries.GetUserFromUserID(requestData.ToUserID);
-            User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
+            var toUserResp = await SharedQueries.GetUserFromUserID(requestData.ToUserID);
+            if (toUserResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = toUserResp.message });
+            }
+
+            var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
+            if (fromUserResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = fromUserResp.message });
+            }
+
+            User toUser = toUserResp.user;
+            User fromUser = fromUserResp.user;
+
             if (toUser == null || fromUser == null)
             {
                 return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });

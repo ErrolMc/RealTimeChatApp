@@ -34,18 +34,23 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
-            User user = await SharedQueries.GetUserFromUsername(loginData.UserName);
+            var resp = await SharedQueries.GetUserFromUsername(loginData.UserName);
 
-            if (user == null)
+            if (resp.connectionSuccess == false)
             {
-                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "No user with that username!", User = null });
+                return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = resp.message, User = null });
             }
 
-            bool correctPassword = PasswordHasher.VerifyPassword(loginData.Password, user.HashedPassword);
+            if (resp.user == null)
+            {
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Username doesnt exist!", User = null });
+            }
+
+            bool correctPassword = PasswordHasher.VerifyPassword(loginData.Password, resp.user.HashedPassword);
 
             if (correctPassword)
             {
-                return new OkObjectResult(new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = user });
+                return new OkObjectResult(new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = resp.user });
             }
 
             return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Wrong password!", User = null });

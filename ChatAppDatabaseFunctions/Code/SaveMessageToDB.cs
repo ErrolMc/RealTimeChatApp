@@ -26,7 +26,6 @@ namespace ChatAppDatabaseFunctions.Code
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             SaveMessageRequestData requestData = JsonConvert.DeserializeObject<SaveMessageRequestData>(requestBody);
 
@@ -35,8 +34,13 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new SaveMessageResponseData { Success = false, ResponseMessage = "Invalid user data" });
             }
 
-            User fromUser = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
-            if (fromUser == null)
+            var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
+            if (fromUserResp.connectionSuccess == false)
+            {
+                return new BadRequestObjectResult(new SaveMessageResponseData { Success = false, ResponseMessage = fromUserResp.message });
+            }
+
+            if (fromUserResp.user == null)
             {
                 return new BadRequestObjectResult(new SaveMessageResponseData { Success = false, ResponseMessage = $"Couldnt find user {requestData.FromUserID}" });
             }
@@ -44,7 +48,7 @@ namespace ChatAppDatabaseFunctions.Code
             Message message = new Message()
             {
                 ID = Guid.NewGuid().ToString(),
-                FromUser = fromUser.ToUserSimple(),
+                FromUser = fromUserResp.user.ToUserSimple(),
                 ThreadID = requestData.ThreadID,
                 MessageContents = requestData.Message,
                 MessageType = requestData.MessageType,

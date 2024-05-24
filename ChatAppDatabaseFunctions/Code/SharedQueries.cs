@@ -15,7 +15,9 @@ namespace ChatAppDatabaseFunctions.Code
 {
     public static class SharedQueries
     {
-        public static async Task<User> GetUserFromUsername(string username)
+        private const string GENERIC_DATABASE_ERROR = "Database Connection/Query Error";
+
+        public static async Task<(bool connectionSuccess, string message, User user)> GetUserFromUsername(string username)
         {
             try
             {
@@ -24,18 +26,18 @@ namespace ChatAppDatabaseFunctions.Code
                 FeedResponse<User> users = await iterator.ReadNextAsync();
 
                 if (!users.Any())
-                    return null;
+                    return (true, $"Cant find user {username}", null);
 
-                return users.First();
+                return (true, "Success", users.First());
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUserFromUserName Error {ex.Message}");
-                return null;
+                return (false, GENERIC_DATABASE_ERROR, null);
             }
         }
 
-        public static async Task<User> GetUserFromUserID(string userID)
+        public static async Task<(bool connectionSuccess, string message, User user)> GetUserFromUserID(string userID)
         {
             try
             {
@@ -44,19 +46,19 @@ namespace ChatAppDatabaseFunctions.Code
                 if (userResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine($"GetUserFromUserID Error {userResponse.StatusCode}");
-                    return null;
+                    return (true, $"Cant find user {userID}", null);
                 }
 
-                return userResponse.Resource;
+                return (true, "Success", userResponse.Resource);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUserFromUserID Error {ex.Message}");
-                return null;
+                return (false, GENERIC_DATABASE_ERROR, null);
             }
         }
 
-        public static async Task<(bool, string, List<UserSimple>)> GetUsers(List<string> userIDs)
+        public static async Task<(bool connectionSuccess, string message, List<UserSimple> users)> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
                 return (false, "No user ids provided", new List<UserSimple>());
@@ -82,15 +84,16 @@ namespace ChatAppDatabaseFunctions.Code
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, new List<UserSimple>());
+                Console.WriteLine($"GetUsers Error {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR, new List<UserSimple>());
             }
         }
 
-        public static async Task<(bool, List<Message>)> GetMessagesByThreadID(string threadID)
+        public static async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadID(string threadID)
         {
-            List<Message> messages = new List<Message>();
             try
             {
+                List<Message> messages = new List<Message>();
                 IQueryable<Message> query = DatabaseStatics.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID);
                 FeedIterator<Message> iterator = query.ToFeedIterator();
 
@@ -99,13 +102,13 @@ namespace ChatAppDatabaseFunctions.Code
                     FeedResponse<Message> response = await iterator.ReadNextAsync();
                     messages.AddRange(response.ToList());
                 }
-                return (true, messages);
+                return (true, $"Gotten {messages.Count} messages", messages);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR, new List<Message>());
             }
-            return (false, messages);
         }
     }
 }
