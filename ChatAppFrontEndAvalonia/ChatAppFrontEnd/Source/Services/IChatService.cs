@@ -11,7 +11,7 @@ namespace ChatAppFrontEnd.Source.Services
         public event Action<Message> OnMessageReceived;
 
         public void OnReceiveMessage(Message message);
-        public Task<bool> SendDirectMessage(string fromUserId, string toUserID, string messageContents);
+        public Task<bool> SendDirectMessage(string toUserID, string messageContents);
         public Task<List<Message>> GetDirectMessages(string userId1, string userId2);
     }   
 }

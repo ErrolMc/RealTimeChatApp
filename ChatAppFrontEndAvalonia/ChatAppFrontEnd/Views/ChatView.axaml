@@ -6,5 +6,20 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ChatAppFrontEnd.Views.ChatView"
              x:DataType="vm:ChatViewModel"
-             Background="#313338">
+             Background="#313338"
+             Focusable="True">
+    
+        <Panel IsVisible="{Binding IsShown}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <ContentControl Grid.Row="0" Content="{Binding ChatTopBarViewModel}"/>
+                <ContentControl Grid.Row="1" Content="{Binding ChatHistoryViewModel}"/>
+                <TextBox Grid.Row="2" VerticalAlignment="Bottom" Classes="BlankTextBox" Watermark="Enter text..." Margin="20,0,20,20" Text="{Binding MessageBoxText, Mode=TwoWay}" KeyDown="TextBox_OnKeyDown" Background="#383a40"/>
+            </Grid>
+        </Panel>
+
 </UserControl>

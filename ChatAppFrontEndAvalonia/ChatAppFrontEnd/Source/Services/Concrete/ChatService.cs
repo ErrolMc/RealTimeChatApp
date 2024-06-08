@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ChatApp.Shared;
 using ChatApp.Shared.Messages;
@@ -13,14 +14,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     public class ChatService : IChatService
     {
         private readonly ISignalRService _signalRService;
+        private readonly IAuthenticationService _authenticationService;
         
         private HubConnection Connection => _signalRService.Connection;
 
         public event Action<Message> OnMessageReceived;
 
-        public ChatService(ISignalRService signalRService)
+        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService)
         {
             _signalRService = signalRService;
+            _authenticationService = authenticationService;
         }
         
         public void OnReceiveMessage(Message message)
@@ -28,10 +31,12 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             OnMessageReceived?.Invoke(message);
         }
 
-        public async Task<bool> SendDirectMessage(string fromUserId, string toUserID, string messageContents)
+        public async Task<bool> SendDirectMessage(string toUserID, string messageContents)
         {
             try
             {
+                string fromUserId = _authenticationService.CurrentUser.UserID;
+                
                 SaveMessageRequestData requestData = new SaveMessageRequestData()
                 {
                     ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, toUserID),
@@ -66,6 +71,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"SendDirectMessage Fail: {ex.Message}");
                 return false;
             }
         }

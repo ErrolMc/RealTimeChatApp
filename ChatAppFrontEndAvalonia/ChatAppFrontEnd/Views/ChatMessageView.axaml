@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChatAppFrontEnd.Views.ChatMessageView"
+             x:DataType="vm:ChatMessageViewModel"
+             Background="Transparent">
+    
+    <Border Background="Transparent" CornerRadius="5" Height="40" Margin="5, 2.5, 5, 2.5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="{Binding NameText}" FontSize="13" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="10,3,0,0"/>
+            <TextBlock Grid.Row="1" Text="{Binding BodyText}" FontSize="14" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,3"/>
+        </Grid>
+    </Border>
+</UserControl>

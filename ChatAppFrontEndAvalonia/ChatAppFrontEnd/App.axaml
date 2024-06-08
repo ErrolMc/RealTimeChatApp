@@ -2,13 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ChatAppFrontEnd"
              x:Class="ChatAppFrontEnd.App"
+             xmlns:converters="clr-namespace:ChatAppFrontEnd.Source.Converters"
              RequestedThemeVariant="Default">
 
+    <Application.Resources>
+        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter"/>
+    </Application.Resources>
+    
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
     <Application.Styles>
         <FluentTheme />
+        
+        <Style Selector="TextBox.BlankTextBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
     </Application.Styles>
 </Application>

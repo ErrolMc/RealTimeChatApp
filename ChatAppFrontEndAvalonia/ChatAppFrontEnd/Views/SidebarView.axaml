@@ -7,7 +7,8 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="1000"
              x:Class="ChatAppFrontEnd.Views.SidebarView"
              x:DataType="vm:SidebarViewModel"
-             Background="#2b2d31">
+             Background="#2b2d31"
+             Focusable="True">
 
     <Grid>
         <Grid.RowDefinitions>

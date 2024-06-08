@@ -31,7 +31,7 @@ namespace ChatAppFrontEnd
             collection.AddSingleton<IChatService, ChatService>();
             collection.AddSingleton<IFriendService, FriendService>();
             collection.AddSingleton<INavigationService, NavigationService>();
-            collection.AddTransient<ISignalRService, SignalRService>();
+            collection.AddSingleton<ISignalRService, SignalRService>();
             
             // using lazy to get around circular dependency (SignalRService -> NotificationService -> ChatService -> SignalRService)
             collection.AddTransient<INotificationService, NotificationService>(provider =>
@@ -52,7 +52,8 @@ namespace ChatAppFrontEnd
             collection.AddTransient<SidebarViewModel>();
             collection.AddTransient<SidebarBottomViewModel>();
             collection.AddTransient<MainPanelViewModel>();
-
+            collection.AddTransient<ChatHistoryViewModel>();
+            
             _serviceProvider = collection.BuildServiceProvider();
         }
 

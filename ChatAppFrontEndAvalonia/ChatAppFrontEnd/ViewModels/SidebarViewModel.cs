@@ -9,7 +9,8 @@ namespace ChatAppFrontEnd.ViewModels
     public class SidebarViewModel : ViewModelBase
     {
         private readonly IFriendService _friendService;
-        
+
+        private System.Action<UserSimple> _openChatAction;
         private ObservableCollection<FriendListItemViewModel> _friends;
         
         public ObservableCollection<FriendListItemViewModel> Friends
@@ -26,8 +27,9 @@ namespace ChatAppFrontEnd.ViewModels
             _friendService = friendService;
         }
 
-        public async void Setup()
+        public async void Setup(System.Action<UserSimple> openChatAction)
         {
+            _openChatAction = openChatAction;
             Friends = new ObservableCollection<FriendListItemViewModel>();
             
             await _friendService.UpdateFriendsList();
@@ -42,7 +44,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         private void OpenChat(FriendListItemViewModel friendListItem)
         {
-            
+            _openChatAction?.Invoke(friendListItem.User);
         }
     }
 }

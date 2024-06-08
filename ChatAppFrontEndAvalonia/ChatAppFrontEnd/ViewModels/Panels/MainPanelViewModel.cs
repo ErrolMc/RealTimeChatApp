@@ -1,3 +1,4 @@
+using ChatApp.Shared.Misc;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -27,7 +28,18 @@ namespace ChatAppFrontEnd.ViewModels
 
         public override void OnShow()
         {
-            _sideBarView.Setup();
+            _chatView.OnShow();
+            _sideBarView.Setup(OnSelectChat);
+        }
+
+        public override void OnHide()
+        {
+            _chatView.OnHide();
+        }
+
+        private void OnSelectChat(UserSimple user)
+        {
+            _chatView?.ShowChat(user);
         }
     }
 }

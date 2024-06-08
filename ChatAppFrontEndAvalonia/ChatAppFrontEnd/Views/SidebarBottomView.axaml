@@ -6,7 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ChatAppFrontEnd.Views.SidebarBottomView"
              x:DataType="vm:SidebarBottomViewModel"
-             Background="#232428">
+             Background="#232428"
+             Focusable="True">
 
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>

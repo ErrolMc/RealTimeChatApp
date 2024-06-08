@@ -58,7 +58,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 
                 Console.WriteLine("Successfully connected to SignalR");
                 _connected = true;
-                
+
                 return (true, responseData.Message);
             }
 
@@ -89,7 +89,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             return response.ResponseData;
         }
-        
+
         public void OnApplicationQuit()
         {
             if (_connected && _connection != null) 
