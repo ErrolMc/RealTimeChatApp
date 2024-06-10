@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class SidebarView : UserControl
+    public partial class FriendSidebarView : UserControl
     {
-        public SidebarView()
+        public FriendSidebarView()
         {
             InitializeComponent();
         }

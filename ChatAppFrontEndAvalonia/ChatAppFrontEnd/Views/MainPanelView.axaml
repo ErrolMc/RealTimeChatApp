@@ -13,7 +13,16 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <UserControl Content="{Binding SideBarView}" Grid.Column="0"/>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            
+            <UserControl Grid.Row="0" Content="{Binding SideBarView}"/>
+            <UserControl Grid.Row="1" Content="{Binding SideBarBottomView}" Grid.Column="0"/>
+        </Grid>
+
         <UserControl Content="{Binding ChatView}" Grid.Column="1"/>
     </Grid>
     

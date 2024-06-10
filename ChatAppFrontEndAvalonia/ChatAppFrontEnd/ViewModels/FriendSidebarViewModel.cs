@@ -6,7 +6,7 @@ using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
 {
-    public class SidebarViewModel : ViewModelBase
+    public class FriendSidebarViewModel : ViewModelBase
     {
         private readonly IFriendService _friendService;
 
@@ -18,12 +18,9 @@ namespace ChatAppFrontEnd.ViewModels
             get => _friends;
             set => this.RaiseAndSetIfChanged(ref _friends, value);
         } 
-
-        public SidebarBottomViewModel BottomViewModel { get; set; }
         
-        public SidebarViewModel(SidebarBottomViewModel bottomViewModel, IFriendService friendService)
+        public FriendSidebarViewModel( IFriendService friendService)
         {
-            BottomViewModel = bottomViewModel;
             _friendService = friendService;
         }
 
