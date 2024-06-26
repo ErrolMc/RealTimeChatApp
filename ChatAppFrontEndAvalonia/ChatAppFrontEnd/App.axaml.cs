@@ -49,10 +49,12 @@ namespace ChatAppFrontEnd
             collection.AddTransient<SettingsPanelViewModel>();
             collection.AddTransient<FriendsPanelViewModel>();
             collection.AddTransient<ChatViewModel>();
-            collection.AddTransient<FriendSidebarViewModel>();
+            collection.AddTransient<DMSidebarViewModel>();
             collection.AddTransient<SidebarBottomViewModel>();
-            collection.AddTransient<MainPanelViewModel>();
+            collection.AddTransient<ServerSidebarViewModel>();
             collection.AddTransient<ChatHistoryViewModel>();
+            
+            collection.AddSingleton<MainPanelViewModel>();
             
             _serviceProvider = collection.BuildServiceProvider();
         }

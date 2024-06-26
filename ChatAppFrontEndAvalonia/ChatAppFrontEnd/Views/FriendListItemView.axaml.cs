@@ -7,7 +7,7 @@ using ChatAppFrontEnd.ViewModels;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class FriendListItemView : UserControl
+    public partial class DMSidebarItemView : UserControl
     {
         private readonly Color NormalColor = Color.Parse("#2b2d31");
         private readonly Color HoveredColor = Color.Parse("#35373c");
@@ -15,7 +15,7 @@ namespace ChatAppFrontEnd.Views
 
         private bool _hovered = false;
         
-        public FriendListItemView()
+        public DMSidebarItemView()
         {
             InitializeComponent();
         }
@@ -43,7 +43,7 @@ namespace ChatAppFrontEnd.Views
             
             // this definitely breaks MVVM, but I couldn't figure out any other way 
             // to change the color on release and call the OnClickCommand
-            if (_hovered && this.DataContext is FriendListItemViewModel viewModel)
+            if (_hovered && this.DataContext is DMSidebarItemViewModel viewModel)
             {
                 if (viewModel?.OnClickCommand.CanExecute(null) == true)
                 {

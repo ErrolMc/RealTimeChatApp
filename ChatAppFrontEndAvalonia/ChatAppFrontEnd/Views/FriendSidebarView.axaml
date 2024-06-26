@@ -5,19 +5,35 @@
              xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
              xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="1000"
-             x:Class="ChatAppFrontEnd.Views.FriendSidebarView"
-             x:DataType="vm:FriendSidebarViewModel"
+             x:Class="ChatAppFrontEnd.Views.DMSidebarView"
+             x:DataType="vm:DMSidebarViewModel"
              Background="#2b2d31"
              Focusable="True">
     
     <ScrollViewer Margin="0, 2.5, 0, 0" VerticalScrollBarVisibility="Hidden">
-        <ItemsControl ItemsSource="{Binding Friends}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <views:FriendListItemView />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <StackPanel Margin="0, 30, 0, 0">
+            <TextBlock Text="Group DMs" Foreground="White" FontSize="15" FontWeight="Regular" HorizontalAlignment="Left" Margin="15, 0, 0, 0"/>
+            <StackPanel Margin="0, 10, 0, 0">
+                <ItemsControl ItemsSource="{Binding GroupDMs}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:DMSidebarItemView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            
+            <TextBlock Text="Direct Messages" Foreground="White" FontSize="15" FontWeight="Regular" HorizontalAlignment="Left" Margin="15, 30, 0, 0"/>
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Friends}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:DMSidebarItemView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
     </ScrollViewer>
     
 </UserControl>

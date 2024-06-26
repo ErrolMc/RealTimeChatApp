@@ -19,7 +19,9 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             
+            <Grid Grid.Row="0" Background="#2b2d31"/>
             <UserControl Grid.Row="0" Content="{Binding SideBarView}"/>
+            
             <UserControl Grid.Row="1" Content="{Binding SideBarBottomView}" Grid.Column="0"/>
         </Grid>
 

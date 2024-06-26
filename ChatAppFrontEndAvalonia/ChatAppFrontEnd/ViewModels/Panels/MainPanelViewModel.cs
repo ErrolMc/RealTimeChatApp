@@ -5,8 +5,11 @@ namespace ChatAppFrontEnd.ViewModels
 {
     public class MainPanelViewModel : PanelViewModelBase
     {
+        private readonly DMSidebarViewModel _dmSidebarView;
+        private readonly ServerSidebarViewModel _serverSidebarView;
+        
         private ChatViewModel _chatView;
-        private FriendSidebarViewModel _sideBarView;
+        private ViewModelBase _sideBarView;
         private SidebarBottomViewModel _sideBarBottomView;
 
         public SidebarBottomViewModel SideBarBottomView
@@ -21,23 +24,26 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _chatView, value);
         }
         
-        public FriendSidebarViewModel SideBarView
+        public ViewModelBase SideBarView
         {
             get => _sideBarView;
             set => this.RaiseAndSetIfChanged(ref _sideBarView, value);
         }
 
-        public MainPanelViewModel(FriendSidebarViewModel sideBar, SidebarBottomViewModel sideBarBottom, ChatViewModel chatView)
+        public MainPanelViewModel(DMSidebarViewModel dmSidebar, ServerSidebarViewModel serverSidebar, SidebarBottomViewModel sideBarBottom, ChatViewModel chatView)
         {
+            _dmSidebarView = dmSidebar;
+            _serverSidebarView = serverSidebar;
+
+            SideBarView = _dmSidebarView;
             ChatView = chatView;
-            SideBarView = sideBar;
             SideBarBottomView = sideBarBottom;
         }
 
         public override void OnShow()
         {
             _chatView.OnShow();
-            _sideBarView.Setup(OnSelectChat);
+            _dmSidebarView.Setup(OnSelectChat);
         }
 
         public override void OnHide()
