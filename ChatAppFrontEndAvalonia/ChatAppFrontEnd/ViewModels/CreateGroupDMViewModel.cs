@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using ChatAppFrontEnd.Views;
+using ChatApp.Shared.Misc;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -8,8 +8,8 @@ namespace ChatAppFrontEnd.ViewModels
     public class CreateGroupDMViewModel : ViewModelBase
     {
         private string _usernameField;
-        private ObservableCollection<CreateGroupDMSelectedUserView> _selectedUsers;
-        private ObservableCollection<CreateGroupDMUserView> _users;
+        private ObservableCollection<CreateGroupDMSelectedUserViewModel> _selectedUsers;
+        private ObservableCollection<CreateGroupDMUserViewModel> _users;
         
         public string UsernameField
         {
@@ -17,13 +17,13 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _usernameField, value);
         }
         
-        public ObservableCollection<CreateGroupDMSelectedUserView> SelectedUsers
+        public ObservableCollection<CreateGroupDMSelectedUserViewModel> SelectedUsers
         {
             get => _selectedUsers;
             set => this.RaiseAndSetIfChanged(ref _selectedUsers, value);
         }
         
-        public ObservableCollection<CreateGroupDMUserView> Users
+        public ObservableCollection<CreateGroupDMUserViewModel> Users
         {
             get => _users;
             set => this.RaiseAndSetIfChanged(ref _users, value);
@@ -34,6 +34,23 @@ namespace ChatAppFrontEnd.ViewModels
         public CreateGroupDMViewModel()
         {
             CreateDMCommand = ReactiveCommand.Create(OnClick_CreateDM);
+
+            SelectedUsers = new ObservableCollection<CreateGroupDMSelectedUserViewModel>()
+            {
+                new CreateGroupDMSelectedUserViewModel(new UserSimple() { UserName = "Errol" }),
+                new CreateGroupDMSelectedUserViewModel(new UserSimple() { UserName = "John" }),
+                new CreateGroupDMSelectedUserViewModel(new UserSimple() { UserName = "William" }),
+            };
+            
+            Users = new ObservableCollection<CreateGroupDMUserViewModel>()
+            {
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "Errol" }),
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "John" }),
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "William" }),
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "Peter" }),
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "Mike" }),
+                new CreateGroupDMUserViewModel(new UserSimple() { UserName = "Nick" }),
+            };
         }
 
         public void OnUsernameTextChanged()
@@ -45,7 +62,5 @@ namespace ChatAppFrontEnd.ViewModels
         {
             
         }
-        
     }
 }
-

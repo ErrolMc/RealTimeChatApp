@@ -2,7 +2,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ChatAppFrontEnd.Views.CreateGroupDMSelectedUserView">
-    Welcome to Avalonia!
+             x:Class="ChatAppFrontEnd.Views.CreateGroupDMSelectedUserView"
+             x:DataType="vm:CreateGroupDMSelectedUserViewModel">
+    
+    <Border Background="#313338" CornerRadius="5" Cursor="Hand" Height="30" Margin="5, 2.5, 5, 2.5"
+            PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" PointerPressed="OnPointerPressed">
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding NameText, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <Image Grid.Column="1" Source="/Assets/CrossIcon.png" Width="12" Height="12" Margin="0,0,0,0"/>
+        </Grid>
+    </Border>
+    
 </UserControl>

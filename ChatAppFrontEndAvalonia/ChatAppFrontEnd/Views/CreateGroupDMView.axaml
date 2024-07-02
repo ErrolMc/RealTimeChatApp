@@ -9,12 +9,12 @@
              x:DataType="vm:CreateGroupDMViewModel"
              Background="Transparent">
     
-    <Border Background="#313338" CornerRadius="3" Padding="16" Width="300" Height="400">
+    <Border Background="#313338" CornerRadius="3" Padding="8" Width="300" Margin="3" BoxShadow="0 0 4 0 #1e1f22">
         <StackPanel>
-            <TextBlock Text="Select Friends" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+            <TextBlock Text="Select Friends" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,15,0,15"/>
 
-            <Border Background="#1e1f22" CornerRadius="3" Padding="5">
-                <StackPanel Margin="0,5,0,5">
+            <Border Background="#1e1f22" CornerRadius="5" Padding="0" Margin="5,0,5,15" MinHeight="38">
+                <StackPanel Margin="0,2,0,2">
                     <ItemsControl ItemsSource="{Binding SelectedUsers}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -25,9 +25,9 @@
                 </StackPanel>
             </Border>
             
-            <TextBox Watermark="Type the username of a friend" Margin="0,0,0,0" Text="{Binding UsernameField, Mode=TwoWay}" TextChanged="OnUsernameTextChanged"/>
+            <TextBox Watermark="Type the username of a friend" Margin="5,0,5,0" Text="{Binding UsernameField, Mode=TwoWay}" TextChanged="OnUsernameTextChanged"/>
             
-            <Border Background="Transparent" CornerRadius="3" Padding="5">
+            <Border Background="Transparent" Margin="0,0,0,0" Height="150">
                 <ScrollViewer Margin="0,5,0,5">
                     <ItemsControl ItemsSource="{Binding Users}">
                         <ItemsControl.ItemTemplate>
@@ -39,7 +39,7 @@
                 </ScrollViewer>
             </Border>
 
-            <Button Command="{Binding CreateDMCommand}" Content="Create DM" HorizontalAlignment="Center" />
+            <Button Command="{Binding CreateDMCommand}" Content="Create DM" HorizontalAlignment="Center" Margin="0,5,0,5" />
             
         </StackPanel>
     </Border>
