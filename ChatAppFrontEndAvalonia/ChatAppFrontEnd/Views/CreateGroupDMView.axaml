@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChatAppFrontEnd.Views.CreateGroupDMView"
+             x:DataType="vm:CreateGroupDMViewModel"
+             Background="Transparent">
+    
+    <Border Background="#313338" CornerRadius="3" Padding="16" Width="300" Height="400">
+        <StackPanel>
+            <TextBlock Text="Select Friends" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+
+            <Border Background="#1e1f22" CornerRadius="3" Padding="5">
+                <StackPanel Margin="0,5,0,5">
+                    <ItemsControl ItemsSource="{Binding SelectedUsers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:CreateGroupDMSelectedUserView/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            
+            <TextBox Watermark="Type the username of a friend" Margin="0,0,0,0" Text="{Binding UsernameField, Mode=TwoWay}" TextChanged="OnUsernameTextChanged"/>
+            
+            <Border Background="Transparent" CornerRadius="3" Padding="5">
+                <ScrollViewer Margin="0,5,0,5">
+                    <ItemsControl ItemsSource="{Binding Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:CreateGroupDMUserView/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <Button Command="{Binding CreateDMCommand}" Content="Create DM" HorizontalAlignment="Center" />
+            
+        </StackPanel>
+    </Border>
+    
+</UserControl>

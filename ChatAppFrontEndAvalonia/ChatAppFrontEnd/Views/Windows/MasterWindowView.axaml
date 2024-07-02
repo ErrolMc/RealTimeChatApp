@@ -13,5 +13,21 @@
         <vm:MasterWindowViewModel />
     </Design.DataContext>
     
-    <TransitioningContentControl Content="{Binding CurrentPanel}" />
+    <Grid>
+        <TransitioningContentControl Content="{Binding CurrentPanel}" />
+        
+        <Grid IsVisible="{Binding IsOverlayVisible}">
+            <Button Classes="TransparentButton"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding ClickOutsideOverlayCommand}">
+            </Button>
+        </Grid>
+        
+        <Canvas Name="OverlayLayer" IsVisible="{Binding IsOverlayVisible}">
+            <TransitioningContentControl Content="{Binding OverlayViewModel}" 
+                                         Canvas.Left="{Binding OverlayOffsetLeft}"
+                                         Canvas.Top="{Binding OverlayOffsetTop}"/>
+        </Canvas>
+    </Grid>
 </Window>

@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using Avalonia.Input;
 using ChatApp.Services;
 using ChatApp.Shared.Misc;
+using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -8,10 +11,13 @@ namespace ChatAppFrontEnd.ViewModels
     public class DMSidebarViewModel : ViewModelBase
     {
         private readonly IFriendService _friendService;
+        private readonly IOverlayService _overlayService;
 
         private System.Action<UserSimple> _openChatAction;
         private ObservableCollection<DMSidebarItemViewModel> _friends;
         private ObservableCollection<DMSidebarItemViewModel> _groupDMs;
+        
+        public ICommand CreateGroupDMCommand { get; }
         
         public ObservableCollection<DMSidebarItemViewModel> Friends
         {
@@ -25,9 +31,12 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _groupDMs, value);
         } 
         
-        public DMSidebarViewModel(IFriendService friendService)
+        public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService)
         {
             _friendService = friendService;
+            _overlayService = overlayService;
+
+            CreateGroupDMCommand = ReactiveCommand.Create(OnClick_CreateGroupDM);
         }
 
         public async void Setup(System.Action<UserSimple> openChatAction)
@@ -69,6 +78,14 @@ namespace ChatAppFrontEnd.ViewModels
                 return;
             }
             _openChatAction?.Invoke(dmSidebarItem.User);
+        }
+
+        private void OnClick_CreateGroupDM()
+        {
+            _overlayService.ShowOverlay(new CreateGroupDMViewModel(), 60, 130, () =>
+            {
+                // cancel create group dm
+            });
         }
     }
 }
