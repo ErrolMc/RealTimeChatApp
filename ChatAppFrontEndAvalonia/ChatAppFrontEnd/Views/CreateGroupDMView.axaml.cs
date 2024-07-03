@@ -15,7 +15,7 @@ namespace ChatAppFrontEnd.Views
         private void OnUsernameTextChanged(object sender, TextChangedEventArgs e)
         {
             var viewModel = DataContext as CreateGroupDMViewModel;
-            viewModel?.OnUsernameTextChanged();
+            viewModel?.UpdateUserList();
         }
     }   
 }

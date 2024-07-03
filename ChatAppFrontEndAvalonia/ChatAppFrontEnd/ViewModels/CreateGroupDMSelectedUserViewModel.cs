@@ -14,12 +14,14 @@ namespace ChatAppFrontEnd.ViewModels
             get => _nameText;
             set => this.RaiseAndSetIfChanged(ref _nameText, value);
         }
-        
+
+        private readonly System.Action<CreateGroupDMSelectedUserViewModel> _callback;
         public ICommand OnClickCommand { get; }
 
-        public CreateGroupDMSelectedUserViewModel(UserSimple user)
+        public CreateGroupDMSelectedUserViewModel(UserSimple user, System.Action<CreateGroupDMSelectedUserViewModel> callback)
         {
             User = user;
+            _callback = callback;
             
             NameText = User.UserName;
             
@@ -28,7 +30,7 @@ namespace ChatAppFrontEnd.ViewModels
         
         private void OnClick()
         {
-            
+            _callback?.Invoke(this);
         }
     }   
 }

@@ -11,8 +11,9 @@
     
     <Border Background="#313338" CornerRadius="3" Padding="8" Width="300" Margin="3" BoxShadow="0 0 4 0 #1e1f22">
         <StackPanel>
-            <TextBlock Text="Select Friends" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,15,0,15"/>
-
+            <TextBlock Text="Select Friends" Foreground="White" FontSize="25" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,15,0,3"/>
+            <TextBlock Text="{Binding SubHeadingText}" Foreground="White" FontSize="10" FontWeight="Regular" HorizontalAlignment="Left" Margin="10,0,0,16"/>
+            
             <Border Background="#1e1f22" CornerRadius="5" Padding="0" Margin="5,0,5,15" MinHeight="38">
                 <StackPanel Margin="0,2,0,2">
                     <ItemsControl ItemsSource="{Binding SelectedUsers}">
@@ -27,7 +28,7 @@
             
             <TextBox Watermark="Type the username of a friend" Margin="5,0,5,0" Text="{Binding UsernameField, Mode=TwoWay}" TextChanged="OnUsernameTextChanged"/>
             
-            <Border Background="Transparent" Margin="0,0,0,0" Height="150">
+            <Border Background="Transparent" Margin="0,0,0,0" Height="230">
                 <ScrollViewer Margin="0,5,0,5">
                     <ItemsControl ItemsSource="{Binding Users}">
                         <ItemsControl.ItemTemplate>

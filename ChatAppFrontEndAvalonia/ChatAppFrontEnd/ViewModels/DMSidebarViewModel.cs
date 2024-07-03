@@ -82,7 +82,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         private void OnClick_CreateGroupDM()
         {
-            _overlayService.ShowOverlay(new CreateGroupDMViewModel(), 60, 130, () =>
+            _overlayService.ShowOverlay(new CreateGroupDMViewModel(_friendService.Friends), 60, 130, () =>
             {
                 // cancel create group dm
             });

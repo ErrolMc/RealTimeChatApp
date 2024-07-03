@@ -23,10 +23,12 @@ namespace ChatAppFrontEnd.ViewModels
         }
 
         public ICommand OnClickCommand { get; }
+        private readonly System.Action<CreateGroupDMUserViewModel> _callback;
         
-        public CreateGroupDMUserViewModel(UserSimple user)
+        public CreateGroupDMUserViewModel(UserSimple user, System.Action<CreateGroupDMUserViewModel> callback)
         {
             User = user;
+            _callback = callback;
 
             NameText = User.UserName;
             
@@ -35,7 +37,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         private void OnClick()
         {
-            
+            _callback?.Invoke(this);
         }
     }   
 }
