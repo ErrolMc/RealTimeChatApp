@@ -8,11 +8,11 @@
              x:Class="ChatAppFrontEnd.Views.ChatHistoryView"
              x:DataType="vm:ChatHistoryViewModel">
     
-    <ScrollViewer Margin="0, 2.5, 0, 2.5" VerticalScrollBarVisibility="Hidden">
+    <ScrollViewer Name="Scroller" Margin="0, 2.5, 0, 2.5" VerticalScrollBarVisibility="Hidden">
         <ItemsControl ItemsSource="{Binding Messages}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel />
+                    <StackPanel VerticalAlignment="Bottom"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
