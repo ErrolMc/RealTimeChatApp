@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using ChatApp.Shared;
 using ChatApp.Shared.Messages;
+using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -30,18 +31,26 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             OnMessageReceived?.Invoke(message);
         }
-
-        public async Task<bool> SendDirectMessage(string toUserID, string messageContents)
+        
+        public async Task<bool> SendMessage(IChatEntity chatEntity, string messageContents)
         {
             string fromUserId = _authenticationService.CurrentUser.UserID;
-            var res = await SendMessage(SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, toUserID), messageContents, toUserID, MessageType.DirectMessage);
-            return res.success;
-        }
-        
-        public async Task<bool> SendGroupDMMessage(string threadID, string messageContents)
-        {
-            var res = await SendMessage(threadID, messageContents, string.Empty, MessageType.GroupMessage);
-            return res.success;
+
+            switch (chatEntity)
+            {
+                case UserSimple user:
+                    {
+                        var res = await SendMessage(SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, user.UserID), messageContents, user.UserID, MessageType.DirectMessage);
+                        return res.success;
+                    }
+                case GroupDMSimple groupDM:
+                    {
+                        var res = await SendMessage(groupDM.GroupID, messageContents, string.Empty, MessageType.GroupMessage);
+                        return res.success;
+                    }
+            }
+
+            return false;
         }
 
         private async Task<(bool success, SendMessageResponseData response)> SendMessage(string threadID, string messageContents, string metaData, MessageType messageType)
@@ -88,41 +97,49 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 return (false, null);
             }
         }
-
-        public async Task<List<Message>> GetDirectMessages(string userId1, string userId2)
-        {
-            GetMessagesRequestData requestData = new GetMessagesRequestData()
-            {
-                ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(userId1, userId2),
-            };
-
-            var response = 
-                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
-
-            if (!response.Success)
-            {
-                Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
-            }
-            
-            return response.ResponseData.Messages;
-        }
         
-        public async Task<List<Message>> GetMessages(string threadID)
+        public async Task<List<Message>> GetMessages(IChatEntity chatEntity)
         {
-            GetMessagesRequestData requestData = new GetMessagesRequestData()
+            switch (chatEntity)
             {
-                ThreadID = threadID
-            };
+                case UserSimple user:
+                {
+                    string fromUserId = _authenticationService.CurrentUser.UserID;
+                    GetMessagesRequestData requestData = new GetMessagesRequestData()
+                    {
+                        ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, chatEntity.ID),
+                    };
+                    
+                    var response = 
+                        await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
 
-            var response = 
-                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
+                    if (!response.Success)
+                    {
+                        Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+                    }
+                    
+                    return response.ResponseData.Messages;
+                }
+                case GroupDMSimple groupDM:
+                {
+                    GetMessagesRequestData requestData = new GetMessagesRequestData()
+                    {
+                        ThreadID = groupDM.GroupID
+                    };
 
-            if (!response.Success)
-            {
-                Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
-            }
+                    var response = 
+                        await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
+
+                    if (!response.Success)
+                    {
+                        Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+                    }
             
-            return response.ResponseData.Messages;
+                    return response.ResponseData.Messages;
+                }
+            }
+
+            return new List<Message>();
         }
     }
 }

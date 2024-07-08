@@ -27,15 +27,9 @@ namespace ChatAppFrontEnd.ViewModels
             IsShown = false;
         }
 
-        public void Setup(UserSimple user)
+        public void Setup(IChatEntity chatEntity)
         {
-            DisplayName = user.UserName;
-            IsShown = true;
-        }
-        
-        public void Setup(GroupDMSimple groupDM)
-        {
-            DisplayName = groupDM.Name;
+            DisplayName = chatEntity.Name;
             IsShown = true;
         }
     }

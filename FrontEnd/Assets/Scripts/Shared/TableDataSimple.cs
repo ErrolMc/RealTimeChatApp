@@ -2,9 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
+using ChatApp.Shared.Tables;
 
 namespace ChatApp.Shared.TableDataSimple
 {
+    public interface IChatEntity
+    {
+        string ID { get; set; }
+        string Name { get; set; }
+        bool DoesMessageThreadMatch(Message message);
+    }
+    
     [Serializable]
     public class GroupDMSimple : IChatEntity
     {
@@ -16,12 +24,11 @@ namespace ChatApp.Shared.TableDataSimple
             get => GroupID;
             set => GroupID = value;
         }
-    }
-    
-    public interface IChatEntity
-    {
-        string ID { get; set; }
-        string Name { get; set; }
+        
+        public bool DoesMessageThreadMatch(Message message)
+        {
+            return message.ThreadID == GroupID;
+        }
     }
     
     [Serializable]
@@ -30,6 +37,11 @@ namespace ChatApp.Shared.TableDataSimple
         public string UserID { get; set; }
         public string UserName { get; set; }
         // profile image (id?)
+
+        public bool DoesMessageThreadMatch(Message message)
+        {
+            return message.FromUser.UserID == UserID;
+        }
         
         public string ID 
         { 

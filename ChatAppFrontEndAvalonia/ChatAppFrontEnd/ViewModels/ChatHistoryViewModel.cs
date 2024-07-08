@@ -14,7 +14,6 @@ namespace ChatAppFrontEnd.ViewModels
     public class ChatHistoryViewModel : ViewModelBase
     {
         private readonly IChatService _chatService;
-        private readonly IAuthenticationService _authenticationService;
         
         private ObservableCollection<ChatMessageViewModel> _messages;
         
@@ -24,28 +23,18 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _messages, value);
         }
 
-        public ChatHistoryViewModel(IChatService chatService, IAuthenticationService authenticationService)
+        public ChatHistoryViewModel(IChatService chatService)
         {
             _chatService = chatService;
-            _authenticationService = authenticationService;
             
             Messages = new ObservableCollection<ChatMessageViewModel>();
         }
-
-        public async Task Setup(UserSimple user)
-        {
-            Messages.Clear();
-            
-            List<Message> respMessages = await _chatService.GetDirectMessages(_authenticationService.CurrentUser.UserID, user.UserID);
-            foreach (Message messageData in respMessages)
-                CreateMessage(messageData.FromUser.UserName, messageData.MessageContents);
-        }
         
-        public async Task Setup(GroupDMSimple groupDM)
+        public async Task Setup(IChatEntity chatEntity)
         {
             Messages.Clear();
             
-            List<Message> respMessages = await _chatService.GetMessages(groupDM.GroupID);
+            List<Message> respMessages = await _chatService.GetMessages(chatEntity);
             foreach (Message messageData in respMessages)
                 CreateMessage(messageData.FromUser.UserName, messageData.MessageContents);
         }

@@ -1,7 +1,4 @@
 using System;
-using Avalonia.Input;
-using ChatApp.Shared.GroupDMs;
-using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Services;
@@ -29,9 +26,7 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _chatTopBarViewModel, value);
         }
 
-        private UserSimple _otherUser;
-        private GroupDMSimple _groupDM;
-        private bool _isGroupDM;
+        private IChatEntity _chatEntity;
         
         private bool _sendingMessage;
         private string _messageBoxText;
@@ -74,35 +69,18 @@ namespace ChatAppFrontEnd.ViewModels
 
         private void OnReceiveMessage(Message message)
         {
-            if (_isGroupDM)
-            {
-                if (message.ThreadID != _groupDM.GroupID)
-                    return;
-            }
-            else if (message.FromUser.UserID != _otherUser.UserID)
+            if (!_chatEntity.DoesMessageThreadMatch(message))
                 return;
             
             ChatHistoryViewModel.CreateMessage(message.FromUser.UserName, message.MessageContents);
         }
 
-        public async void ShowChat(UserSimple user)
+        public async void ShowChat(IChatEntity chatEntity)
         {
-            _isGroupDM = false;
-            _otherUser = user;
+            _chatEntity = chatEntity;
             
-            await ChatHistoryViewModel.Setup(user);
-            ChatTopBarViewModel.Setup(user);
-            
-            IsShown = true;
-        }
-        
-        public async void ShowChat(GroupDMSimple groupDM)
-        {
-            _isGroupDM = true;
-            _groupDM = groupDM;
-            
-            await ChatHistoryViewModel.Setup(groupDM);
-            ChatTopBarViewModel.Setup(groupDM);
+            await ChatHistoryViewModel.Setup(_chatEntity);
+            ChatTopBarViewModel.Setup(_chatEntity);
             
             IsShown = true;
         }
@@ -112,26 +90,14 @@ namespace ChatAppFrontEnd.ViewModels
             if (_sendingMessage)
                 return;
             _sendingMessage = true;
-
-            if (_isGroupDM)
-            {
-                bool res = await _chatService.SendGroupDMMessage(_groupDM.GroupID, MessageBoxText);
-                if (res == false)
-                {
-                    Console.WriteLine("Cant send message");
-                    return;
-                }
-            }
-            else
-            {
-                bool res = await _chatService.SendDirectMessage(_otherUser.UserID, MessageBoxText);
-                if (res == false)
-                {
-                    Console.WriteLine("Cant send message");
-                    return;
-                }
-            }
             
+            bool res = await _chatService.SendMessage(_chatEntity, MessageBoxText);
+            if (res == false)
+            {
+                Console.WriteLine("Cant send message");
+                return;
+            }
+
             ChatHistoryViewModel.CreateMessage(_authenticationService.CurrentUser.Username, MessageBoxText);
             MessageBoxText = "";
             

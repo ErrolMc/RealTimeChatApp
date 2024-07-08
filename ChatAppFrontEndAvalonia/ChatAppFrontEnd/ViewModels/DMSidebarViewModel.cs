@@ -18,8 +18,7 @@ namespace ChatAppFrontEnd.ViewModels
         private readonly IOverlayService _overlayService;
         private readonly IGroupService _groupService;
 
-        private Action<UserSimple> _openChatUserAction;
-        private Action<GroupDMSimple> _openChatGroupDMAction;
+        private Action<IChatEntity> _openChatAction;
         private ObservableCollection<DMSidebarItemViewModel> _friends;
         private ObservableCollection<DMSidebarItemViewModel> _groupDMs;
         
@@ -49,10 +48,9 @@ namespace ChatAppFrontEnd.ViewModels
             CreateGroupDMCommand = ReactiveCommand.Create(OnClick_CreateGroupDM);
         }
 
-        public async void Setup(Action<UserSimple> openChatUserAction, Action<GroupDMSimple> openChatGroupDMAction)
+        public async void Setup(Action<IChatEntity> openChatAction)
         {
-            _openChatUserAction = openChatUserAction;
-            _openChatGroupDMAction = openChatGroupDMAction;
+            _openChatAction = openChatAction;
             
             Friends = new ObservableCollection<DMSidebarItemViewModel>();
             GroupDMs = new ObservableCollection<DMSidebarItemViewModel>();
@@ -71,14 +69,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         private void OpenChat(DMSidebarItemViewModel dmSidebarItem)
         {
-            if (dmSidebarItem.IsGroupDM)
-            {
-                _openChatGroupDMAction?.Invoke(dmSidebarItem.GroupDM);
-            }
-            else
-            {
-                _openChatUserAction?.Invoke(dmSidebarItem.User);
-            }
+            _openChatAction?.Invoke(dmSidebarItem.ChatEntity);
         }
 
         private void OnClick_CreateGroupDM()

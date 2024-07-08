@@ -45,7 +45,7 @@ namespace ChatAppFrontEnd.ViewModels
         public override void OnShow()
         {
             _chatView.OnShow();
-            _dmSidebarView.Setup(OnSelectChatUser, OnSelectChatGroupDM);
+            _dmSidebarView.Setup(OnSelectChat);
         }
 
         public override void OnHide()
@@ -53,14 +53,9 @@ namespace ChatAppFrontEnd.ViewModels
             _chatView.OnHide();
         }
 
-        private void OnSelectChatUser(UserSimple user)
+        private void OnSelectChat(IChatEntity chatEntity)
         {
-            _chatView?.ShowChat(user);
-        }
-        
-        private void OnSelectChatGroupDM(GroupDMSimple groupDM)
-        {
-            _chatView?.ShowChat(groupDM);
+            _chatView?.ShowChat(chatEntity);
         }
     }
 }

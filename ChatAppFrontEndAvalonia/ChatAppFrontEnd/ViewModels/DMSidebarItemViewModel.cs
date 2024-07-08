@@ -7,10 +7,7 @@ namespace ChatAppFrontEnd.ViewModels
 {
     public class DMSidebarItemViewModel : ViewModelBase
     {
-        public bool IsGroupDM { get; private set; }
-        public UserSimple User { get; private set; }
-        public GroupDMSimple GroupDM { get; private set; }
-        
+        public IChatEntity ChatEntity { get; private set; }
         public bool IsSelected { get; set; }
         
         public ICommand OnClickCommand { get; }
@@ -24,26 +21,12 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _nameText, value);
         }
 
-        public DMSidebarItemViewModel(UserSimple user, Action<DMSidebarItemViewModel> onClickAction)
+        public DMSidebarItemViewModel(IChatEntity chatEntity, Action<DMSidebarItemViewModel> onClickAction)
         {
-            IsGroupDM = false;
-            
-            User = user;
+            ChatEntity = chatEntity;
             _onClickAction = onClickAction;
             
-            NameText = user.UserName;
-
-            OnClickCommand = ReactiveCommand.Create(OnClick);
-        }
-        
-        public DMSidebarItemViewModel(GroupDMSimple groupDM, Action<DMSidebarItemViewModel> onClickAction)
-        {
-            _onClickAction = onClickAction;
-
-            IsGroupDM = true;
-            GroupDM = groupDM;
-            
-            NameText = groupDM.Name;
+            NameText = ChatEntity.Name;
 
             OnClickCommand = ReactiveCommand.Create(OnClick);
         }
