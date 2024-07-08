@@ -17,6 +17,7 @@ using ChatApp.Shared.Notifications;
 using System.Collections.Generic;
 using ChatApp.Shared;
 using ChatApp.Shared.ExtensionMethods;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatAppDatabaseFunctions.Code
 {

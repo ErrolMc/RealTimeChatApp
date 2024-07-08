@@ -15,6 +15,7 @@
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Other\TableData.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Other\MessageData.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Other\TableData.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Other\MessageData.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs.meta" Link="Other\GroupDMs.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Other\TableDataSimple.cs.meta" />
   </ItemGroup>
 
 </Project>

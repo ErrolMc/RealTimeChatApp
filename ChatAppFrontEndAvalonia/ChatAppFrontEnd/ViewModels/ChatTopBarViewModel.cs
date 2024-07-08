@@ -1,5 +1,6 @@
 using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels

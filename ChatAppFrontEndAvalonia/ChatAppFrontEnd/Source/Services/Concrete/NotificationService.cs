@@ -4,6 +4,7 @@ using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Messages;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
+using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatApp.Source.Services;
 using Newtonsoft.Json;

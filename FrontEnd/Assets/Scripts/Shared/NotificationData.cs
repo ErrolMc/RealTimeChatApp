@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Shared.Notifications
 {

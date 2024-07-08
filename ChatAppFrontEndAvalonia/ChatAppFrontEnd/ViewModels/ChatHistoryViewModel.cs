@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;

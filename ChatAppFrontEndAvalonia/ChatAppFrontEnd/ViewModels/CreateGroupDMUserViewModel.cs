@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels

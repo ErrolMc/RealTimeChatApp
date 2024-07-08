@@ -2,7 +2,7 @@ using System;
 using ChatApp.Shared.Notifications;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Services
 {

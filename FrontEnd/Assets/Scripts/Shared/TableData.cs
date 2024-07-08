@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.GroupDMs;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Shared.Tables
 {

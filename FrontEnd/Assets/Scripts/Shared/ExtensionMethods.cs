@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Shared.ExtensionMethods
 {

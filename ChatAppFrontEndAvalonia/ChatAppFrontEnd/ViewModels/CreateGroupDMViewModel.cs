@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using ChatApp.Shared.GroupDMs;
-using ChatApp.Shared.Misc;
-using ChatApp.Shared.Tables;
+using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
 using ReactiveUI;
 

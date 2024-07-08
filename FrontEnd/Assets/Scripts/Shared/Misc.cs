@@ -2,29 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
-using ChatApp.Shared.Tables;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Shared.Misc
 {
-    [Serializable]
-    public class UserSimple
-    {
-        public string UserID { get; set; }
-        public string UserName { get; set; }
-        // profile image (id?)
-
-        public UserSimple()
-        {
-
-        }
-
-        public UserSimple(User user)
-        {
-            UserID = user.UserID;
-            UserName = user.Username;
-        }
-    }
-    
     [Serializable]
     public class RespondToFriendRequestData
     {

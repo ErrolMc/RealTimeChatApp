@@ -14,6 +14,7 @@
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
@@ -45,5 +46,6 @@
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Code\Shared\NetworkConstants.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Code\Shared\NotificationData.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Code\Shared\TableData.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Code\Shared\TableDataSimple.cs.meta" />
   </ItemGroup>
 </Project>

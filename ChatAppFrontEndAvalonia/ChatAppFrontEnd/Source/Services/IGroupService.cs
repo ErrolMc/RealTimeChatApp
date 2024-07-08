@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ChatApp.Shared.GroupDMs;
+using ChatApp.Shared.TableDataSimple;
 
 namespace ChatApp.Source.Services
 {

@@ -2,10 +2,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using ChatApp.Services;
-using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
+using ChatApp.Shared.TableDataSimple;
 using ChatAppFrontEnd.Source.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels

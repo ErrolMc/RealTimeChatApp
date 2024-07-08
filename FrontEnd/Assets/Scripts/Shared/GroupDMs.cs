@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 using Newtonsoft.Json;
 
 namespace ChatApp.Shared.GroupDMs
@@ -28,12 +29,5 @@ namespace ChatApp.Shared.GroupDMs
         public bool Success { get; set; }
         public string Message { get; set; }
         public List<GroupDMSimple> GroupDMs { get; set; } = new List<GroupDMSimple>();
-    }
-
-    [Serializable]
-    public class GroupDMSimple
-    {
-        public string Name;
-        public string GroupID;
     }
 }

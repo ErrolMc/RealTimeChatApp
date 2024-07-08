@@ -5,6 +5,7 @@ using ChatApp.Services;
 using ChatApp.Shared;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
+using ChatApp.Shared.TableDataSimple;
 using ChatAppFrontEnd.Source.Utils;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete

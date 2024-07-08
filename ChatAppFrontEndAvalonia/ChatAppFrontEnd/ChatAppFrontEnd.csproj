@@ -54,5 +54,8 @@
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs">
         <Link>Source\Shared\TableData.cs</Link>
       </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs">
+        <Link>Source\Shared\TableDataSimple.cs</Link>
+      </Compile>
     </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ChatApp.Shared;
-using ChatApp.Shared.Notifications;
+using ChatApp.Shared.TableDataSimple;
 using User = ChatApp.Shared.Tables.User;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.GroupDMs;

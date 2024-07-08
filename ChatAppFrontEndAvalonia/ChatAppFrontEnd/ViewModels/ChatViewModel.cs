@@ -2,6 +2,7 @@ using System;
 using Avalonia.Input;
 using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
