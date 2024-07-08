@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
              xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="470"
              x:Class="ChatAppFrontEnd.Views.CreateGroupDMView"
              x:DataType="vm:CreateGroupDMViewModel"
              Background="Transparent">
@@ -41,6 +41,8 @@
             </Border>
 
             <Button Command="{Binding CreateDMCommand}" Content="Create DM" HorizontalAlignment="Center" Margin="0,5,0,5" />
+            
+            <TextBlock Text="{Binding BottomMessageField}" IsVisible="{Binding BottomMessageActive}"  Margin="5,0,5,0" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
             
         </StackPanel>
     </Border>

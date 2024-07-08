@@ -1,3 +1,4 @@
+using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ReactiveUI;
 
@@ -43,7 +44,7 @@ namespace ChatAppFrontEnd.ViewModels
         public override void OnShow()
         {
             _chatView.OnShow();
-            _dmSidebarView.Setup(OnSelectChat);
+            _dmSidebarView.Setup(OnSelectChatUser, OnSelectChatGroupDM);
         }
 
         public override void OnHide()
@@ -51,9 +52,14 @@ namespace ChatAppFrontEnd.ViewModels
             _chatView.OnHide();
         }
 
-        private void OnSelectChat(UserSimple user)
+        private void OnSelectChatUser(UserSimple user)
         {
             _chatView?.ShowChat(user);
+        }
+        
+        private void OnSelectChatGroupDM(GroupDMSimple groupDM)
+        {
+            _chatView?.ShowChat(groupDM);
         }
     }
 }

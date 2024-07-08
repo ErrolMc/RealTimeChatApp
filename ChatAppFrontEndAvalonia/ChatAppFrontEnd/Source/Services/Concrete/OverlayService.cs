@@ -34,6 +34,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public void HideOverlay()
         {
+            _masterWindowViewModel.OverlayViewModel = null;
             _masterWindowViewModel.IsOverlayVisible = false;
         }
     }

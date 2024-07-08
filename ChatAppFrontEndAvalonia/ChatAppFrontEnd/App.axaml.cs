@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using ChatApp.Services;
+using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Source.Services.Concrete;
 using ChatAppFrontEnd.ViewModels;
@@ -30,6 +31,7 @@ namespace ChatAppFrontEnd
             collection.AddSingleton<IAuthenticationService, AuthenticationService>();
             collection.AddSingleton<IChatService, ChatService>();
             collection.AddSingleton<IFriendService, FriendService>();
+            collection.AddSingleton<IGroupService, GroupService>();
             collection.AddSingleton<INavigationService, NavigationService>();
             collection.AddSingleton<ISignalRService, SignalRService>();
             collection.AddSingleton<IOverlayService, OverlayService>();
@@ -39,7 +41,8 @@ namespace ChatAppFrontEnd
             {
                 var friendService = new Lazy<IFriendService>(provider.GetRequiredService<IFriendService>);
                 var chatService = new Lazy<IChatService>(provider.GetRequiredService<IChatService>);
-                return new NotificationService(friendService, chatService);
+                var groupService = new Lazy<IGroupService>(provider.GetRequiredService<IGroupService>);
+                return new NotificationService(friendService, chatService, groupService);
             });
             
             // register viewmodels

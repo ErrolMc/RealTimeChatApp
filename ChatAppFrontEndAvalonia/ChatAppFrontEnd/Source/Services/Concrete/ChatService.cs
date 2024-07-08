@@ -33,19 +33,34 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public async Task<bool> SendDirectMessage(string toUserID, string messageContents)
         {
+            string fromUserId = _authenticationService.CurrentUser.UserID;
+            var res = await SendMessage(SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, toUserID), messageContents, toUserID, MessageType.DirectMessage);
+            return res.success;
+        }
+        
+        public async Task<bool> SendGroupDMMessage(string threadID, string messageContents)
+        {
+            var res = await SendMessage(threadID, messageContents, string.Empty, MessageType.GroupMessage);
+            return res.success;
+        }
+
+        private async Task<(bool success, SendMessageResponseData response)> SendMessage(string threadID, string messageContents, string metaData, MessageType messageType)
+        {
             try
             {
                 string fromUserId = _authenticationService.CurrentUser.UserID;
                 
-                SaveMessageRequestData requestData = new SaveMessageRequestData()
+                SendMessageRequestData requestData = new SendMessageRequestData()
                 {
-                    ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, toUserID),
+                    ThreadID = threadID,
                     FromUserID = fromUserId,
                     Message = messageContents,
+                    MessageType = (int)messageType,
+                    MetaData = metaData
                 };
                 
                 var response = 
-                    await NetworkHelper.PerformFunctionPostRequest<SaveMessageRequestData, SaveMessageResponseData>(FunctionNames.SAVE_MESSAGE_TO_DB, requestData);
+                    await NetworkHelper.PerformFunctionPostRequest<SendMessageRequestData, SendMessageResponseData>(FunctionNames.SEND_MESSAGE, requestData);
 
                 if (response.Success == false)
                 {
@@ -54,7 +69,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     // retry send?
                     // put in a message queue
                     Console.WriteLine($"SendDirectMessage Crash: {response.Message}");
-                    return false;
+                    return (false, null);
                 }
 
                 var responseData = response.ResponseData;
@@ -62,17 +77,15 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 {
                     // something failed in the function
                     Console.WriteLine($"SendDirectMessage Fail: {responseData.ResponseMessage}");
-                    return false;
+                    return (false, null);
                 }
-                
-                await Connection.SendAsync("SendDirectMessage", toUserID, JsonConvert.SerializeObject(responseData.Message));
 
-                return true;
+                return (true, responseData);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"SendDirectMessage Fail: {ex.Message}");
-                return false;
+                return (false, null);
             }
         }
 
@@ -81,6 +94,24 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             GetMessagesRequestData requestData = new GetMessagesRequestData()
             {
                 ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(userId1, userId2),
+            };
+
+            var response = 
+                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
+
+            if (!response.Success)
+            {
+                Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+            }
+            
+            return response.ResponseData.Messages;
+        }
+        
+        public async Task<List<Message>> GetMessages(string threadID)
+        {
+            GetMessagesRequestData requestData = new GetMessagesRequestData()
+            {
+                ThreadID = threadID
             };
 
             var response = 

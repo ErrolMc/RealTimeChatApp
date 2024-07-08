@@ -5,7 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs" Link="Code\Shared\FunctionNames.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Code\Shared\GroupDMs.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Code\Shared\Keys.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Code\Shared\MessageData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Code\Shared\Misc.cs" />
@@ -34,7 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs.meta" Link="Code\Shared\AuthenticationData.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs.meta" Link="Code\Shared\ExtensionMethods.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs.meta" Link="Code\Shared\FunctionNames.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs.meta" Link="Code\Shared\GroupDMs.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Code\Shared\Keys.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Code\Shared\MessageData.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Code\Shared\Misc.cs.meta" />

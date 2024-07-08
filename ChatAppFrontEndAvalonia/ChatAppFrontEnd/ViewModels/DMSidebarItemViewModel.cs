@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Input;
+using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ReactiveUI;
 
@@ -9,6 +10,8 @@ namespace ChatAppFrontEnd.ViewModels
     {
         public bool IsGroupDM { get; private set; }
         public UserSimple User { get; private set; }
+        public GroupDMSimple GroupDM { get; private set; }
+        
         public bool IsSelected { get; set; }
         
         public ICommand OnClickCommand { get; }
@@ -34,12 +37,14 @@ namespace ChatAppFrontEnd.ViewModels
             OnClickCommand = ReactiveCommand.Create(OnClick);
         }
         
-        public DMSidebarItemViewModel(string header, Action<DMSidebarItemViewModel> onClickAction)
+        public DMSidebarItemViewModel(GroupDMSimple groupDM, Action<DMSidebarItemViewModel> onClickAction)
         {
             _onClickAction = onClickAction;
 
             IsGroupDM = true;
-            NameText = header;
+            GroupDM = groupDM;
+            
+            NameText = groupDM.Name;
 
             OnClickCommand = ReactiveCommand.Create(OnClick);
         }

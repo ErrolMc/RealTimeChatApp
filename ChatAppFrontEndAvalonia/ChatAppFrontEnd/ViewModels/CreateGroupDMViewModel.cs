@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Tables;
+using ChatApp.Source.Services;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -17,6 +20,20 @@ namespace ChatAppFrontEnd.ViewModels
         {
             get => _usernameField;
             set => this.RaiseAndSetIfChanged(ref _usernameField, value);
+        }
+                
+        private string _bottomMessageField;
+        public string BottomMessageField
+        {
+            get => _bottomMessageField;
+            set => this.RaiseAndSetIfChanged(ref _bottomMessageField, value);
+        }
+
+        private bool _bottomMessageActive;
+        public bool BottomMessageActive
+        {
+            get => _bottomMessageActive;
+            set => this.RaiseAndSetIfChanged(ref _bottomMessageActive, value);
         }
         
         public string SubHeadingText => $"You can add {MAX_PEOPLE_IN_GROUP - _checkedUsers.Count - 1} more friends.";
@@ -37,17 +54,23 @@ namespace ChatAppFrontEnd.ViewModels
         
         public ICommand CreateDMCommand { get; }
 
+        private readonly IGroupService _groupService;
         private readonly List<UserSimple> _allFriends;
+        private readonly Action<GroupDMSimple> _onCreateSuccessCallback;
         private List<UserSimple> _checkedUsers;
         
-        public CreateGroupDMViewModel(List<UserSimple> allFriends)
+        public CreateGroupDMViewModel(List<UserSimple> allFriends, IGroupService groupService, Action<GroupDMSimple> onCreateSuccessCallback)
         {
+            _groupService = groupService;
+            _onCreateSuccessCallback = onCreateSuccessCallback;
+            
             _allFriends = allFriends.OrderBy(friend => friend.UserName).ToList();
             _checkedUsers = new List<UserSimple>();
             
             SelectedUsers = new ObservableCollection<CreateGroupDMSelectedUserViewModel>();
             Users = new ObservableCollection<CreateGroupDMUserViewModel>();
 
+            BottomMessageActive = false;
             UsernameField = string.Empty;
             UpdateUserList();
 
@@ -70,6 +93,21 @@ namespace ChatAppFrontEnd.ViewModels
         private async void OnClick_CreateDM()
         {
             // create group dm
+            List<string> friends = _checkedUsers.Select(user => user.UserID).ToList();
+            var response = await _groupService.CreateGroupDM(friends);
+            
+            _checkedUsers = new List<UserSimple>();
+            SelectedUsers = new ObservableCollection<CreateGroupDMSelectedUserViewModel>();
+            Users = new ObservableCollection<CreateGroupDMUserViewModel>();
+
+            if (response.success == false)
+            {
+                BottomMessageActive = true;
+                BottomMessageField = response.message;
+                return;
+            }
+            
+            _onCreateSuccessCallback?.Invoke(response.groupDMSimple);
         }
 
         private void OnUserCheckChanged(CreateGroupDMUserViewModel userViewModel)

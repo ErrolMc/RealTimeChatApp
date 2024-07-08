@@ -1,8 +1,11 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Avalonia.Input;
 using ChatApp.Services;
+using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
+using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
 
@@ -12,8 +15,10 @@ namespace ChatAppFrontEnd.ViewModels
     {
         private readonly IFriendService _friendService;
         private readonly IOverlayService _overlayService;
+        private readonly IGroupService _groupService;
 
-        private System.Action<UserSimple> _openChatAction;
+        private Action<UserSimple> _openChatUserAction;
+        private Action<GroupDMSimple> _openChatGroupDMAction;
         private ObservableCollection<DMSidebarItemViewModel> _friends;
         private ObservableCollection<DMSidebarItemViewModel> _groupDMs;
         
@@ -31,61 +36,77 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _groupDMs, value);
         } 
         
-        public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService)
+        public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService, IGroupService groupService)
         {
             _friendService = friendService;
             _overlayService = overlayService;
+            _groupService = groupService;
+            
+            if (_groupService != null)
+                _groupService.OnGroupDMsUpdated += RefreshGroupDMs;
 
             CreateGroupDMCommand = ReactiveCommand.Create(OnClick_CreateGroupDM);
         }
 
-        public async void Setup(System.Action<UserSimple> openChatAction)
+        public async void Setup(Action<UserSimple> openChatUserAction, Action<GroupDMSimple> openChatGroupDMAction)
         {
-            _openChatAction = openChatAction;
+            _openChatUserAction = openChatUserAction;
+            _openChatGroupDMAction = openChatGroupDMAction;
+            
             Friends = new ObservableCollection<DMSidebarItemViewModel>();
+            GroupDMs = new ObservableCollection<DMSidebarItemViewModel>();
             
-            await _friendService.UpdateFriendsList();
-            if (_friendService?.Friends == null)
-                return;
-            
-            foreach (var friend in _friendService.Friends)
+            if (await _friendService.UpdateFriendsList())
             {
-                Friends.Add(new DMSidebarItemViewModel(friend, OpenChat));
+                foreach (var friend in _friendService.Friends)
+                {
+                    Friends.Add(new DMSidebarItemViewModel(friend, OpenChat));
+                }
             }
-
-            GroupDMs = new ObservableCollection<DMSidebarItemViewModel>()
-            {
-                new DMSidebarItemViewModel("Group 1", OpenChat),
-                new DMSidebarItemViewModel("Group 2", OpenChat),
-                new DMSidebarItemViewModel("Group 3", OpenChat),
-                new DMSidebarItemViewModel("Group 4", OpenChat),
-                new DMSidebarItemViewModel("Group 5", OpenChat),
-                new DMSidebarItemViewModel("Group 6", OpenChat),
-                new DMSidebarItemViewModel("Group 7", OpenChat),
-                new DMSidebarItemViewModel("Group 8", OpenChat),
-                new DMSidebarItemViewModel("Group 9", OpenChat),
-                new DMSidebarItemViewModel("Group 10", OpenChat),
-                new DMSidebarItemViewModel("Group 11", OpenChat),
-                new DMSidebarItemViewModel("Group 12", OpenChat),
-            };
+            
+            if (await _groupService.UpdateGroupDMList())
+                RefreshGroupDMs();
         }
 
         private void OpenChat(DMSidebarItemViewModel dmSidebarItem)
         {
             if (dmSidebarItem.IsGroupDM)
             {
-                // group dm stuff
-                return;
+                _openChatGroupDMAction?.Invoke(dmSidebarItem.GroupDM);
             }
-            _openChatAction?.Invoke(dmSidebarItem.User);
+            else
+            {
+                _openChatUserAction?.Invoke(dmSidebarItem.User);
+            }
         }
 
         private void OnClick_CreateGroupDM()
         {
-            _overlayService.ShowOverlay(new CreateGroupDMViewModel(_friendService.Friends), 60, 130, () =>
+            _overlayService.ShowOverlay(new CreateGroupDMViewModel(_friendService.Friends, _groupService, OnCreateGroupSuccess), 60, 130,() => { });
+        }
+        
+        private void OnCreateGroupSuccess(GroupDMSimple groupDMSimple)
+        {
+            _overlayService.HideOverlay();
+            _groupService?.AddGroupLocally(groupDMSimple);
+        }
+
+        private void RefreshGroupDMs()
+        {
+            if (_groupService?.GroupDMs == null)
+                return;
+            
+            GroupDMs.Clear();
+            foreach (var groupDM in _groupService.GroupDMs)
             {
-                // cancel create group dm
-            });
+                GroupDMs.Add(new DMSidebarItemViewModel(groupDM, OpenChat));
+            }
+        }
+
+        ~DMSidebarViewModel()
+        {
+            if (_groupService != null)
+                _groupService.OnGroupDMsUpdated -= RefreshGroupDMs;
         }
     }
 }

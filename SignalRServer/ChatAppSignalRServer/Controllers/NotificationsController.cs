@@ -20,15 +20,16 @@ namespace ChatAppSignalRServer.Controllers
         [HttpPost("send-notification")]
         public async Task<IActionResult> SendNotification([FromBody] NotificationData data)
         {
-            System.Console.WriteLine("NotificationsController: SendNotification");
-
             if (data == null || string.IsNullOrWhiteSpace(data.RecipientUserID) || string.IsNullOrWhiteSpace(data.NotificationJson))
             {
                 return BadRequest("Invalid notification data.");
             }
 
+            string json = JsonConvert.SerializeObject(data);
+            System.Console.WriteLine($"NotificationsController - SendNotification: {json}");
+
             // Send the notification to the specified user
-            await _hubContext.Clients.User(data.RecipientUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(data));
+            await _hubContext.Clients.User(data.RecipientUserID).SendAsync("OnNotificationReceived", json);
             return Ok();
         }
     }

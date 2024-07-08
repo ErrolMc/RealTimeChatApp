@@ -57,4 +57,11 @@ namespace ChatApp.Shared.Misc
         public List<UserSimple> FriendRequests { get; set; } = new List<UserSimple>();
         public List<UserSimple> OutgoingFriendRequests { get; set; } = new List<UserSimple>();
     }
+
+    [Serializable]
+    public class GenericResponseData
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
 }

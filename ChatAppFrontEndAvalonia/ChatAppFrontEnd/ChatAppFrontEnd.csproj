@@ -30,6 +30,9 @@
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs">
         <Link>Source\Shared\FunctionNames.cs</Link>
       </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs">
+        <Link>Source\Shared\GroupDMs.cs</Link>
+      </Compile>
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs">
         <Link>Source\Shared\Keys.cs</Link>
       </Compile>

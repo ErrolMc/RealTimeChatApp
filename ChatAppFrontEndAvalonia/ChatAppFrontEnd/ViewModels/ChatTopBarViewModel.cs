@@ -1,3 +1,4 @@
+using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ReactiveUI;
 
@@ -6,7 +7,7 @@ namespace ChatAppFrontEnd.ViewModels
     public class ChatTopBarViewModel : ViewModelBase
     {
         private bool _isShown;
-        private string _userName;
+        private string _displayName;
 
         public bool IsShown
         {
@@ -14,10 +15,10 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isShown, value);
         }
 
-        public string UserName
+        public string DisplayName
         {
-            get => _userName;
-            set => this.RaiseAndSetIfChanged(ref _userName, value);
+            get => _displayName;
+            set => this.RaiseAndSetIfChanged(ref _displayName, value);
         }
         
         public ChatTopBarViewModel()
@@ -27,7 +28,13 @@ namespace ChatAppFrontEnd.ViewModels
 
         public void Setup(UserSimple user)
         {
-            UserName = user.UserName;
+            DisplayName = user.UserName;
+            IsShown = true;
+        }
+        
+        public void Setup(GroupDMSimple groupDM)
+        {
+            DisplayName = groupDM.Name;
             IsShown = true;
         }
     }

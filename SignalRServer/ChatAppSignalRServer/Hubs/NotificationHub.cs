@@ -45,5 +45,17 @@ namespace ChatAppSignalRServer.Hubs
 
             await Clients.User(toUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(notificationData));
         }
+
+        public async void SendGroupDMMessage(string toUserID, string messageJson)
+        {
+            NotificationData notificationData = new NotificationData()
+            {
+                RecipientUserID = toUserID,
+                NotificationType = (int)NotificationType.GroupDMMessage,
+                NotificationJson = messageJson,
+            };
+
+            await Clients.User(toUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(notificationData));
+        }
     }
 }

@@ -11,6 +11,7 @@ using ChatApp.Shared.Misc;
 using User = ChatApp.Shared.Tables.User;
 using System.Collections.Generic;
 using ChatApp.Shared;
+using ChatApp.Shared.ExtensionMethods;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -56,7 +57,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = outResp.message });
             }
 
-            return new OkObjectResult(new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.users, OutgoingFriendRequests = outResp.users });
+            return new OkObjectResult(new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.users.ToUserSimpleList(), OutgoingFriendRequests = outResp.users.ToUserSimpleList() });
         }
     }
 }

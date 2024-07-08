@@ -58,10 +58,10 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<UserSimple> users)> GetUsers(List<string> userIDs)
+        public static async Task<(bool connectionSuccess, string message, List<User> users)> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
-                return (false, "No user ids provided", new List<UserSimple>());
+                return (false, "No user ids provided", new List<User>());
 
             try
             {
@@ -70,22 +70,25 @@ namespace ChatAppDatabaseFunctions.Code
                 QueryDefinition queryDefinition = new QueryDefinition(queryString);
                 FeedIterator<User> queryResultSetIterator = DatabaseStatics.UsersContainer.GetItemQueryIterator<User>(queryDefinition);
 
-                List<UserSimple> friends = new List<UserSimple>();
+                List<User> users = new List<User>();
                 while (queryResultSetIterator.HasMoreResults)
                 {
                     FeedResponse<User> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-                    foreach (var friend in currentResultSet)
+                    foreach (var user in currentResultSet)
                     {
-                        friends.Add(new UserSimple(friend));
+                        users.Add(user);
                     }
                 }
 
-                return (true, "Successfully got users", friends);
+                if (userIDs.Count != users.Count)
+                    return (false, "Coundn't get all users", users);
+
+                return (true, "Successfully got users", users);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUsers Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<UserSimple>());
+                return (false, GENERIC_DATABASE_ERROR, new List<User>());
             }
         }
 
@@ -108,6 +111,58 @@ namespace ChatAppDatabaseFunctions.Code
             {
                 Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
                 return (false, GENERIC_DATABASE_ERROR, new List<Message>());
+            }
+        }
+
+        public static async Task<(bool connectionSuccess, string message, GroupDM groupDM)> GetGroupDMFromGroupID(string groupID)
+        {
+            try
+            {
+                var groupResponse = await DatabaseStatics.GroupDMsContainer.ReadItemAsync<GroupDM>(groupID, new PartitionKey(groupID));
+
+                if (groupResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"GetGroupDMFromGroupID Error {groupResponse.StatusCode}");
+                    return (true, $"Cant find Group DM {groupID}", null);
+                }
+
+                return (true, "Success", groupResponse.Resource);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetGroupDMFromGroupID Error {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR, null);
+            }
+        }
+
+        public static async Task<(bool connectionSuccess, string message, List<GroupDM> groupDMs)> GetGroupDMsFromIDs(List<string> groupIDs)
+        {
+            if (groupIDs == null || groupIDs.Count() == 0)
+                return (false, "No group ids provided", new List<GroupDM>());
+
+            try
+            {
+                string inClause = string.Join(", ", groupIDs.Select(id => $"'{id}'"));
+                string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
+                QueryDefinition queryDefinition = new QueryDefinition(queryString);
+                FeedIterator<GroupDM> queryResultSetIterator = DatabaseStatics.GroupDMsContainer.GetItemQueryIterator<GroupDM>(queryDefinition);
+
+                List<GroupDM> groupDMs = new List<GroupDM>();
+                while (queryResultSetIterator.HasMoreResults)
+                {
+                    FeedResponse<GroupDM> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                    foreach (GroupDM groupDM in currentResultSet)
+                    {
+                        groupDMs.Add(groupDM);
+                    }
+                }
+
+                return (true, "Successfully got GroupDMs", groupDMs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetGroupDMs Error {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR, new List<GroupDM>());
             }
         }
     }

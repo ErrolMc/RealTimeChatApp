@@ -1,8 +1,11 @@
 using System;
 using ChatApp.Services;
+using ChatApp.Shared.GroupDMs;
+using ChatApp.Shared.Messages;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
+using ChatApp.Source.Services;
 using Newtonsoft.Json;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
@@ -11,11 +14,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     {
         private readonly Lazy<IFriendService> _friendService;
         private readonly Lazy<IChatService> _chatService;
+        private readonly Lazy<IGroupService> _groupService;
 
-        public NotificationService(Lazy<IFriendService> friendService, Lazy<IChatService> chatService)
+        public NotificationService(Lazy<IFriendService> friendService, Lazy<IChatService> chatService, Lazy<IGroupService> groupService)
         {
             _friendService = friendService;
             _chatService = chatService;
+            _groupService = groupService;
         }
         
         public bool HandleNotification(string json)
@@ -54,11 +59,20 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     }
                     break;
                 case NotificationType.DirectMessage:
+                case NotificationType.GroupDMMessage:
                     {
                         var message = JsonConvert.DeserializeObject<Message>(notificationData.NotificationJson);
                         
-                        Console.WriteLine($"Message from {message.FromUser.UserName}");
+                        Console.WriteLine($"{((MessageType)message.MessageType).ToString()} message of type from {message.FromUser.UserName}");
                         _chatService.Value?.OnReceiveMessage(message);
+                    }
+                    break;
+                case NotificationType.GroupCreated:
+                    {
+                        GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
+                            
+                        Console.WriteLine($"Invited to group {groupDM.GroupID}");
+                        _groupService.Value?.AddGroupLocally(groupDM);
                     }
                     break;
             }

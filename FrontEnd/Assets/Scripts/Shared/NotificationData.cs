@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ChatApp.Shared.Misc;
 
 namespace ChatApp.Shared.Notifications
@@ -10,6 +11,8 @@ namespace ChatApp.Shared.Notifications
         ServerMessage = 2,
         FriendRequestRespond = 3, // telling a sender the result of their sent friend request
         FriendRequestCancel = 4, // telling the recipient of a friend request it was cancelled
+        GroupCreated = 5,
+        GroupDMMessage = 6,
     }
     
     [Serializable]
@@ -35,6 +38,7 @@ namespace ChatApp.Shared.Notifications
         public string NotificationJson { get; set; }
     }
 
+    #region friends
     [Serializable]
     public class FriendRequestNotification
     {
@@ -56,4 +60,5 @@ namespace ChatApp.Shared.Notifications
         public string Message { get; set; }
         public UserSimple ToUser { get; set; }
     }
+    #endregion
 }

@@ -16,6 +16,7 @@ using System.ComponentModel;
 using ChatApp.Shared.Notifications;
 using System.Collections.Generic;
 using ChatApp.Shared;
+using ChatApp.Shared.ExtensionMethods;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -47,7 +48,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = "No friends found" });
             }
 
-            (bool success, string message, List<UserSimple> friends) = await SharedQueries.GetUsers(userResp.user.Friends);
+            (bool success, string message, List<User> friends) = await SharedQueries.GetUsers(userResp.user.Friends);
 
             if (success == false)
             {
@@ -55,7 +56,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
             }
 
-            return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends });
+            return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends.ToUserSimpleList() });
         }
     }
 }

@@ -21,7 +21,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
             
-                <TextBlock Text="{Binding UserName}" Foreground="White" FontSize="14" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding DisplayName}" Foreground="White" FontSize="14" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Grid>
             
             <Border Grid.Row="1" Background="#26282c" CornerRadius="0" />

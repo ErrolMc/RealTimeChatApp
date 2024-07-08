@@ -15,11 +15,13 @@ namespace ChatAppDatabaseFunctions.Code
 
         private static readonly string UsersContainerID = "users";
         private static readonly string MessagesContainerID = "messages";
+        private static readonly string GroupDMsContainerID = "groups";
 
         private static CosmosClient cosmosClient = new CosmosClient(NetworkConstants.COSMOSDB_URI, PrimaryKey);
         private static Database database = cosmosClient.GetDatabase(DatabaseId);
 
         public static Container UsersContainer = database.GetContainer(UsersContainerID);
         public static Container MessagesContainer = database.GetContainer(MessagesContainerID);
+        public static Container GroupDMsContainer = database.GetContainer(GroupDMsContainerID);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using ChatApp.Shared.Misc;
+using ChatApp.Shared.GroupDMs;
 
 namespace ChatApp.Shared.Tables
 {
@@ -18,6 +19,7 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("friends")] public List<string> Friends { get; set; } = new List<string>();
         [JsonProperty("friendrequests")] public List<string> FriendRequests { get; set; } = new List<string>();
         [JsonProperty("outgoingfriendrequests")] public List<string> OutgoingFriendRequests { get; set; } = new List<string>();
+        [JsonProperty("groupdms")] public List<string> GroupDMs { get; set; } = new List<string>();
         // profile image (id?)
 
         public UserSimple ToUserSimple()
@@ -36,5 +38,21 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("messagetype")] public int MessageType { get; set; }
         [JsonProperty("timestamp")] public long TimeStamp { get; set; }
         // attachments ?
+    }
+
+    [Serializable]
+    public class GroupDM
+    {
+        [JsonProperty("id")] public string ID { get; set; }
+        [JsonProperty("threadid")] public string ThreadID { get; set; }
+        [JsonProperty("owner")] public string OwnerUserID { get; set; }
+        [JsonProperty("participants")] public List<string> ParticipantUserIDs { get; set; } = new List<string>();
+        [JsonProperty("hascustomname")] public bool HasCustomName { get; set; }
+        [JsonProperty("name")] public string Name { get; set; }
+
+        public GroupDMSimple ToGroupDMSimple()
+        {
+            return new GroupDMSimple() { Name = Name, GroupID = ID };
+        }
     }
 }

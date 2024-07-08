@@ -122,7 +122,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
             if (response.Success == false)
             {
-                Console.WriteLine("FriendService - Failed to respond to friend request");
+                Console.WriteLine("FriendService - Failed to Get Friends, request failed");
+                return new GetFriendsResponseData() { Success = false, Message = "Request failed" };
+            }
+            
+            if (response.ResponseData.Success == false)
+            {
+                Console.WriteLine("FriendService - Failed to Get Friends");
                 return new GetFriendsResponseData() { Success = false, Message = "Request failed" };
             }
             
