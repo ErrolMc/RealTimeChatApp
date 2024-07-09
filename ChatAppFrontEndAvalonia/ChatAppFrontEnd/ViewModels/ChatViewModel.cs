@@ -78,6 +78,7 @@ namespace ChatAppFrontEnd.ViewModels
         public async void ShowChat(IChatEntity chatEntity)
         {
             _chatEntity = chatEntity;
+            MessageBoxText = string.Empty;
             
             await ChatHistoryViewModel.Setup(_chatEntity);
             ChatTopBarViewModel.Setup(_chatEntity);
