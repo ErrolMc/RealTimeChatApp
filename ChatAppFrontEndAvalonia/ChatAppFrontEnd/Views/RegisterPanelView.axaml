@@ -23,6 +23,10 @@
         </Style>
     </UserControl.Styles>
     
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding RegisterCommand}"/>
+    </UserControl.KeyBindings>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
