@@ -15,6 +15,7 @@ namespace ChatApp.Services
         public event Action<UserSimple> OnFriendRequestReceived;
         public event Action<UserSimple> OnFriendRequestCanceled;
         public event Action<FriendRequestRespondNotification> OnFriendRequestRespondedTo;
+        public event Action FriendsListUpdated;
         
         public Task<(bool success, string message, UserSimple user)> SendFriendRequest(string userName);
         public Task<(bool success, string message)> RespondToFriendRequest(string fromUserID, string toUserID, bool status, bool isCanceling = false);

@@ -21,6 +21,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public event Action<UserSimple> OnFriendRequestReceived;
         public event Action<UserSimple> OnFriendRequestCanceled;
         public event Action<FriendRequestRespondNotification> OnFriendRequestRespondedTo;
+        public event Action FriendsListUpdated;
 
         public FriendService(IAuthenticationService authenticationService)
         {
@@ -46,8 +47,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public void AddFriendToLocalFriendsList(UserSimple user)
         {
-            if (!Friends.Contains(user))
-                Friends.Add(user);
+            if (Friends.Contains(user))
+                return;
+            
+            Friends.Add(user);
+            FriendsListUpdated?.Invoke();
         }
 
         public async Task<bool> GetFriendRequests()

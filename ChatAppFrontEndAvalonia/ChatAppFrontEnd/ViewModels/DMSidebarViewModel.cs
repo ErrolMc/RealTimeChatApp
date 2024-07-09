@@ -1,10 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Avalonia.Input;
 using ChatApp.Services;
-using ChatApp.Shared.GroupDMs;
-using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Services;
@@ -41,10 +38,12 @@ namespace ChatAppFrontEnd.ViewModels
             _friendService = friendService;
             _overlayService = overlayService;
             _groupService = groupService;
-            
+
             if (_groupService != null)
                 _groupService.OnGroupDMsUpdated += RefreshGroupDMs;
-
+            if (_friendService != null)
+                _friendService.FriendsListUpdated += RefreshFriendsList;
+            
             CreateGroupDMCommand = ReactiveCommand.Create(OnClick_CreateGroupDM);
         }
 
@@ -54,14 +53,9 @@ namespace ChatAppFrontEnd.ViewModels
             
             Friends = new ObservableCollection<DMSidebarItemViewModel>();
             GroupDMs = new ObservableCollection<DMSidebarItemViewModel>();
-            
+
             if (await _friendService.UpdateFriendsList())
-            {
-                foreach (var friend in _friendService.Friends)
-                {
-                    Friends.Add(new DMSidebarItemViewModel(friend, OpenChat));
-                }
-            }
+                RefreshFriendsList();
             
             if (await _groupService.UpdateGroupDMList())
                 RefreshGroupDMs();
@@ -94,11 +88,25 @@ namespace ChatAppFrontEnd.ViewModels
                 GroupDMs.Add(new DMSidebarItemViewModel(groupDM, OpenChat));
             }
         }
+        
+        private void RefreshFriendsList()
+        {
+            if (_friendService?.Friends == null)
+                return;
+            
+            Friends.Clear();
+            foreach (var friend in _friendService.Friends)
+            {
+                Friends.Add(new DMSidebarItemViewModel(friend, OpenChat));
+            }
+        }
 
         ~DMSidebarViewModel()
         {
             if (_groupService != null)
                 _groupService.OnGroupDMsUpdated -= RefreshGroupDMs;
+            if (_friendService != null)
+                _friendService.FriendsListUpdated -= RefreshFriendsList;
         }
     }
 }
