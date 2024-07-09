@@ -93,7 +93,9 @@ namespace ChatAppFrontEnd.ViewModels
 
             (bool success, string message, UserSimple toUser) = await _friendService.SendFriendRequest(FriendNameInputValue);
             
+            FriendNameInputValue = string.Empty;
             AddFriendResponseValue = message;
+            
             if (success)
             {
                 SpawnOutgoingFriendRequestItem(toUser);
