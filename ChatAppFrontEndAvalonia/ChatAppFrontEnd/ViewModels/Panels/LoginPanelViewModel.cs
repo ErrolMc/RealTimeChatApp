@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Input;
 using ChatApp.Services;
+using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Views;
 using ReactiveUI;
@@ -47,7 +48,7 @@ namespace ChatAppFrontEnd.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
         
-        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, ISignalRService signalRService, IFriendService friendService)
+        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, ISignalRService signalRService, IFriendService friendService, IOverlayService overlayService)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
@@ -59,13 +60,23 @@ namespace ChatAppFrontEnd.ViewModels
             
             LoginCommand = ReactiveCommand.Create(PerformLogin);
             GoToRegisterCommand = ReactiveCommand.Create(GoToRegister);
+
+            if (DebugHelper.IS_DEBUG)
+            {
+                overlayService.ShowOverlay(new DebugLoginPanelViewModel((d_username, d_pass) =>
+                {
+                    Username = d_username;
+                    Password = d_pass;
+                    PerformLogin();
+                    overlayService.HideOverlay();
+                }), 100, 100, () => { });
+            }
         }
 
         private async void PerformLogin()
         {
             if (TalkingToServer) return;
             TalkingToServer = true;
-
             
             if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
@@ -95,7 +106,7 @@ namespace ChatAppFrontEnd.ViewModels
             // setup data that other viewmodels will use
             _authenticationService.CurrentUser = loginResponse.user;
             bool friendRequestResponse = await _friendService.GetFriendRequests();
-            
+
             // navigate to the main panel
             TalkingToServer = false;
             _navigationService.Navigate<MainPanelViewModel>();
