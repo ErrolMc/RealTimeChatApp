@@ -11,14 +11,23 @@
     
         <Panel IsVisible="{Binding IsShown}">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <ContentControl Grid.Row="0" Content="{Binding ChatTopBarViewModel}"/>
-                <ContentControl Grid.Row="1" Content="{Binding ChatHistoryViewModel}"/>
-                <TextBox Grid.Row="2" VerticalAlignment="Bottom" Classes="BlankTextBox" Watermark="Enter text..." Margin="20,0,20,20" Text="{Binding MessageBoxText, Mode=TwoWay}" KeyDown="TextBox_OnKeyDown" Background="#383a40"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding SidebarWidth}" MinWidth="0"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <ContentControl Grid.Row="0" Content="{Binding ChatTopBarViewModel}"/>
+                    <ContentControl Grid.Row="1" Content="{Binding ChatHistoryViewModel}"/>
+                    <TextBox Grid.Row="2" VerticalAlignment="Bottom" Classes="BlankTextBox" Watermark="Enter text..." Margin="20,0,20,20" Text="{Binding MessageBoxText, Mode=TwoWay}" KeyDown="TextBox_OnKeyDown" Background="#383a40"/>
+                </Grid>
+                
+                <ContentControl Grid.Column="1" Content="{Binding RightSideBarViewModel}"/>
             </Grid>
         </Panel>
 

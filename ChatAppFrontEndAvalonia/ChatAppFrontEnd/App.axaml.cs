@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using ChatApp.Services;
 using ChatApp.Source.Services;
+using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Source.Services.Concrete;
 using ChatAppFrontEnd.ViewModels;
@@ -59,6 +60,9 @@ namespace ChatAppFrontEnd
             collection.AddTransient<ChatHistoryViewModel>();
             
             collection.AddSingleton<MainPanelViewModel>();
+            
+            // register factories
+            collection.AddSingleton<ChatSidebarViewModelFactory>();
             
             _serviceProvider = collection.BuildServiceProvider();
         }
