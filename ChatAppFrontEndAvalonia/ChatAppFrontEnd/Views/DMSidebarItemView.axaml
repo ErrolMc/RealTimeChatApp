@@ -17,5 +17,5 @@
             <TextBlock Grid.Column="0" Text="{Binding NameText, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
         </Grid>
     </Border>
-
+    
 </UserControl>
