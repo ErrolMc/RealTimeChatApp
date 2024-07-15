@@ -74,6 +74,25 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             GroupDMs?.Add(groupDM);
             OnGroupDMsUpdated?.Invoke();
         }
+        
+        public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)
+        {
+            var response = await NetworkHelper.PerformFunctionPostRequest<string, GetGroupParticipantsResponseData>(FunctionNames.GET_GROUP_PARTICIPANTS, groupID);
+            
+            if (response.Success == false)
+            {
+                Console.WriteLine($"GroupService - Failed to get groupDm participants, request failed: {response.Message}");
+                return new GetGroupParticipantsResponseData() { Success = false, Message = "Request failed" };
+            }
+            
+            if (response.ResponseData.Success == false)
+            {
+                Console.WriteLine($"GroupService - Failed to get groupDm participants: {response.ResponseData.Message}");
+                return new GetGroupParticipantsResponseData() { Success = false, Message = response.ResponseData.Message };
+            }
+
+            return response.ResponseData;
+        }
     }
 }
 

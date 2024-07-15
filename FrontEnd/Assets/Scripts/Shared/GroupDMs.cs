@@ -30,4 +30,13 @@ namespace ChatApp.Shared.GroupDMs
         public string Message { get; set; }
         public List<GroupDMSimple> GroupDMs { get; set; } = new List<GroupDMSimple>();
     }
+
+    [Serializable]
+    public class GetGroupParticipantsResponseData
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public string OwnerUserID { get; set; }
+        public List<UserSimple> Participants { get; set; } = new List<UserSimple>();
+    }
 }

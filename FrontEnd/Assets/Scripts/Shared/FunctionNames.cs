@@ -14,6 +14,7 @@ namespace ChatApp.Shared
         public const string SEND_FRIEND_REQUEST = "SendFriendRequest";
         public const string CREATE_GROUP_DM = "CreateGroupDM";
         public const string GET_GROUP_DMS = "GetGroupDMs";
+        public const string GET_GROUP_PARTICIPANTS = "GetGroupParticipants";
     }
 }
 

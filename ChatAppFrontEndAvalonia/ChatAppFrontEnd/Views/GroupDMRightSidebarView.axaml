@@ -9,5 +9,20 @@
              x:DataType="vm:GroupDMRightSidebarViewModel"
              Background="#2b2d31"
              Focusable="True">
-
+    
+    <ScrollViewer Margin="0, 2.5, 0, 0" VerticalScrollBarVisibility="Hidden">
+        <StackPanel>
+            <TextBlock Text="Members:" Foreground="White" FontSize="15" FontWeight="Regular" HorizontalAlignment="Left" Margin="15, 30, 0, 0"/>
+            <StackPanel Margin="8, 0, 0, 0">
+                <ItemsControl ItemsSource="{Binding Members}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:DMSidebarItemView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+    
 </UserControl>

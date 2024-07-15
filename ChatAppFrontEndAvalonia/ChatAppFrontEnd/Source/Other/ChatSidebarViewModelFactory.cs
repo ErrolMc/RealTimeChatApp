@@ -20,7 +20,8 @@ namespace ChatAppFrontEnd.Source.Other
         {
             switch (chatEntity)
             {
-                case UserSimple user: return new FriendDMRightSidebarViewModel(_friendService);
+                //case UserSimple user: return new FriendDMRightSidebarViewModel(_friendService);
+                case UserSimple: return null; // for now no sidebar
                 case GroupDMSimple groupDM: return new GroupDMRightSidebarViewModel(_groupService);
                 // server sidebar
             }
