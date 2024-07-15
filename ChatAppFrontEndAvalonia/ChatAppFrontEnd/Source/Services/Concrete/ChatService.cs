@@ -116,6 +116,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     if (!response.Success)
                     {
                         Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+                        return new List<Message>();
                     }
                     
                     return response.ResponseData.Messages;
@@ -133,6 +134,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     if (!response.Success)
                     {
                         Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+                        return new List<Message>();
                     }
             
                     return response.ResponseData.Messages;

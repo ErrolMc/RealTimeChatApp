@@ -61,17 +61,23 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             var response = 
                 await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendRequestsResponseData>(FunctionNames.GET_FRIEND_REQUESTS, _authenticationService.CurrentUser.ToUserSimple());
-            
-            if (response.Success)
+
+            if (response.Success == false)
             {
-                var responseData = response.ResponseData;
-                FriendRequests = responseData.FriendRequests;
-                OutgoingFriendRequests = responseData.OutgoingFriendRequests;
-                return true;
+                Console.WriteLine($"GetFriendRequests Error: {response.Message}");
+                return false;
             }
             
-            Console.WriteLine($"GetFriendRequests Error: {response.Message}");
-            return false;
+            GetFriendRequestsResponseData responseData = response.ResponseData;
+            if (responseData.Success == false)
+            {
+                Console.WriteLine($"GetFriendRequests Error: {responseData.Message}");
+                return false;
+            }
+            
+            FriendRequests = responseData.FriendRequests;
+            OutgoingFriendRequests = responseData.OutgoingFriendRequests;
+            return true;
         }
         
         #region Called from NotificationService

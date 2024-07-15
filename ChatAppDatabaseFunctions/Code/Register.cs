@@ -31,7 +31,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (loginData == null)
             {
-                return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
             var userResp = await SharedQueries.GetUserFromUsername(loginData.UserName);

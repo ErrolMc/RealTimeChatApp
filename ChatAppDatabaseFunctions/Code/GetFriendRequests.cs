@@ -30,19 +30,19 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = "Invalid request data" });
+                return new OkObjectResult(new GetFriendRequestsResponseData { Success = false, Message = "Invalid request data" });
             }
 
             var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);
 
             if (userResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = userResp.message });
+                return new OkObjectResult(new GetFriendRequestsResponseData { Success = false, Message = userResp.message });
             }
 
             if (userResp.user == null)
             {
-                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
+                return new OkObjectResult(new GetFriendRequestsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" });
             }
 
             var reqResp = await SharedQueries.GetUsers(userResp.user.FriendRequests);
@@ -50,12 +50,12 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (reqResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = reqResp.message });
+                return new OkObjectResult(new GetFriendRequestsResponseData { Success = false, Message = reqResp.message });
             }
 
             if (outResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetFriendRequestsResponseData { Success = false, Message = outResp.message });
+                return new OkObjectResult(new GetFriendRequestsResponseData { Success = false, Message = outResp.message });
             }
 
             return new OkObjectResult(new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.users.ToUserSimpleList(), OutgoingFriendRequests = outResp.users.ToUserSimpleList() });

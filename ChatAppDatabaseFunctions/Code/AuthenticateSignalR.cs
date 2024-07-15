@@ -35,12 +35,12 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new AuthenticateResponseData { Status = false, Message = "Bad Request Data", AccessToken = "" });
+                return new OkObjectResult(new AuthenticateResponseData { Status = false, Message = "Bad Request Data", AccessToken = "" });
             }
 
             if (string.IsNullOrEmpty(requestData.UserName) || string.IsNullOrEmpty(requestData.UserID))
             {
-                return new BadRequestObjectResult(new AuthenticateResponseData() { Status = false, Message = "Username or password not provided", AccessToken = null });
+                return new OkObjectResult(new AuthenticateResponseData() { Status = false, Message = "Username or password not provided", AccessToken = null });
             }
 
             var claims = new[]

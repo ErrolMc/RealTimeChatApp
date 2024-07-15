@@ -35,13 +35,13 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "Invalid request data" });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = "Invalid request data" });
             }
 
             var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);
             if (userResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = userResp.message });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = userResp.message });
             }
 
             if (userResp.user.Friends == null || userResp.user.Friends.Count == 0)
@@ -54,7 +54,7 @@ namespace ChatAppDatabaseFunctions.Code
             if (success == false)
             {
                 System.Console.WriteLine($"An error occurred: {message}");
-                return new BadRequestObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
             }
 
             return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends.ToUserSimpleList() });

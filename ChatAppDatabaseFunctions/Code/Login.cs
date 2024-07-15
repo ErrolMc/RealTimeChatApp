@@ -31,14 +31,14 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (loginData == null)
             {
-                return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = "Invalid user data" });
             }
 
             var resp = await SharedQueries.GetUserFromUsername(loginData.UserName);
 
             if (resp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new UserLoginResponseData { Status = false, Message = resp.message, User = null });
+                return new OkObjectResult(new UserLoginResponseData { Status = false, Message = resp.message, User = null });
             }
 
             if (resp.user == null)

@@ -35,20 +35,20 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Invalid request data" });
+                return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Invalid request data" });
             }
 
             // get all the users
             var getParticipantsResp = await SharedQueries.GetUsers(requestData.Participants);
             if (getParticipantsResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get participant user info from database" });
+                return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get participant user info from database" });
             }
 
             var owner = getParticipantsResp.users.FirstOrDefault(user => user.UserID == requestData.Creator);
             if (owner == null)
             {
-                return new BadRequestObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get creator user info from database" });
+                return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get creator user info from database" });
             }
 
             List<User> participantsWithOwnerAtFront = getParticipantsResp.users;
@@ -75,7 +75,7 @@ namespace ChatAppDatabaseFunctions.Code
             catch (Exception ex)
             {
                 log.LogError($"An error occurred when creating a group: {ex.Message}");
-                return new BadRequestObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Database error" });
+                return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Database error" });
             };
 
             List<string> failedNotifications = new List<string>();

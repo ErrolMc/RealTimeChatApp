@@ -35,18 +35,18 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = "Invalid message data" });
+                return new OkObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = "Invalid message data" });
             }
 
             var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
             if (fromUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = fromUserResp.message });
+                return new OkObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = fromUserResp.message });
             }
 
             if (fromUserResp.user == null)
             {
-                return new BadRequestObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = $"Couldnt find user {requestData.FromUserID}" });
+                return new OkObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = $"Couldnt find user {requestData.FromUserID}" });
             }
 
             Message message = new Message()
@@ -79,7 +79,7 @@ namespace ChatAppDatabaseFunctions.Code
             };
 
             if (messageResponse == null)
-                return new BadRequestObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} couldnt be added to DB" });
+                return new OkObjectResult(new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} couldnt be added to DB" });
 
             // Send notifications
             string messageJSON = JsonConvert.SerializeObject(message);

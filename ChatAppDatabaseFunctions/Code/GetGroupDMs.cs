@@ -32,7 +32,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new GetGroupDMsResponseData { Success = false, Message = "Invalid request data" });
+                return new OkObjectResult(new GetGroupDMsResponseData { Success = false, Message = "Invalid request data" });
             }
 
             var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);

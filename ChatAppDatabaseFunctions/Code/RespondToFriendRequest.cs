@@ -32,19 +32,19 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = "Invalid request data" });
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = "Invalid request data" });
             }
 
             var toUserResp = await SharedQueries.GetUserFromUserID(requestData.ToUserID);
             if (toUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = toUserResp.message });
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = toUserResp.message });
             }
 
             var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUserID);
             if (fromUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = fromUserResp.message });
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = fromUserResp.message });
             }
 
             User toUser = toUserResp.user;
@@ -52,7 +52,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (toUser == null || fromUser == null)
             {
-                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });
             }
 
             toUser.FriendRequests.Remove(fromUser.UserID);
@@ -73,12 +73,12 @@ namespace ChatAppDatabaseFunctions.Code
                 var fromUserReplaceResponse = await DatabaseStatics.UsersContainer.ReplaceItemAsync(fromUser, fromUser.UserID, new PartitionKey(fromUser.UserID));
                 if (toUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK || fromUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} Status: {toUserReplaceResponse.StatusCode} FromUser: {requestData.FromUserID} Status: {fromUserReplaceResponse.StatusCode}" });
+                    return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} Status: {toUserReplaceResponse.StatusCode} FromUser: {requestData.FromUserID} Status: {fromUserReplaceResponse.StatusCode}" });
                 }
             }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"RespondToFriendRequest Replace Exception: {ex.Message}" });
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"RespondToFriendRequest Replace Exception: {ex.Message}" });
             }
 
             NotificationData notificationData = new NotificationData();

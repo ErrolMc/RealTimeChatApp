@@ -29,14 +29,14 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new GetMessagesResponseData { Success = false, ResponseMessage = "Invalid request data" });
+                return new OkObjectResult(new GetMessagesResponseData { Success = false, ResponseMessage = "Invalid request data" });
             }
 
             var messagesResp = await SharedQueries.GetMessagesByThreadID(requestData.ThreadID);
 
             if (messagesResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new GetMessagesResponseData { Success = false, ResponseMessage = $"Failed to get messages for Thread {requestData.ThreadID}" });
+                return new OkObjectResult(new GetMessagesResponseData { Success = false, ResponseMessage = $"Failed to get messages for Thread {requestData.ThreadID}" });
             }
 
             return new OkObjectResult(new GetMessagesResponseData { Success = true, ResponseMessage = "Success", Messages = messagesResp.messages });
