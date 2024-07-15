@@ -35,30 +35,30 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (requestData == null)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Invalid request data" });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Invalid request data" });
             }
 
             // get the users
             var toUserResp = await SharedQueries.GetUserFromUsername(requestData.ToUserName);
             if (toUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = toUserResp.message });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = toUserResp.message });
             }
 
             if (toUserResp.user == null)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No to user with that username!" });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No to user with that username!" });
             }
 
             var fromUserResp = await SharedQueries.GetUserFromUserID(requestData.FromUser.UserID);
             if (fromUserResp.connectionSuccess == false)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = fromUserResp.message });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = fromUserResp.message });
             }
 
             if (fromUserResp.user == null)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that username!" });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that username!" });
             }
 
             User toUser = toUserResp.user;
@@ -67,13 +67,13 @@ namespace ChatAppDatabaseFunctions.Code
             // check friends already
             if (fromUser.Friends.Contains(toUser.UserID))
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "The 2 users are already friends!" });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "The 2 users are already friends!" });
             }
 
             // check sent request already
             if (toUser.FriendRequests.Contains(fromUser.UserID) || fromUser.OutgoingFriendRequests.Contains(toUser.UserID))
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Friend request already sent to this user!" });
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = "Friend request already sent to this user!" });
             }
 
             toUser.FriendRequests.Add(fromUser.UserID);
@@ -85,12 +85,12 @@ namespace ChatAppDatabaseFunctions.Code
                 var fromUserReplaceResponse = await DatabaseStatics.UsersContainer.ReplaceItemAsync(fromUser, fromUser.UserID, new PartitionKey(fromUser.UserID));
                 if (toUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK || fromUserReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"Couldnt get users from database - ToUser: {toUser.UserID} Status: {toUserReplaceResponse.StatusCode} FromUser: {fromUser.UserID} Status: {fromUserReplaceResponse.StatusCode}" });
+                    return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"Couldnt get users from database - ToUser: {toUser.UserID} Status: {toUserReplaceResponse.StatusCode} FromUser: {fromUser.UserID} Status: {fromUserReplaceResponse.StatusCode}" });
                 }
             }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"SendFriendRequest Replace Exception: {ex.Message}"});
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"SendFriendRequest Replace Exception: {ex.Message}"});
             }
 
             NotificationData notificationData = new NotificationData()
@@ -107,7 +107,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new FriendRequestNotificationResponseData { Status = true, Message = message, ToUser = toUser.ToUserSimple() });
             }
 
-            return new BadRequestObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = message });
+            return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = message });
         }
     }
 }
