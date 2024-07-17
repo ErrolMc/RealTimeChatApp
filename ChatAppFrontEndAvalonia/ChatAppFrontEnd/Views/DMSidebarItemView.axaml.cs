@@ -45,10 +45,11 @@ namespace ChatAppFrontEnd.Views
             // to change the color on release and call the OnClickCommand
             if (_hovered && this.DataContext is DMSidebarItemViewModel viewModel)
             {
-                if (viewModel?.OnClickCommand.CanExecute(null) == true)
-                {
-                    viewModel.OnClickCommand.Execute(null);
-                }
+                bool leftClick = e.InitialPressMouseButton == MouseButton.Left;
+                if (leftClick)
+                    viewModel?.OnLeftClick();
+                else
+                    viewModel?.OnRightClick();
             }
         }
     }
