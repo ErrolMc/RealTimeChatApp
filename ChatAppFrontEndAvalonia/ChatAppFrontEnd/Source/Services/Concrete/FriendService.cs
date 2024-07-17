@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ChatApp.Services;
 using ChatApp.Shared;
@@ -21,6 +22,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public event Action<UserSimple> OnFriendRequestReceived;
         public event Action<UserSimple> OnFriendRequestCanceled;
         public event Action<FriendRequestRespondNotification> OnFriendRequestRespondedTo;
+        public event Action<UnfriendNotification> OnUnfriended;
         public event Action FriendsListUpdated;
 
         public FriendService(IAuthenticationService authenticationService)
@@ -90,7 +92,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             FriendRequests.Remove(user);
             OnFriendRequestCanceled?.Invoke(user);
         }
-        
+
         /// <summary>
         /// When a friend request that this client sent gets responded to
         /// </summary>
@@ -114,6 +116,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             FriendRequests.Add(notification.FromUser);
             OnFriendRequestReceived?.Invoke(notification.FromUser);
+        }
+        
+        public void OnUnfriend(UnfriendNotification notification)
+        {
+            UserSimple friend = Friends.FirstOrDefault(f => f.UserID == notification.FromUserID);
+            if (friend == null)
+                return;
+            
+            Friends.Remove(friend);
+            OnUnfriended?.Invoke(notification);
         }
         #endregion
         
@@ -198,6 +210,28 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             RespondToFriendRequestResponseData responseData = response.ResponseData;
             Console.WriteLine("FriendService - Respond to request: " + responseData.Message);
             
+            return (responseData.Success, responseData.Message);
+        }
+        
+        public async Task<(bool success, string message)> UnFriend(string toUserID)
+        {
+            var notificationData = new UnfriendNotification()
+            {
+                FromUserID = _authenticationService.CurrentUser.UserID,
+                ToUserID = toUserID
+            };
+            
+            var response = await NetworkHelper.PerformFunctionPostRequest<UnfriendNotification, GenericResponseData>(FunctionNames.REMOVE_FRIEND, notificationData);
+            
+            if (response.Success == false)
+            {
+                Console.WriteLine("FriendService - Unfriend failed");
+                return (false, "Request failed");
+            }
+            
+            GenericResponseData responseData = response.ResponseData;
+            
+            Console.WriteLine($"FriendService - Unfriend with {toUserID} result: {responseData.Message}");
             return (responseData.Success, responseData.Message);
         }
         #endregion

@@ -51,6 +51,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         _friendService.Value?.ProcessFriendRequestResponse(notification);
                     }
                     break;
+                case NotificationType.Unfriend:
+                    {
+                        var notification = JsonConvert.DeserializeObject<UnfriendNotification>(notificationData.NotificationJson);
+                        Console.WriteLine($"Unfriended by: {notification.FromUserID}");
+                        _friendService.Value?.OnUnfriend(notification);
+                    }
+                    break;
                 case NotificationType.FriendRequestCancel:
                     {
                         var fromUser = JsonConvert.DeserializeObject<UserSimple>(notificationData.NotificationJson);

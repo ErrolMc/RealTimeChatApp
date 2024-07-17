@@ -14,6 +14,7 @@ namespace ChatApp.Shared.Notifications
         FriendRequestCancel = 4, // telling the recipient of a friend request it was cancelled
         GroupCreated = 5,
         GroupDMMessage = 6,
+        Unfriend = 7,
     }
     
     [Serializable]
@@ -60,6 +61,13 @@ namespace ChatApp.Shared.Notifications
         public bool Status { get; set; }
         public string Message { get; set; }
         public UserSimple ToUser { get; set; }
+    }
+
+    [Serializable]
+    public class UnfriendNotification
+    {
+        public string FromUserID { get; set; } // user doing the unfriending
+        public string ToUserID { get; set; }
     }
     #endregion
 }

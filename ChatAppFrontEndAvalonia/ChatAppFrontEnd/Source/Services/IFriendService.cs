@@ -15,16 +15,20 @@ namespace ChatApp.Services
         public event Action<UserSimple> OnFriendRequestReceived;
         public event Action<UserSimple> OnFriendRequestCanceled;
         public event Action<FriendRequestRespondNotification> OnFriendRequestRespondedTo;
+        public event Action<UnfriendNotification> OnUnfriended;
         public event Action FriendsListUpdated;
         
         public Task<(bool success, string message, UserSimple user)> SendFriendRequest(string userName);
         public Task<(bool success, string message)> RespondToFriendRequest(string fromUserID, string toUserID, bool status, bool isCanceling = false);
+        
+        public Task<(bool success, string message)> UnFriend(string toUserID);
 
         public void ProcessFriendRequestResponse(FriendRequestRespondNotification response);
         public void OnReceiveFriendRequestNotification(FriendRequestNotification notification);
         public Task<bool> UpdateFriendsList();
         public void AddFriendToLocalFriendsList(UserSimple user);
         public void OnCancelFriendRequest(UserSimple user);
+        public void OnUnfriend(UnfriendNotification notification);
         public Task<bool> GetFriendRequests();
     }
 }

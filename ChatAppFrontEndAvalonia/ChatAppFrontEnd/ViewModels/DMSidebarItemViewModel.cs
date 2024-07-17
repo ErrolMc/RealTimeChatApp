@@ -10,7 +10,6 @@ namespace ChatAppFrontEnd.ViewModels
         public IChatEntity ChatEntity { get; private set; }
         public bool IsSelected { get; set; }
         
-        public ICommand OnClickCommand { get; }
         
         private readonly Action<DMSidebarItemViewModel> _onClickAction;
         private string _nameText;
@@ -27,13 +26,16 @@ namespace ChatAppFrontEnd.ViewModels
             _onClickAction = onClickAction;
             
             NameText = ChatEntity.Name;
-
-            OnClickCommand = ReactiveCommand.Create(OnClick);
         }
         
-        private void OnClick()
+        public void OnLeftClick()
         {
             _onClickAction?.Invoke(this);
+        }
+
+        public void OnRightClick()
+        {
+            
         }
     }
 }
