@@ -68,6 +68,7 @@ namespace ChatApp.Shared.Notifications
     {
         public string FromUserID { get; set; } // user doing the unfriending
         public string ToUserID { get; set; }
+        public string ThreadID { get; set; }
     }
     #endregion
 }

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
 using System.Collections.ObjectModel;
+using Avalonia;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -36,7 +37,7 @@ namespace ChatAppFrontEnd.ViewModels
                 Members.Add(new DMSidebarItemViewModel(user, OnClick_User));
         }
 
-        private void OnClick_User(DMSidebarItemViewModel viewModel)
+        private void OnClick_User(DMSidebarItemViewModel viewModel, bool isLeftClick, Point mousePos)
         {
             if (viewModel.ChatEntity is not UserSimple user)
                 return;

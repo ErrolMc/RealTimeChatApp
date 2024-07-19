@@ -7,19 +7,19 @@ using ChatAppFrontEnd.ViewModels;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class DMSidebarItemView : UserControl
+    public partial class RightClickMenuButtonView : UserControl
     {
-        private readonly Color NormalColor = Color.Parse("#2b2d31");
-        private readonly Color HoveredColor = Color.Parse("#35373c");
-        private readonly Color PressedColor = Color.Parse("#3b3d44");
-
+        private readonly Color NormalColor = Color.Parse("#111214");
+        private readonly Color HoveredColor = Color.Parse("#505cdc");
+        private readonly Color PressedColor = Color.Parse("#3c45a5");
+        
         private bool _hovered = false;
         
-        public DMSidebarItemView()
+        public RightClickMenuButtonView()
         {
             InitializeComponent();
         }
-
+        
         private void OnPointerEntered(object sender, PointerEventArgs e)
         {
             _hovered = true;
@@ -40,16 +40,15 @@ namespace ChatAppFrontEnd.Views
         private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
         {
             ((Border)sender).Background = new SolidColorBrush(_hovered ? HoveredColor : NormalColor);
-            
-            // this definitely breaks MVVM, but I couldn't figure out any other way 
-            // to change the color on release and call the OnClickCommand
-            if (_hovered && this.DataContext is DMSidebarItemViewModel viewModel && this.VisualRoot is Window window)
+
+            if (_hovered && this.DataContext is RightClickMenuButtonViewModel viewModel)
             {
-                bool leftClick = e.InitialPressMouseButton == MouseButton.Left;
-                Point mousePos = e.GetPosition(window);
-                
-                viewModel?.OnClick(leftClick, mousePos);
+                if (e.InitialPressMouseButton != MouseButton.Left)
+                    return;
+
+                viewModel?.OnClick();
             }
         }
     }
 }
+

@@ -114,6 +114,32 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
+        public static async Task<(bool connectionSuccess, string message)> DeleteMessagesByThreadID(string threadID)
+        {
+            try
+            {
+                var getResponse = await GetMessagesByThreadID(threadID);
+                if (getResponse.connectionSuccess == false)
+                    return (false, getResponse.message);
+
+                List<Message> messagesToDelete = getResponse.messages;
+
+                var deleteTasks = messagesToDelete.Select(async message =>
+                {
+                    await DatabaseStatics.MessagesContainer.DeleteItemAsync<Message>(message.ID, new PartitionKey(message.ThreadID));
+                });
+
+                await Task.WhenAll(deleteTasks);
+
+                return (true, $"Deleted {messagesToDelete.Count} messages");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting messages for thread ID {threadID}: {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR);
+            }
+        }
+
         public static async Task<(bool connectionSuccess, string message, GroupDM groupDM)> GetGroupDMFromGroupID(string groupID)
         {
             try

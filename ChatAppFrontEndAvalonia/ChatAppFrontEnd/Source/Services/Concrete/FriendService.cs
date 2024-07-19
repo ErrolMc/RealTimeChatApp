@@ -126,6 +126,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             Friends.Remove(friend);
             OnUnfriended?.Invoke(notification);
+            FriendsListUpdated?.Invoke();
         }
         #endregion
         
@@ -215,10 +216,12 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         public async Task<(bool success, string message)> UnFriend(string toUserID)
         {
+            string fromUserID = _authenticationService.CurrentUser.UserID;
             var notificationData = new UnfriendNotification()
             {
-                FromUserID = _authenticationService.CurrentUser.UserID,
-                ToUserID = toUserID
+                FromUserID = fromUserID,
+                ToUserID = toUserID,
+                ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserID, toUserID)
             };
             
             var response = await NetworkHelper.PerformFunctionPostRequest<UnfriendNotification, GenericResponseData>(FunctionNames.REMOVE_FRIEND, notificationData);
@@ -230,6 +233,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             }
             
             GenericResponseData responseData = response.ResponseData;
+
+            if (responseData.Success)
+            {
+                OnUnfriend(new UnfriendNotification() { FromUserID = notificationData.ToUserID, ToUserID = notificationData.FromUserID });
+            }
             
             Console.WriteLine($"FriendService - Unfriend with {toUserID} result: {responseData.Message}");
             return (responseData.Success, responseData.Message);

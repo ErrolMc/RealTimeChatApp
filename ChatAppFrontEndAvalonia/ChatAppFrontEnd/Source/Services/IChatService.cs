@@ -8,6 +8,7 @@ namespace ChatAppFrontEnd.Source.Services
 {
     public interface IChatService
     {
+        public IChatEntity CurrentChat { get; set; }
         public event Action<Message> OnMessageReceived;
 
         public void OnReceiveMessage(Message message);

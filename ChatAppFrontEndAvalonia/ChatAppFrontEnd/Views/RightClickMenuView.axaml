@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
+             xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChatAppFrontEnd.Views.RightClickMenuView"
+             x:DataType="vm:RightClickMenuViewModel"
+             Background="Transparent"
+             Focusable="True">
+
+    <Border Background="#111214" CornerRadius="3" Padding="8" Width="300" Margin="3" BoxShadow="0 0 4 0 #1e1f22">
+        <StackPanel Margin="2, 2, 2, 2">
+            <ItemsControl ItemsSource="{Binding Buttons}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <views:RightClickMenuButtonView />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+    
+</UserControl>

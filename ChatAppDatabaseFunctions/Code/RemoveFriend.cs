@@ -11,6 +11,7 @@ using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Misc;
 using Microsoft.Azure.Cosmos;
 using User = ChatApp.Shared.Tables.User;
+using System.Runtime.InteropServices;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -68,6 +69,12 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new GenericResponseData { Success = false, Message = $"RespondToFriendRequest Replace Exception: {ex.Message}" });
             }
 
+            var deleteMessagesResponse = await SharedQueries.DeleteMessagesByThreadID(requestData.ThreadID);
+            if (deleteMessagesResponse.connectionSuccess == false)
+            {
+                Console.WriteLine($"Remove friend from {requestData.FromUserID} to {requestData.ToUserID} could'nt delete messages");
+            }
+
             NotificationData notificationData = new NotificationData()
             {
                 NotificationType = (int)NotificationType.Unfriend,
@@ -77,7 +84,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             (bool, string) notificationResult = await SharedRequests.SendNotificationThroughSignalR(notificationData);
 
-            return new OkObjectResult(new RespondToFriendRequestResponseData { Success = true, Message = $"Successfully removed friend, Sent notification: {notificationResult.Item1}" });
+            return new OkObjectResult(new GenericResponseData { Success = true, Message = $"Successfully removed friend, Sent notification: {notificationResult.Item1}" });
         }
     }
 }

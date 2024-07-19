@@ -32,7 +32,7 @@ namespace ChatAppFrontEnd.ViewModels
         
         public async Task Setup(IChatEntity chatEntity)
         {
-            Messages.Clear();
+            ClearMessages();
             
             List<Message> respMessages = await _chatService.GetMessages(chatEntity);
             foreach (Message messageData in respMessages)
@@ -42,6 +42,11 @@ namespace ChatAppFrontEnd.ViewModels
         public void CreateMessage(string fromUserName, string contents)
         {
             Messages.Add(new ChatMessageViewModel(fromUserName, contents));
+        }
+
+        public void ClearMessages()
+        {
+            Messages.Clear();
         }
     }
 }

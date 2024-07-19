@@ -19,6 +19,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         private HubConnection Connection => _signalRService.Connection;
 
+        public IChatEntity CurrentChat { get; set; }
         public event Action<Message> OnMessageReceived;
 
         public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService)

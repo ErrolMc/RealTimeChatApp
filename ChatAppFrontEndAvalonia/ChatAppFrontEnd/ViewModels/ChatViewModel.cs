@@ -1,5 +1,7 @@
 using System;
 using Avalonia.Controls;
+using ChatApp.Services;
+using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Other;
@@ -54,15 +56,17 @@ namespace ChatAppFrontEnd.ViewModels
 
         private readonly IChatService _chatService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IFriendService _friendService;
         private readonly ChatSidebarViewModelFactory _sideBarFactory;
         
         private IChatEntity _chatEntity;
         private bool _sendingMessage;
         
-        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, ChatSidebarViewModelFactory sideBarFactory)
+        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, IFriendService friendService, ChatSidebarViewModelFactory sideBarFactory)
         {
             _chatService = chatService;
             _authenticationService = authenticationService;
+            _friendService = friendService;
             _sideBarFactory = sideBarFactory;
             
             IsShown = false;
@@ -77,11 +81,13 @@ namespace ChatAppFrontEnd.ViewModels
         public void OnShow()
         {
             _chatService.OnMessageReceived += OnReceiveMessage;
+            _friendService.OnUnfriended += OnRemoveFriend;
         }
 
         public void OnHide()
         {
             _chatService.OnMessageReceived -= OnReceiveMessage;
+            _friendService.OnUnfriended -= OnRemoveFriend;
         }
 
         private void OnReceiveMessage(Message message)
@@ -94,6 +100,8 @@ namespace ChatAppFrontEnd.ViewModels
 
         public async void ShowChat(IChatEntity chatEntity)
         {
+            _chatService.CurrentChat = chatEntity;
+            
             _chatEntity = chatEntity;
             MessageBoxText = string.Empty;
             
@@ -110,6 +118,20 @@ namespace ChatAppFrontEnd.ViewModels
 
             ChatTopBarViewModel.Setup(_chatEntity);
             IsShown = true;
+        }
+
+        public void HideChat()
+        {
+            ShowSidebar(false);
+            ChatHistoryViewModel.ClearMessages();
+            IsShown = false;
+            ChatTopBarViewModel.IsShown = false;
+        }
+
+        private void OnRemoveFriend(UnfriendNotification notification)
+        {
+            if (_chatService.CurrentChat.ID == notification.FromUserID)
+                HideChat();
         }
 
         public async void SendMessage()
