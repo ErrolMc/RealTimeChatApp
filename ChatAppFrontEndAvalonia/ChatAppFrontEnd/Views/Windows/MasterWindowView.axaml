@@ -16,7 +16,15 @@
     <Grid>
         <TransitioningContentControl Content="{Binding CurrentPanel}" />
         
-        <Grid IsVisible="{Binding IsOverlayVisible}">
+        <Grid Name="MainHitBox" IsVisible="{Binding IsOverlayVisible}">
+            <Button Classes="TransparentButton"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding ClickOutsideOverlayCommand}">
+            </Button>
+        </Grid>
+        
+        <Grid Name="CenterOutsideHitBox" IsVisible="{Binding IsOverlayCenterVisible}">
             <Button Classes="TransparentButton"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -30,7 +38,7 @@
                                          Canvas.Top="{Binding OverlayOffsetTop}"/>
         </Canvas>
         
-        <Grid Name="OverlayLayerCenter" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsOverlayVisible}">
+        <Grid Name="OverlayLayerCenter" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsOverlayCenterVisible}">
             <TransitioningContentControl Content="{Binding OverlayViewModelCenter}"/>
         </Grid>
     </Grid>

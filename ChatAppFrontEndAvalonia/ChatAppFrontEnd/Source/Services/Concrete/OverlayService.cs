@@ -31,6 +31,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             _masterWindowViewModel.OverlayOffsetTop = topOffset;
             _masterWindowViewModel.OverlayOffsetLeft = leftOffset;
             _masterWindowViewModel.IsOverlayVisible = true;
+            _masterWindowViewModel.IsOverlayCenterVisible = false;
         }
         
         public void ShowOverlayCentered(ViewModelBase viewModel, Action clickOutsideAction)
@@ -39,13 +40,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             _masterWindowViewModel.OverlayViewModel = null;
             _masterWindowViewModel.OverlayViewModelCenter = viewModel;
-            _masterWindowViewModel.IsOverlayVisible = true;
+            _masterWindowViewModel.IsOverlayVisible = false;
+            _masterWindowViewModel.IsOverlayCenterVisible = true;
         }
 
         public void HideOverlay()
         {
+            _masterWindowViewModel.OverlayViewModelCenter = null;
             _masterWindowViewModel.OverlayViewModel = null;
             _masterWindowViewModel.IsOverlayVisible = false;
+            _masterWindowViewModel.IsOverlayCenterVisible = false;
         }
     }
 }

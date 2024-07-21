@@ -33,6 +33,13 @@ namespace ChatAppFrontEnd.ViewModels
             get => _isOverlayVisible; 
             set => this.RaiseAndSetIfChanged(ref _isOverlayVisible, value);
         }
+        
+        private bool _isOverlayCenterVisible;
+        public bool IsOverlayCenterVisible
+        {
+            get => _isOverlayCenterVisible; 
+            set => this.RaiseAndSetIfChanged(ref _isOverlayCenterVisible, value);
+        }
 
         private double _overlayOffsetLeft;
         public double OverlayOffsetLeft
