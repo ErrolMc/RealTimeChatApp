@@ -10,13 +10,13 @@
              Background="Transparent"
              Focusable="True">
     
-    <Border Background="#111214" CornerRadius="5" Cursor="Hand" Height="40" Margin="5, 2.5, 5, 2.5"
+    <Border Background="#111214" CornerRadius="5" Cursor="Hand" Height="30" Margin="5, 2.5, 5, 2.5"
             PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" PointerPressed="OnPointerPressed" PointerReleased="OnPointerReleased">
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding LabelText, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="0" Text="{Binding LabelText, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" Margin="8,0,0,0"/>
         </Grid>
     </Border>
 
