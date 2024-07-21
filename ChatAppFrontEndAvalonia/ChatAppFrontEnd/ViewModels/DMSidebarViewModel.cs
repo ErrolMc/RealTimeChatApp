@@ -35,7 +35,9 @@ namespace ChatAppFrontEnd.ViewModels
         {
             get => _groupDMs;
             set => this.RaiseAndSetIfChanged(ref _groupDMs, value);
-        } 
+        }
+
+        private IChatEntity _tempChatEntity;
         
         public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService, IGroupService groupService)
         {
@@ -75,6 +77,7 @@ namespace ChatAppFrontEnd.ViewModels
         
         private void ShowRightClickMenu(IChatEntity chatEntity, Point mousePos)
         {
+            _tempChatEntity = chatEntity;
             List<RightClickMenuButtonViewModel> buttons = new List<RightClickMenuButtonViewModel>();
             switch (chatEntity)
             {
@@ -82,8 +85,11 @@ namespace ChatAppFrontEnd.ViewModels
                     {
                         buttons.Add(new RightClickMenuButtonViewModel("Remove Friend", () =>
                         {
-                            _overlayService.HideOverlay();
-                            UnFriend(user);
+                            ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Remove '{user.UserName}'",
+                                $"Are you sure you want to permanently remove {user.UserName} from your friends?",
+                                "Remove Friend",
+                                UnFriendSelectedUser);
+                            _overlayService.ShowOverlayCentered(confirmDialog, () => _overlayService.HideOverlay());
                         }));
                     }
                     break;
@@ -142,8 +148,12 @@ namespace ChatAppFrontEnd.ViewModels
             }
         }
 
-        private async void UnFriend(UserSimple user)
+        private async void UnFriendSelectedUser(bool confirmed)
         {
+            _overlayService.HideOverlay();
+            if (!confirmed || _tempChatEntity is not UserSimple user)
+                return;
+            
             var response = await _friendService.UnFriend(user.UserID);
         }
         #endregion
