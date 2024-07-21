@@ -19,6 +19,13 @@ namespace ChatAppFrontEnd.ViewModels
             get => _overlayViewModel; 
             set => this.RaiseAndSetIfChanged(ref _overlayViewModel, value);
         }
+        
+        private ViewModelBase _overlayViewModelCenter;
+        public ViewModelBase OverlayViewModelCenter
+        {
+            get => _overlayViewModelCenter; 
+            set => this.RaiseAndSetIfChanged(ref _overlayViewModelCenter, value);
+        }
 
         private bool _isOverlayVisible;
         public bool IsOverlayVisible

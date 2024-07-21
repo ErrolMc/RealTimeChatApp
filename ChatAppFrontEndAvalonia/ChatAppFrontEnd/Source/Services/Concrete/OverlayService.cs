@@ -26,9 +26,19 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             _clickOutsideAction = clickOutsideAction;
             
+            _masterWindowViewModel.OverlayViewModelCenter = null;
             _masterWindowViewModel.OverlayViewModel = viewModel;
             _masterWindowViewModel.OverlayOffsetTop = topOffset;
             _masterWindowViewModel.OverlayOffsetLeft = leftOffset;
+            _masterWindowViewModel.IsOverlayVisible = true;
+        }
+        
+        public void ShowOverlayCentered(ViewModelBase viewModel, Action clickOutsideAction)
+        {
+            _clickOutsideAction = clickOutsideAction;
+            
+            _masterWindowViewModel.OverlayViewModel = null;
+            _masterWindowViewModel.OverlayViewModelCenter = viewModel;
             _masterWindowViewModel.IsOverlayVisible = true;
         }
 

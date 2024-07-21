@@ -29,5 +29,9 @@
                                          Canvas.Left="{Binding OverlayOffsetLeft}"
                                          Canvas.Top="{Binding OverlayOffsetTop}"/>
         </Canvas>
+        
+        <Grid Name="OverlayLayerCenter" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsOverlayVisible}">
+            <TransitioningContentControl Content="{Binding OverlayViewModelCenter}"/>
+        </Grid>
     </Grid>
 </Window>

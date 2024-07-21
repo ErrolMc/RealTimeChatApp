@@ -16,12 +16,14 @@
     <Application.Styles>
         <FluentTheme />
         
+        <!-- BlankTextBox -->
         <Style Selector="TextBox.BlankTextBox">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
         
+        <!-- TransparentButton -->
         <Style Selector="Button.TransparentButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -36,5 +38,20 @@
                 </ControlTemplate>
             </Setter>
         </Style>
+        
+        <!-- RedButton -->
+        <Style Selector="Button.RedButton">
+            <Setter Property="Background" Value="#da373c"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    
+        <Style Selector="Button.RedButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#a12828"/>
+        </Style>
+    
+        <Style Selector="Button.RedButton:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#8f2022"/>
+        </Style>
+
     </Application.Styles>
 </Application>
