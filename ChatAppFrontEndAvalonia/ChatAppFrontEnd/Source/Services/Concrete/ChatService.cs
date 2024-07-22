@@ -72,7 +72,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 var response = 
                     await NetworkHelper.PerformFunctionPostRequest<SendMessageRequestData, SendMessageResponseData>(FunctionNames.SEND_MESSAGE, requestData);
 
-                if (response.Success == false)
+                if (response.ConnectionSuccess == false)
                 {
                     // post request failed
                     
@@ -114,7 +114,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     var response = 
                         await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
 
-                    if (!response.Success)
+                    if (!response.ConnectionSuccess)
                     {
                         Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
                         return new List<Message>();
@@ -132,7 +132,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     var response = 
                         await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
 
-                    if (!response.Success)
+                    if (!response.ConnectionSuccess)
                     {
                         Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
                         return new List<Message>();

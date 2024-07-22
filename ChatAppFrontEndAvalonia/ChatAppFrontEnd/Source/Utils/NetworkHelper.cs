@@ -9,7 +9,7 @@ namespace ChatAppFrontEnd.Source.Utils
 {
     public class FunctionPostResponse<T> where T : class
     {
-        public bool Success { get; set; }
+        public bool ConnectionSuccess { get; set; }
         public string Message { get; set; }
         public T ResponseData { get; set; }
     }
@@ -31,16 +31,16 @@ namespace ChatAppFrontEnd.Source.Utils
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new FunctionPostResponse<TRespClass>() { Success = false, Message = response.ReasonPhrase, ResponseData = null };
+                    return new FunctionPostResponse<TRespClass>() { ConnectionSuccess = false, Message = response.ReasonPhrase, ResponseData = null };
                 }
 
                 string responseContent = await response.Content.ReadAsStringAsync();
                 TRespClass responseData = JsonConvert.DeserializeObject<TRespClass>(responseContent);
-                return new FunctionPostResponse<TRespClass>() { Success = true, Message = "Request Success", ResponseData = responseData };
+                return new FunctionPostResponse<TRespClass>() { ConnectionSuccess = true, Message = "Request Success", ResponseData = responseData };
             }
             catch (Exception ex)
             {
-                return new FunctionPostResponse<TRespClass>() { Success = false, Message = $"Exception: {ex.Message}", ResponseData = null };
+                return new FunctionPostResponse<TRespClass>() { ConnectionSuccess = false, Message = $"Exception: {ex.Message}", ResponseData = null };
             }
         }
     }

@@ -64,7 +64,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             var response = 
                 await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendRequestsResponseData>(FunctionNames.GET_FRIEND_REQUESTS, _authenticationService.CurrentUser.ToUserSimple());
 
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 Console.WriteLine($"GetFriendRequests Error: {response.Message}");
                 return false;
@@ -144,7 +144,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             var response = await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendsResponseData>(FunctionNames.GET_FRIENDS, requestData);
 
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 Console.WriteLine("FriendService - Failed to Get Friends, request failed");
                 return new GetFriendsResponseData() { Success = false, Message = "Request failed" };
@@ -177,7 +177,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             var response =
                 await NetworkHelper.PerformFunctionPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>(FunctionNames.SEND_FRIEND_REQUEST, notificationData);
 
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 Console.WriteLine("FriendService: Request failed");
                 return (false, "Request failed", null);
@@ -202,7 +202,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             var response =
                 await NetworkHelper.PerformFunctionPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>(FunctionNames.RESPOND_TO_FRIEND_REQUEST, notificationData);
 
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 Console.WriteLine("FriendService - Failed to respond to friend request");
                 return (false, "Request failed");
@@ -226,7 +226,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             var response = await NetworkHelper.PerformFunctionPostRequest<UnfriendNotification, GenericResponseData>(FunctionNames.REMOVE_FRIEND, notificationData);
             
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 Console.WriteLine("FriendService - Unfriend failed");
                 return (false, "Request failed");

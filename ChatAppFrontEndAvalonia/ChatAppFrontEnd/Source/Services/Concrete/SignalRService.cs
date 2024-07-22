@@ -82,7 +82,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             var response = 
                 await NetworkHelper.PerformFunctionPostRequest<AuthenticateRequestData, AuthenticateResponseData>(FunctionNames.AUTHENTICATE_SIGNALR, requestData);
             
-            if (response.Success == false)
+            if (response.ConnectionSuccess == false)
             {
                 return new AuthenticateResponseData() { Status = false, Message = $"PerformTokenRequest - Request Failed: \n{response.Message}", AccessToken = string.Empty };
             }
