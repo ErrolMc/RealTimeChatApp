@@ -53,7 +53,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             if (success == false)
             {
-                System.Console.WriteLine($"An error occurred: {message}");
+                Console.WriteLine($"An error occurred: {message}");
                 return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
             }
 

@@ -90,7 +90,7 @@ namespace ChatAppDatabaseFunctions.Code
             }
             catch (Exception ex)
             {
-                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"SendFriendRequest Replace Exception: {ex.Message}"});
+                return new OkObjectResult(new FriendRequestNotificationResponseData { Status = false, Message = $"SendFriendRequest Replace Exception: {ex.Message}" });
             }
 
             NotificationData notificationData = new NotificationData()
