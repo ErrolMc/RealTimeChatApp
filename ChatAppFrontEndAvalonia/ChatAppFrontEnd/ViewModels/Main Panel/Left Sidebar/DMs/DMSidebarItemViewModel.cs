@@ -22,9 +22,13 @@ namespace ChatAppFrontEnd.ViewModels
 
         public DMSidebarItemViewModel(IChatEntity chatEntity, Action<DMSidebarItemViewModel, bool, Point> onClickAction)
         {
-            ChatEntity = chatEntity;
             _onClickAction = onClickAction;
+            Populate(chatEntity);
+        }
 
+        public void Populate(IChatEntity chatEntity)
+        {
+            ChatEntity = chatEntity;
             NameText = ChatEntity.Name;
         }
 

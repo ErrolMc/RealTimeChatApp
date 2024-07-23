@@ -18,6 +18,7 @@ namespace ChatAppFrontEnd.ViewModels
         private readonly IFriendService _friendService;
         private readonly IOverlayService _overlayService;
         private readonly IGroupService _groupService;
+        private readonly IAuthenticationService _authenticationService;
 
         private Action<IChatEntity> _openChatAction;
         private ObservableCollection<DMSidebarItemViewModel> _friends;
@@ -39,14 +40,18 @@ namespace ChatAppFrontEnd.ViewModels
 
         private IChatEntity _tempChatEntity;
         
-        public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService, IGroupService groupService)
+        public DMSidebarViewModel(IFriendService friendService, IOverlayService overlayService, IGroupService groupService, IAuthenticationService authenticationService)
         {
             _friendService = friendService;
             _overlayService = overlayService;
             _groupService = groupService;
+            _authenticationService = authenticationService;
 
             if (_groupService != null)
+            {
                 _groupService.OnGroupDMsUpdated += RefreshGroupDMs;
+                _groupService.OnGroupUpdated += RefreshGroupDM;
+            }
             if (_friendService != null)
                 _friendService.FriendsListUpdated += RefreshFriendsList;
             
@@ -78,6 +83,7 @@ namespace ChatAppFrontEnd.ViewModels
         private void ShowRightClickMenu(IChatEntity chatEntity, Point mousePos)
         {
             _tempChatEntity = chatEntity;
+            
             List<RightClickMenuButtonViewModel> buttons = new List<RightClickMenuButtonViewModel>();
             switch (chatEntity)
             {
@@ -94,14 +100,39 @@ namespace ChatAppFrontEnd.ViewModels
                     }
                     break;
                 case GroupDMSimple groupDM:
+                {
+                    if (_authenticationService.CurrentUser == null)
+                    {
+                        Console.WriteLine("_authenticationService.CurrentUser is null");
+                        return;
+                    }
+                    
+                    bool isHost = groupDM.Owner == _authenticationService.CurrentUser.UserID;
+
+                    if (isHost)
+                    {
+                        buttons.Add(new RightClickMenuButtonViewModel("Delete Group", () =>
+                        {
+                            ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Delete '{groupDM.Name}'",
+                                $"Are you sure you want delete the group {groupDM.Name}?",
+                                "Delete Group",
+                                DeleteGroup);
+                            _overlayService.ShowOverlayCentered(confirmDialog, () => _overlayService.HideOverlay());
+                        }));   
+                    }
+                    else
                     {
                         buttons.Add(new RightClickMenuButtonViewModel("Leave Group", () =>
                         {
-                            _overlayService.HideOverlay();
-                            //_groupService.leavegroup
-                        }));
+                            ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Leave '{groupDM.Name}'",
+                                $"Are you sure you want leave the group {groupDM.Name}?",
+                                "Leave Group",
+                                LeaveGroup);
+                            _overlayService.ShowOverlayCentered(confirmDialog, () => _overlayService.HideOverlay());
+                        }));   
                     }
-                    break;
+                }
+                break;
             }
 
             RightClickMenuViewModel menu = new RightClickMenuViewModel(buttons);
@@ -133,6 +164,45 @@ namespace ChatAppFrontEnd.ViewModels
                 GroupDMs.Add(new DMSidebarItemViewModel(groupDM, OnClickItem));
             }
         }
+        
+        private void RefreshGroupDM((GroupDMSimple groupDM, bool thisUserLeaving) res)
+        {
+            if (res.thisUserLeaving)
+                return;
+            
+            DMSidebarItemViewModel groupItem = GroupDMs.FirstOrDefault(gp => gp.ChatEntity.ID == res.groupDM.ID);
+            if (groupItem == null)
+                return;
+            
+            groupItem.Populate(res.groupDM);
+        }
+        
+        private async void LeaveGroup(bool confirmed)
+        {
+            _overlayService.HideOverlay();
+            if (!confirmed || _tempChatEntity is not GroupDMSimple groupDM)
+                return;
+
+            var response = await _groupService.RemoveUserFromGroup(_authenticationService.CurrentUser.UserID, groupDM, thisUserLeaving: true);
+            
+            if (response.success)
+            {
+                DMSidebarItemViewModel groupItem = GroupDMs.FirstOrDefault(gp => gp.ChatEntity.ID == groupDM.ID);
+                if (groupItem != null)
+                {
+                    GroupDMs.Remove(groupItem);
+                }
+            }
+        }
+        
+        private async void DeleteGroup(bool confirmed)
+        {
+            _overlayService.HideOverlay();
+            if (!confirmed || _tempChatEntity is not GroupDMSimple groupDM)
+                return;
+            
+            // delete group
+        }
         #endregion
         
         #region friends
@@ -161,7 +231,10 @@ namespace ChatAppFrontEnd.ViewModels
         ~DMSidebarViewModel()
         {
             if (_groupService != null)
+            {
                 _groupService.OnGroupDMsUpdated -= RefreshGroupDMs;
+                _groupService.OnGroupUpdated -= RefreshGroupDM;
+            }
             if (_friendService != null)
                 _friendService.FriendsListUpdated -= RefreshFriendsList;
         }

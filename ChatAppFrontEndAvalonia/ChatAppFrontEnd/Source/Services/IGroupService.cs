@@ -11,12 +11,16 @@ namespace ChatApp.Source.Services
     {
         public List<GroupDMSimple> GroupDMs { get; set; }
         
+        public event Action OnGroupDMsUpdated;
+        public event Action<(GroupDMSimple groupDM, bool thisUserLeaving)> OnGroupUpdated;
+        
+        public Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, bool thisUserLeaving);
         public Task<(bool success, string message, GroupDMSimple groupDMSimple)> CreateGroupDM(List<string> friends);
-        public Task<bool> UpdateGroupDMList();
-        public void AddGroupLocally(GroupDMSimple groupDM);
         public Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID);
         
-        public event Action OnGroupDMsUpdated;
+        public Task<bool> UpdateGroupDMList();
+        public void AddGroupLocally(GroupDMSimple groupDM);
+        public void UpdateGroupLocally(GroupDMSimple groupDM, bool thisUserLeaving);
     }
 }
 

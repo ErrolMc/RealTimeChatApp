@@ -17,7 +17,8 @@ namespace ChatApp.Shared.TableDataSimple
     public class GroupDMSimple : IChatEntity
     {
         public string Name { get; set; }
-        public string GroupID;
+        public string Owner { get; set; }
+        public string GroupID { get; set; }
         
         public string ID 
         { 

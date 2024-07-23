@@ -16,6 +16,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         private readonly IAuthenticationService _authenticationService;
 
         public event Action OnGroupDMsUpdated;
+        public event Action<(GroupDMSimple groupDM, bool thisUserLeaving)> OnGroupUpdated;
         public List<GroupDMSimple> GroupDMs { get; set; }
         
         public GroupService(IAuthenticationService authenticationService)
@@ -45,6 +46,33 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             
             CreateGroupDMResponseData responseData = response.ResponseData;
             return (responseData.CreatedGroupSuccess, responseData.Message, responseData.GroupDMSimple);
+        }
+        
+        public async Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, bool thisUserLeaving)
+        {
+            var requestData = new RemoveFromGroupRequestData()
+            {
+                UserID = userID,
+                GroupID = groupDM.GroupID
+            };
+            
+            var response =
+                await NetworkHelper.PerformFunctionPostRequest<RemoveFromGroupRequestData, RemoveFromGroupResponseData>(FunctionNames.REMOVE_USER_FROM_GROUP, requestData);
+            
+            if (response.ConnectionSuccess == false)
+            {
+                return (false, response.Message);
+            }
+            
+            RemoveFromGroupResponseData responseData = response.ResponseData;
+
+            if (responseData.Success)
+            {
+                groupDM.Name = responseData.GroupName;
+                UpdateGroupLocally(groupDM, thisUserLeaving);
+            }
+            
+            return (responseData.Success, responseData.Message);
         }
 
         public async Task<bool> UpdateGroupDMList()
@@ -78,6 +106,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             GroupDMs?.Add(groupDM);
             OnGroupDMsUpdated?.Invoke();
+        }
+
+        public void UpdateGroupLocally(GroupDMSimple groupDM, bool thisUserLeaving)
+        {
+            OnGroupUpdated?.Invoke((groupDM, thisUserLeaving));
         }
         
         public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)

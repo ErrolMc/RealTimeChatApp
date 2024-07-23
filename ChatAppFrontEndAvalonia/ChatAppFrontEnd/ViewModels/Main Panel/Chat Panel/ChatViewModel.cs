@@ -4,6 +4,7 @@ using ChatApp.Services;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
+using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
@@ -57,17 +58,19 @@ namespace ChatAppFrontEnd.ViewModels
         private readonly IChatService _chatService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IFriendService _friendService;
+        private readonly IGroupService _groupService;
         private readonly ChatSidebarViewModelFactory _sideBarFactory;
         
         private IChatEntity _chatEntity;
         private bool _sendingMessage;
         
-        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, IFriendService friendService, ChatSidebarViewModelFactory sideBarFactory)
+        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, IFriendService friendService, IGroupService groupService, ChatSidebarViewModelFactory sideBarFactory)
         {
             _chatService = chatService;
             _authenticationService = authenticationService;
             _friendService = friendService;
             _sideBarFactory = sideBarFactory;
+            _groupService = groupService;
             
             IsShown = false;
             _sendingMessage = false;
@@ -80,14 +83,22 @@ namespace ChatAppFrontEnd.ViewModels
 
         public void OnShow()
         {
-            _chatService.OnMessageReceived += OnReceiveMessage;
-            _friendService.OnUnfriended += OnRemoveFriend;
+            if (_chatService != null)
+                _chatService.OnMessageReceived += OnReceiveMessage;
+            if (_friendService != null)
+                _friendService.OnUnfriended += OnRemoveFriend;
+            if (_groupService != null)
+                _groupService.OnGroupUpdated += OnGroupUpdated;
         }
 
         public void OnHide()
         {
-            _chatService.OnMessageReceived -= OnReceiveMessage;
-            _friendService.OnUnfriended -= OnRemoveFriend;
+            if (_chatService != null)
+                _chatService.OnMessageReceived -= OnReceiveMessage;
+            if (_friendService != null)
+                _friendService.OnUnfriended -= OnRemoveFriend;
+            if (_groupService != null)
+                _groupService.OnGroupUpdated -= OnGroupUpdated;
         }
 
         private void OnReceiveMessage(Message message)
@@ -132,6 +143,17 @@ namespace ChatAppFrontEnd.ViewModels
         {
             if (_chatService.CurrentChat.ID == notification.FromUserID)
                 HideChat();
+        }
+        
+        private void OnGroupUpdated((GroupDMSimple groupDM, bool thisUserLeaving) res)
+        {
+            if (_chatService.CurrentChat.ID != res.groupDM.GroupID)
+                return;
+
+            if (res.thisUserLeaving)
+                HideChat();
+            else
+                ChatTopBarViewModel.Setup(res.groupDM);
         }
 
         public async void SendMessage()

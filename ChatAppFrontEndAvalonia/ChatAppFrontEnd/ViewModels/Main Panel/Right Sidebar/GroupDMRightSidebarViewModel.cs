@@ -22,6 +22,9 @@ namespace ChatAppFrontEnd.ViewModels
         {
             _groupService = groupService;
             Members = new ObservableCollection<DMSidebarItemViewModel>();
+            
+            if (_groupService != null)
+                _groupService.OnGroupUpdated += RefreshGroupDM;
         }
         
         public override async Task Populate(IChatEntity chatEntity)
@@ -43,6 +46,20 @@ namespace ChatAppFrontEnd.ViewModels
                 return;
             
             // TODO: show the users profile
+        }
+
+        private async void RefreshGroupDM((GroupDMSimple groupDM, bool thisUserLeaving) res)
+        {
+            if (res.thisUserLeaving)
+                return;
+            
+            await Populate(res.groupDM);
+        }
+        
+        ~GroupDMRightSidebarViewModel()
+        {
+            if (_groupService != null)
+                _groupService.OnGroupUpdated -= RefreshGroupDM;
         }
     }
 }

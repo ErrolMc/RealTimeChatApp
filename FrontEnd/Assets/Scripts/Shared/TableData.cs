@@ -53,7 +53,7 @@ namespace ChatApp.Shared.Tables
 
         public GroupDMSimple ToGroupDMSimple()
         {
-            return new GroupDMSimple() { Name = Name, GroupID = ID };
+            return new GroupDMSimple() { Name = Name, GroupID = ID, Owner = OwnerUserID };
         }
     }
 }

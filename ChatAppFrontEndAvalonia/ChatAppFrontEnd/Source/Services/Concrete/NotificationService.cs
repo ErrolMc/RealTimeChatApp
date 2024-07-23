@@ -83,6 +83,14 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         _groupService.Value?.AddGroupLocally(groupDM);
                     }
                     break;
+                case NotificationType.GroupUpdated:
+                    {
+                        GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
+                        
+                        Console.WriteLine($"Group Updated {groupDM.GroupID}");
+                        _groupService.Value?.UpdateGroupLocally(groupDM, thisUserLeaving: false);
+                    }
+                    break;
             }
 
             return true;

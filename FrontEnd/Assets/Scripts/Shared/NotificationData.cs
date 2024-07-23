@@ -15,6 +15,7 @@ namespace ChatApp.Shared.Notifications
         GroupCreated = 5,
         GroupDMMessage = 6,
         Unfriend = 7,
+        GroupUpdated = 8, // when a user has left/gotten kicked out of group
     }
     
     [Serializable]

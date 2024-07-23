@@ -11,12 +11,13 @@ using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatApp.Shared.ExtensionMethods;
+using ChatApp.Shared;
 
 namespace ChatAppDatabaseFunctions.Code
 {
     public static class GetGroupParticipants
     {
-        [FunctionName("GetGroupParticipants")]
+        [FunctionName(FunctionNames.GET_GROUP_PARTICIPANTS)]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)

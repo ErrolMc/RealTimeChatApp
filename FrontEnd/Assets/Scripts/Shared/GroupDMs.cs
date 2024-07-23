@@ -39,4 +39,19 @@ namespace ChatApp.Shared.GroupDMs
         public string OwnerUserID { get; set; }
         public List<UserSimple> Participants { get; set; } = new List<UserSimple>();
     }
+
+    [Serializable]
+    public class RemoveFromGroupRequestData
+    {
+        public string UserID { get; set; }
+        public string GroupID { get; set; }
+    }
+    
+    [Serializable]
+    public class RemoveFromGroupResponseData
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public string GroupName { get; set; }
+    }
 }
