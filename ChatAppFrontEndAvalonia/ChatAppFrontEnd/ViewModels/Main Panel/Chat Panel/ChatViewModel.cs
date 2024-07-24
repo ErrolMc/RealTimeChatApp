@@ -159,7 +159,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         public async void SendMessage()
         {
-            if (_sendingMessage)
+            if (_sendingMessage || string.IsNullOrEmpty(MessageBoxText))
                 return;
             _sendingMessage = true;
             
