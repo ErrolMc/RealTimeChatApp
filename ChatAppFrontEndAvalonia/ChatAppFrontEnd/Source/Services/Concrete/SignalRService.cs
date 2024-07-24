@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using ChatApp.Shared;
 using ChatApp.Shared.Constants;
 using ChatApp.Shared.Notifications;
@@ -51,7 +52,18 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 
                 _connection.On("OnNotificationReceived", (string message) =>
                 {
-                    bool res = _notificationService.HandleNotification(message);
+                    try
+                    {
+                        // need to convert from the signalR thread to the UI thread to avoid any potential issues
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            bool res = _notificationService.HandleNotification(message); 
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"SignalRService Exception: {e.Message}");
+                    }
                 });
                 
                 await _connection.StartAsync();

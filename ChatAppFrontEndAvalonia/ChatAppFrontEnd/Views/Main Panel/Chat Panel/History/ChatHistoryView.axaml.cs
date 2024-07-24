@@ -44,19 +44,8 @@ public partial class ChatHistoryView : UserControl
     private async void ScrollToBottom()
     {
         await Task.Delay(10);
-
-        try
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                var scrollViewer = this.FindControl<ScrollViewer>("Scroller");
-                scrollViewer?.ScrollToEnd();
-            });
-        }
-        catch (Exception e)
-        {
-            
-        }
-
+        
+        var scrollViewer = this.FindControl<ScrollViewer>("Scroller");
+        scrollViewer?.ScrollToEnd();
     }
 }

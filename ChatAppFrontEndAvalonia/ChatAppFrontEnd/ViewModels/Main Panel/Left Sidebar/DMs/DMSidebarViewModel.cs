@@ -47,6 +47,9 @@ namespace ChatAppFrontEnd.ViewModels
             _overlayService = overlayService;
             _groupService = groupService;
             _authenticationService = authenticationService;
+            
+            Friends = new ObservableCollection<DMSidebarItemViewModel>();
+            GroupDMs = new ObservableCollection<DMSidebarItemViewModel>();
 
             if (_groupService != null)
             {
@@ -63,9 +66,9 @@ namespace ChatAppFrontEnd.ViewModels
         {
             _openChatAction = openChatAction;
             
-            Friends = new ObservableCollection<DMSidebarItemViewModel>();
-            GroupDMs = new ObservableCollection<DMSidebarItemViewModel>();
-
+            Friends?.Clear();
+            GroupDMs?.Clear();
+            
             if (await _friendService.UpdateFriendsList())
                 RefreshFriendsList();
             
