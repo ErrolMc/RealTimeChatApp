@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ChatApp.Shared.Enums;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
 using Newtonsoft.Json;
@@ -45,6 +46,7 @@ namespace ChatApp.Shared.GroupDMs
     {
         public string UserID { get; set; }
         public string GroupID { get; set; }
+        public GroupUpdateReason Reason { get; set; }
     }
     
     [Serializable]

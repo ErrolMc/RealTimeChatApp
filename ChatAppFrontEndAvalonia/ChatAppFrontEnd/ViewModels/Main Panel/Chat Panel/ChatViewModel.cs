@@ -1,6 +1,7 @@
 using System;
 using Avalonia.Controls;
 using ChatApp.Services;
+using ChatApp.Shared.Enums;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
@@ -145,12 +146,12 @@ namespace ChatAppFrontEnd.ViewModels
                 HideChat();
         }
         
-        private void OnGroupUpdated((GroupDMSimple groupDM, bool thisUserLeaving) res)
+        private void OnGroupUpdated((GroupDMSimple groupDM, GroupUpdateReason reason) res)
         {
             if (_chatService.CurrentChat.ID != res.groupDM.GroupID)
                 return;
 
-            if (res.thisUserLeaving)
+            if (res.reason is GroupUpdateReason.ThisUserLeft or GroupUpdateReason.ThisUserKicked)
                 HideChat();
             else
                 ChatTopBarViewModel.Setup(res.groupDM);

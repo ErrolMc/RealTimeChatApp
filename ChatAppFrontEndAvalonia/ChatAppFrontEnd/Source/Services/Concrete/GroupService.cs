@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ChatApp.Services;
 using ChatApp.Shared;
+using ChatApp.Shared.Enums;
 using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
@@ -16,7 +18,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         private readonly IAuthenticationService _authenticationService;
 
         public event Action OnGroupDMsUpdated;
-        public event Action<(GroupDMSimple groupDM, bool thisUserLeaving)> OnGroupUpdated;
+        public event Action<(GroupDMSimple groupDM, GroupUpdateReason reason)> OnGroupUpdated;
         public List<GroupDMSimple> GroupDMs { get; set; }
         
         public GroupService(IAuthenticationService authenticationService)
@@ -48,12 +50,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return (responseData.CreatedGroupSuccess, responseData.Message, responseData.GroupDMSimple);
         }
         
-        public async Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, bool thisUserLeaving)
+        public async Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, GroupUpdateReason reason)
         {
             var requestData = new RemoveFromGroupRequestData()
             {
                 UserID = userID,
-                GroupID = groupDM.GroupID
+                GroupID = groupDM.GroupID,
+                Reason = reason
             };
             
             var response =
@@ -68,8 +71,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
             if (responseData.Success)
             {
+                if (reason == GroupUpdateReason.UserLeft)
+                    reason = GroupUpdateReason.ThisUserLeft;
+                
                 groupDM.Name = responseData.GroupName;
-                UpdateGroupLocally(groupDM, thisUserLeaving);
+                UpdateGroupLocally(groupDM, reason);
             }
             
             return (responseData.Success, responseData.Message);
@@ -108,9 +114,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             OnGroupDMsUpdated?.Invoke();
         }
 
-        public void UpdateGroupLocally(GroupDMSimple groupDM, bool thisUserLeaving)
+        public void UpdateGroupLocally(GroupDMSimple groupDM, GroupUpdateReason reason)
         {
-            OnGroupUpdated?.Invoke((groupDM, thisUserLeaving));
+            if (reason is GroupUpdateReason.ThisUserKicked or GroupUpdateReason.ThisUserLeft)
+            {
+                GroupDMSimple localGroupDM = GroupDMs.FirstOrDefault(gp => gp.GroupID == groupDM.GroupID);
+                if (localGroupDM != null)
+                    GroupDMs?.Remove(localGroupDM);
+            }
+            
+            OnGroupUpdated?.Invoke((groupDM, reason));
         }
         
         public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)

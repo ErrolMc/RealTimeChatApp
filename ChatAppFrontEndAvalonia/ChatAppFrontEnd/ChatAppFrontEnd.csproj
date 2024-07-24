@@ -27,6 +27,9 @@
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs">
         <Link>Source\Shared\AuthenticationData.cs</Link>
       </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs">
+        <Link>Source\Shared\Enums.cs</Link>
+      </Compile>
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs">
         <Link>Source\Shared\FunctionNames.cs</Link>
       </Compile>

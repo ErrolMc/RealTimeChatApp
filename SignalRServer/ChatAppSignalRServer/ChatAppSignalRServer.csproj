@@ -16,6 +16,7 @@
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Other\MessageData.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
     <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
+    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs" Link="Other\Enums.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Other\MessageData.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs.meta" Link="Other\GroupDMs.cs.meta" />
     <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Other\TableDataSimple.cs.meta" />
+    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs.meta" Link="Other\Enums.cs.meta" />
   </ItemGroup>
 
 </Project>

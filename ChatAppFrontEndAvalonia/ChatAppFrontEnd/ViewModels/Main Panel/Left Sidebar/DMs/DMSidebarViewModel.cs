@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using ChatApp.Services;
+using ChatApp.Shared.Enums;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Other;
@@ -165,14 +166,17 @@ namespace ChatAppFrontEnd.ViewModels
             }
         }
         
-        private void RefreshGroupDM((GroupDMSimple groupDM, bool thisUserLeaving) res)
+        private void RefreshGroupDM((GroupDMSimple groupDM, GroupUpdateReason reason) res)
         {
-            if (res.thisUserLeaving)
-                return;
-            
             DMSidebarItemViewModel groupItem = GroupDMs.FirstOrDefault(gp => gp.ChatEntity.ID == res.groupDM.ID);
             if (groupItem == null)
                 return;
+
+            if (res.reason is GroupUpdateReason.ThisUserLeft or GroupUpdateReason.ThisUserKicked)
+            {
+                GroupDMs.Remove(groupItem);
+                return;
+            }
             
             groupItem.Populate(res.groupDM);
         }
@@ -183,16 +187,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (!confirmed || _tempChatEntity is not GroupDMSimple groupDM)
                 return;
 
-            var response = await _groupService.RemoveUserFromGroup(_authenticationService.CurrentUser.UserID, groupDM, thisUserLeaving: true);
-            
-            if (response.success)
-            {
-                DMSidebarItemViewModel groupItem = GroupDMs.FirstOrDefault(gp => gp.ChatEntity.ID == groupDM.ID);
-                if (groupItem != null)
-                {
-                    GroupDMs.Remove(groupItem);
-                }
-            }
+            var response = await _groupService.RemoveUserFromGroup(_authenticationService.CurrentUser.UserID, groupDM, GroupUpdateReason.UserLeft);
         }
         
         private async void DeleteGroup(bool confirmed)

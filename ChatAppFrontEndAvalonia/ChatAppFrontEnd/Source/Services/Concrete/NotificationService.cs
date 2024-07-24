@@ -1,5 +1,6 @@
 using System;
 using ChatApp.Services;
+using ChatApp.Shared.Enums;
 using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Messages;
 using ChatApp.Shared.Misc;
@@ -88,7 +89,15 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
                         
                         Console.WriteLine($"Group Updated {groupDM.GroupID}");
-                        _groupService.Value?.UpdateGroupLocally(groupDM, thisUserLeaving: false);
+                        _groupService.Value?.UpdateGroupLocally(groupDM, GroupUpdateReason.DoesntMatter);
+                    }
+                    break;
+                case NotificationType.KickedFromGroup:
+                    {
+                        GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
+                        
+                        Console.WriteLine($"Kicked from group {groupDM.GroupID}");
+                        _groupService.Value?.UpdateGroupLocally(groupDM, GroupUpdateReason.ThisUserKicked);
                     }
                     break;
             }

@@ -17,6 +17,7 @@ using ChatApp.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using ChatApp.Shared.Notifications;
+using ChatApp.Shared.Enums;
 
 namespace ChatAppDatabaseFunctions.Code.Groups
 {
@@ -106,6 +107,19 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 {
                     return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = $"Group Replace Exception: {ex.Message}" });
                 }
+            }
+
+            // send notification to kicked user
+            if (requestData.Reason == GroupUpdateReason.UserKicked)
+            {
+                NotificationData notificationData = new NotificationData()
+                {
+                    NotificationType = (int)NotificationType.KickedFromGroup,
+                    RecipientUserID = userToRemove.UserID,
+                    NotificationJson = JsonConvert.SerializeObject(groupDM.ToGroupDMSimple())
+                };
+
+                (bool result, string message) = await SharedRequests.SendNotificationThroughSignalR(notificationData);
             }
 
             // send notifications to other group users
