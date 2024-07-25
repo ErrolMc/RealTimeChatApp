@@ -17,6 +17,7 @@ namespace ChatApp.Shared
         public const string GET_GROUP_PARTICIPANTS = "GetGroupParticipants";
         public const string REMOVE_FRIEND = "RemoveFriend";
         public const string REMOVE_USER_FROM_GROUP = "RemoveUserFromGroup";
+        public const string DELETE_GROUP = "DeleteGroup";
     }
 }
 

@@ -175,7 +175,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (groupItem == null)
                 return;
 
-            if (res.reason is GroupUpdateReason.ThisUserLeft or GroupUpdateReason.ThisUserKicked)
+            if (res.reason.IsReasonToDeleteLocalGroup())
             {
                 GroupDMs.Remove(groupItem);
                 return;
@@ -199,7 +199,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (!confirmed || _tempChatEntity is not GroupDMSimple groupDM)
                 return;
             
-            // delete group
+            var response = await _groupService.DeleteGroup(groupDM.GroupID);
         }
         #endregion
         

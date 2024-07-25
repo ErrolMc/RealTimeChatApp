@@ -151,7 +151,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (_chatService.CurrentChat.ID != res.groupDM.GroupID)
                 return;
 
-            if (res.reason is GroupUpdateReason.ThisUserLeft or GroupUpdateReason.ThisUserKicked)
+            if (res.reason.IsReasonToDeleteLocalGroup())
                 HideChat();
             else
                 ChatTopBarViewModel.Setup(res.groupDM);

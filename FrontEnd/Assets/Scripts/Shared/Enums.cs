@@ -14,4 +14,14 @@ namespace ChatApp.Shared.Enums
         AddedUsersToGroup = 5,
         GroupDeleted = 6,
     }
+
+    public static class EnumExtensions
+    {
+        public static bool IsReasonToDeleteLocalGroup(this GroupUpdateReason reason)
+        {
+            return reason is GroupUpdateReason.ThisUserKicked 
+                          or GroupUpdateReason.ThisUserLeft
+                          or GroupUpdateReason.GroupDeleted;
+        }
+    }
 }

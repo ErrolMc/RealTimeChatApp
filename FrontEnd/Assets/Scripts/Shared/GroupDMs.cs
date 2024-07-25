@@ -25,6 +25,15 @@ namespace ChatApp.Shared.GroupDMs
     }
 
     [Serializable]
+    public class DeleteGroupDMResponseData
+    {
+        public bool Success { get; set; }
+        public bool ReplaceGroupSuccess { get; set; } = false;
+        public bool ReplaceUserSuccess { get; set; } = false;
+        public string Message { get; set; }
+    }
+
+    [Serializable]
     public class GetGroupDMsResponseData
     {
         public bool Success { get; set; }

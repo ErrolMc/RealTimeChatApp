@@ -81,6 +81,29 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return (responseData.Success, responseData.Message);
         }
 
+        public async Task<(bool success, string message)> DeleteGroup(string groupID)
+        {
+            var response = await NetworkHelper.PerformFunctionPostRequest<string, DeleteGroupDMResponseData>(FunctionNames.DELETE_GROUP, groupID);
+            
+            if (response.ConnectionSuccess == false)
+            {
+                return (false, response.Message);
+            }
+
+            DeleteGroupDMResponseData responseData = response.ResponseData;
+
+            if (responseData.Success)
+            {
+                UpdateGroupLocally(new GroupDMSimple() { GroupID = groupID}, GroupUpdateReason.GroupDeleted);
+            }
+            else
+            {
+                Console.WriteLine($"Delete Group DM Fail | Group Replace: {responseData.ReplaceGroupSuccess} User Replace: {responseData.ReplaceUserSuccess}");
+            }
+            
+            return (responseData.Success, responseData.Message);
+        }
+
         public async Task<bool> UpdateGroupDMList()
         {
             UserSimple requestData = new UserSimple
@@ -116,7 +139,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public void UpdateGroupLocally(GroupDMSimple groupDM, GroupUpdateReason reason)
         {
-            if (reason is GroupUpdateReason.ThisUserKicked or GroupUpdateReason.ThisUserLeft)
+            if (reason.IsReasonToDeleteLocalGroup())
             {
                 GroupDMSimple localGroupDM = GroupDMs.FirstOrDefault(gp => gp.GroupID == groupDM.GroupID);
                 if (localGroupDM != null)

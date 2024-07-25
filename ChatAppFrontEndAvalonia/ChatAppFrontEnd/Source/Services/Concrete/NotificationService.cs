@@ -100,6 +100,14 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         _groupService.Value?.UpdateGroupLocally(groupDM, GroupUpdateReason.ThisUserKicked);
                     }
                     break;
+                case NotificationType.GroupDeleted:
+                    {
+                        GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
+                            
+                        Console.WriteLine($"Deleted group {groupDM.GroupID}");
+                        _groupService.Value?.UpdateGroupLocally(groupDM, GroupUpdateReason.GroupDeleted);
+                    }
+                    break;
             }
 
             return true;

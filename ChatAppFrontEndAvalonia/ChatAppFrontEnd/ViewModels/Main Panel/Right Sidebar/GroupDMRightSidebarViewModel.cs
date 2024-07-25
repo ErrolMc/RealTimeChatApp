@@ -113,7 +113,7 @@ namespace ChatAppFrontEnd.ViewModels
 
         private async void RefreshGroupDM((GroupDMSimple groupDM, GroupUpdateReason reason) res)
         {
-            if (res.reason is GroupUpdateReason.ThisUserKicked or GroupUpdateReason.ThisUserLeft)
+            if (res.reason.IsReasonToDeleteLocalGroup())
                 return;
             
             await Populate(res.groupDM);
