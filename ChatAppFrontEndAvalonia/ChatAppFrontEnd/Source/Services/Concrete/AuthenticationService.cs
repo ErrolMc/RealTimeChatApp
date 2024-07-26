@@ -14,12 +14,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public async Task<(bool success, string message, User user)> TryLogin(string username, string password)
         {
             var resp = await PerformRequest(FunctionNames.LOGIN, username, password);
+            if (resp.ConnectionSuccess == false)
+                return (false, resp.Message, null);
             return (resp.ResponseData.Status, resp.ResponseData.Message, resp.ResponseData.User);
         }
 
         public async Task<(bool success, string message)> TryRegister(string username, string password)
         {
             var resp = await PerformRequest(FunctionNames.REGISTER, username, password);
+            if (resp.ConnectionSuccess == false)
+                return (false, resp.Message);
             return (resp.ResponseData.Status, resp.ResponseData.Message);
         }
         
