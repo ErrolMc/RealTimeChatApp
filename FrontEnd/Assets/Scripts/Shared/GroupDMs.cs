@@ -65,4 +65,21 @@ namespace ChatApp.Shared.GroupDMs
         public string Message { get; set; }
         public string GroupName { get; set; }
     }
+    
+    [Serializable]
+    public class AddFriendsToGroupDMRequestData
+    {
+        public string GroupID { get; set; }
+        public List<string> UsersToAdd { get; set; } = new List<string>();
+    }
+    
+    [Serializable]
+    public class AddFriendsToGroupDMResponseData
+    {
+        public bool Success { get; set; } = false;
+        public bool ReplaceGroupSuccess { get; set; } = false;
+        public bool ReplaceUserSuccess { get; set; } = false;
+        public string Message { get; set; }
+        public GroupDMSimple GroupDMSimple { get; set; }
+    }
 }

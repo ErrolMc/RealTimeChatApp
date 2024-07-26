@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Enums;
+using ChatAppDatabaseFunctions.Code.Utils;
 
 namespace ChatAppDatabaseFunctions.Code.Groups
 {
@@ -69,10 +70,16 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = $"Couldn't remove user {userToRemove.UserID} from group {groupDM.ID}, UpdateUser: {updatedUser}, UpdateGroup: {updatedGroup}" });
             }
 
+            bool ownerFound = participants.GetOwnerAndPutAtFront(out User owner, groupDM.OwnerUserID);
+            if (!ownerFound)
+            {
+                return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = "Couldn't get creator user info from database" });
+            }
+
             if (participants.Remove(userToRemove))
             {
                 updatedGroup = true;
-                groupDM.Name = string.Join(", ", participants.Select(user => $"{user.Username}")).TrimEnd();
+                groupDM.Name = participants.GetGroupName();
             }
 
             // replace group
@@ -125,6 +132,10 @@ namespace ChatAppDatabaseFunctions.Code.Groups
             // send notifications to other group users
             foreach (User user in participants)
             {
+                // dont send notification to the owner if the user was kicked
+                if (requestData.Reason == GroupUpdateReason.UserKicked && user.UserID == groupDM.OwnerUserID)
+                    continue;
+
                 NotificationData notificationData = new NotificationData()
                 {
                     NotificationType = (int)NotificationType.GroupUpdated,

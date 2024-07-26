@@ -12,7 +12,7 @@ namespace ChatApp.Shared.Notifications
         ServerMessage = 2,
         FriendRequestRespond = 3, // telling a sender the result of their sent friend request
         FriendRequestCancel = 4, // telling the recipient of a friend request it was cancelled
-        GroupCreated = 5,
+        AddedToGroup = 5,
         GroupDMMessage = 6,
         Unfriend = 7,
         GroupUpdated = 8, // when a user has left/gotten kicked out of group

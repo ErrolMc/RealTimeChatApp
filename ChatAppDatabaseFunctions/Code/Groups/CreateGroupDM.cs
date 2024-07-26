@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using ChatApp.Shared;
 using System.Linq;
 using Microsoft.AspNetCore.Components.Routing;
+using ChatAppDatabaseFunctions.Code.Utils;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -45,15 +46,13 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get participant user info from database" });
             }
 
-            var owner = getParticipantsResp.users.FirstOrDefault(user => user.UserID == requestData.Creator);
-            if (owner == null)
+            List<User> participants = getParticipantsResp.users;
+            bool ownerFound = participants.GetOwnerAndPutAtFront(out User owner, requestData.Creator);
+
+            if (!ownerFound)
             {
                 return new OkObjectResult(new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get creator user info from database" });
             }
-
-            List<User> participantsWithOwnerAtFront = getParticipantsResp.users;
-            if (participantsWithOwnerAtFront.Remove(owner))
-                participantsWithOwnerAtFront.Insert(0, owner);
 
             // create the group data structure
             string threadID = Guid.NewGuid().ToString();
@@ -64,7 +63,7 @@ namespace ChatAppDatabaseFunctions.Code
                 OwnerUserID = requestData.Creator,
                 ParticipantUserIDs = requestData.Participants,
                 HasCustomName = false,
-                Name = string.Join(", ", participantsWithOwnerAtFront.Select(user => $"{user.Username}")).TrimEnd()
+                Name = participants.GetGroupName()
             };
 
             // create the group
@@ -80,7 +79,7 @@ namespace ChatAppDatabaseFunctions.Code
 
             List<string> failedNotifications = new List<string>();
             List<string> failedDatabaseUpdates = new List<string>();
-            foreach (User user in participantsWithOwnerAtFront)
+            foreach (User user in participants)
             {
                 // update each user in database with the group in their record
                 if (!user.GroupDMs.Contains(threadID))
@@ -104,7 +103,7 @@ namespace ChatAppDatabaseFunctions.Code
                 // notify other users the group was created
                 NotificationData notificationData = new NotificationData()
                 {
-                    NotificationType = (int)NotificationType.GroupCreated,
+                    NotificationType = (int)NotificationType.AddedToGroup,
                     RecipientUserID = user.UserID,
                     NotificationJson = JsonConvert.SerializeObject(groupDM.ToGroupDMSimple())
                 };

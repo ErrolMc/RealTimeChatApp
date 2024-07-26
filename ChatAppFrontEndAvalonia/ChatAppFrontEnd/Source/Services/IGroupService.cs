@@ -18,6 +18,7 @@ namespace ChatApp.Source.Services
         public Task<(bool success, string message)> DeleteGroup(string groupID);
         public Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, GroupUpdateReason reason);
         public Task<(bool success, string message, GroupDMSimple groupDMSimple)> CreateGroupDM(List<string> friends);
+        public Task<(bool success, string message, GroupDMSimple groupDMSimple)> AddFriendsToGroupDM(string groupID, List<string> friends);
         public Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID);
         
         public Task<bool> UpdateGroupDMList();

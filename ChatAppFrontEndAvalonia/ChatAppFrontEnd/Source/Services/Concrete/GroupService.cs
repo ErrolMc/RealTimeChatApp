@@ -47,7 +47,39 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             }
             
             CreateGroupDMResponseData responseData = response.ResponseData;
+
+            if (responseData.CreatedGroupSuccess)
+            {
+                AddGroupLocally(responseData.GroupDMSimple);
+            }
+            
             return (responseData.CreatedGroupSuccess, responseData.Message, responseData.GroupDMSimple);
+        }
+
+        public async Task<(bool success, string message, GroupDMSimple groupDMSimple)> AddFriendsToGroupDM(string groupID, List<string> friends)
+        {
+            var requestData = new AddFriendsToGroupDMRequestData()
+            {
+                GroupID = groupID,
+                UsersToAdd = friends
+            };
+            
+            var response =
+                await NetworkHelper.PerformFunctionPostRequest<AddFriendsToGroupDMRequestData, AddFriendsToGroupDMResponseData>(FunctionNames.ADD_FRIENDS_TO_GROUP, requestData);
+            
+            if (response.ConnectionSuccess == false)
+            {
+                return (false, response.Message, null);
+            }
+
+            AddFriendsToGroupDMResponseData responseData = response.ResponseData;
+
+            if (responseData.Success)
+            {
+                UpdateGroupLocally(responseData.GroupDMSimple, GroupUpdateReason.DoesntMatter);
+            }
+            
+            return (responseData.Success, responseData.Message, responseData.GroupDMSimple);
         }
         
         public async Task<(bool success, string message)> RemoveUserFromGroup(string userID, GroupDMSimple groupDM, GroupUpdateReason reason)

@@ -76,7 +76,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         _chatService.Value?.OnReceiveMessage(message);
                     }
                     break;
-                case NotificationType.GroupCreated:
+                case NotificationType.AddedToGroup:
                     {
                         GroupDMSimple groupDM = JsonConvert.DeserializeObject<GroupDMSimple>(notificationData.NotificationJson);
                             

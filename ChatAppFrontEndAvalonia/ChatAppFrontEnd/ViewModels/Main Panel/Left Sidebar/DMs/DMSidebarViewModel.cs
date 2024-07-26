@@ -93,7 +93,7 @@ namespace ChatAppFrontEnd.ViewModels
             {
                 case UserSimple user:
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Remove Friend", () =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Remove Friend", (clickPos) =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Remove '{user.UserName}'",
                                 $"Are you sure you want to permanently remove {user.UserName} from your friends?",
@@ -115,7 +115,7 @@ namespace ChatAppFrontEnd.ViewModels
 
                     if (isHost)
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Delete Group", () =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Delete Group", (clickPos) =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Delete '{groupDM.Name}'",
                                 $"Are you sure you want delete the group {groupDM.Name}?",
@@ -123,10 +123,12 @@ namespace ChatAppFrontEnd.ViewModels
                                 DeleteGroup);
                             _overlayService.ShowOverlayCentered(confirmDialog, () => _overlayService.HideOverlay());
                         }));   
+                        
+                        buttons.Add(new RightClickMenuButtonViewModel("Add Users to Group", OnClick_AddUsersToGroup));
                     }
                     else
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Leave Group", () =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Leave Group", (clickPos) =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Leave '{groupDM.Name}'",
                                 $"Are you sure you want leave the group {groupDM.Name}?",
@@ -146,15 +148,26 @@ namespace ChatAppFrontEnd.ViewModels
         }
         
         #region groupdms
-        private void OnClick_CreateGroupDM()
+
+        private async void OnClick_AddUsersToGroup(Point clickPos)
         {
-            _overlayService.ShowOverlay(new CreateGroupDMViewModel(_friendService.Friends, _groupService, OnCreateGroupSuccess), 60, 130,() => { });
+            if (_tempChatEntity is not GroupDMSimple groupDM)
+                return;
+
+            var resp = await _groupService.GetGroupParticipants(groupDM.GroupID);
+            if (resp.Success == false)
+                return;
+            
+            var viewModel = new CreateGroupDMViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
+            viewModel.SetupAddToGroup(groupDM.GroupID, resp.Participants);
+            
+            _overlayService.ShowOverlay(viewModel, topOffset: clickPos.Y, leftOffset: clickPos.X, () => { });
         }
         
-        private void OnCreateGroupSuccess(GroupDMSimple groupDMSimple)
+        private void OnClick_CreateGroupDM()
         {
-            _overlayService.HideOverlay();
-            _groupService?.AddGroupLocally(groupDMSimple);
+            var viewModel = new CreateGroupDMViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
+            _overlayService.ShowOverlay(viewModel, 60, 130,() => { });
         }
 
         private void RefreshGroupDMs()

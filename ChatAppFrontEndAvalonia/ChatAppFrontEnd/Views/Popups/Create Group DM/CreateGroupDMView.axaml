@@ -40,7 +40,7 @@
                 </ScrollViewer>
             </Border>
 
-            <Button Command="{Binding CreateDMCommand}" Content="Create DM" HorizontalAlignment="Center" Margin="0,5,0,5" />
+            <Button Command="{Binding CreateDMCommand}" Content="{Binding CreateButtonText}" HorizontalAlignment="Center" Margin="0,5,0,5" />
             
             <TextBlock Text="{Binding BottomMessageField}" IsVisible="{Binding BottomMessageActive}"  Margin="5,0,5,0" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
             

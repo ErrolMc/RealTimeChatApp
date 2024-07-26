@@ -41,12 +41,13 @@ namespace ChatAppFrontEnd.Views
         {
             ((Border)sender).Background = new SolidColorBrush(_hovered ? HoveredColor : NormalColor);
 
-            if (_hovered && this.DataContext is RightClickMenuButtonViewModel viewModel)
+            if (_hovered && this.DataContext is RightClickMenuButtonViewModel viewModel && this.VisualRoot is Window window)
             {
                 if (e.InitialPressMouseButton != MouseButton.Left)
                     return;
 
-                viewModel?.OnClick();
+                Point mousePos = e.GetPosition(window);
+                viewModel?.OnClick(mousePos);
             }
         }
     }

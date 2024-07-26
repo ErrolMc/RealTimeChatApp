@@ -1,4 +1,5 @@
 using System;
+using Avalonia;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -12,18 +13,18 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _labelText, value);
         }
 
-        private readonly Action _onClickAction;
+        private readonly Action<Point> _onClickAction;
         
-        public RightClickMenuButtonViewModel(string label, Action onClickAction)
+        public RightClickMenuButtonViewModel(string label, Action<Point> onClickAction)
         {
             _onClickAction = onClickAction;
 
             LabelText = label;
         }
         
-        public void OnClick()
+        public void OnClick(Point clickPos)
         {
-            _onClickAction?.Invoke();
+            _onClickAction?.Invoke(clickPos);
         }
     }
 }

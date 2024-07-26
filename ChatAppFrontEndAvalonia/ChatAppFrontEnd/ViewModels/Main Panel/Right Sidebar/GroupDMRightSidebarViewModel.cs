@@ -79,7 +79,7 @@ namespace ChatAppFrontEnd.ViewModels
             {
                 if (user.UserID != curUserID)
                 {
-                    buttons.Add(new RightClickMenuButtonViewModel("Remove from group", () =>
+                    buttons.Add(new RightClickMenuButtonViewModel("Remove from group", (clickPos) =>
                     {
                         ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Remove '{user.Name}'",
                             $"Are you sure you want remove {user.Name} from {_groupDM.Name}?",
