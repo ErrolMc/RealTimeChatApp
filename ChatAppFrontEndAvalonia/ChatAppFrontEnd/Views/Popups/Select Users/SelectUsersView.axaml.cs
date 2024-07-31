@@ -5,16 +5,16 @@ using ChatAppFrontEnd.ViewModels;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class CreateGroupDMView : UserControl
+    public partial class SelectUsersView : UserControl
     {
-        public CreateGroupDMView()
+        public SelectUsersView()
         {
             InitializeComponent();
         }
 
         private void OnUsernameTextChanged(object sender, TextChangedEventArgs e)
         {
-            var viewModel = DataContext as CreateGroupDMViewModel;
+            var viewModel = DataContext as SelectUsersViewModel;
             viewModel?.UpdateUserList();
         }
     }   

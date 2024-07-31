@@ -5,8 +5,8 @@
              xmlns:vm="clr-namespace:ChatAppFrontEnd.ViewModels"
              xmlns:views="clr-namespace:ChatAppFrontEnd.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="470"
-             x:Class="ChatAppFrontEnd.Views.CreateGroupDMView"
-             x:DataType="vm:CreateGroupDMViewModel"
+             x:Class="ChatAppFrontEnd.Views.SelectUsersView"
+             x:DataType="vm:SelectUsersViewModel"
              Background="Transparent">
     
     <Border Background="#313338" CornerRadius="3" Padding="8" Width="300" Margin="3" BoxShadow="0 0 4 0 #1e1f22">
@@ -19,7 +19,7 @@
                     <ItemsControl ItemsSource="{Binding SelectedUsers}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <views:CreateGroupDMSelectedUserView/>
+                                <views:SelectUsersSelectedUserView/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -33,7 +33,7 @@
                     <ItemsControl ItemsSource="{Binding Users}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <views:CreateGroupDMUserView/>
+                                <views:SelectUsersUserView/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

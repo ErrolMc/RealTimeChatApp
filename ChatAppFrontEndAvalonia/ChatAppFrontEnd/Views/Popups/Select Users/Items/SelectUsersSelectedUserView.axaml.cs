@@ -7,19 +7,18 @@ using ChatAppFrontEnd.ViewModels;
 
 namespace ChatAppFrontEnd.Views
 {
-    public partial class CreateGroupDMUserView : UserControl
+    public partial class SelectUsersSelectedUserView : UserControl
     {
         private readonly Color NormalColor = Color.Parse("#313338");
-        private readonly Color HoveredColor = Color.Parse("#393c41");
-        private readonly Color PressedColor = Color.Parse("#45474b");
+        private readonly Color HoveredColor = Color.Parse("#282a2e");
         
         private bool _hovered = false;
-    
-        public CreateGroupDMUserView()
+        
+        public SelectUsersSelectedUserView()
         {
             InitializeComponent();
         }
-    
+        
         private void OnPointerEntered(object sender, PointerEventArgs e)
         {
             _hovered = true;
@@ -34,16 +33,7 @@ namespace ChatAppFrontEnd.Views
         
         private void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {
-            ((Border)sender).Background = new SolidColorBrush(PressedColor);
-        }
-        
-        private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
-        {
-            ((Border)sender).Background = new SolidColorBrush(_hovered ? HoveredColor : NormalColor);
-            
-            // this definitely breaks MVVM, but I couldn't figure out any other way 
-            // to change the color on release and call the OnClickCommand
-            if (_hovered && DataContext is CreateGroupDMUserViewModel viewModel)
+            if (_hovered && DataContext is SelectUsersSelectedUserViewModel viewModel)
             {
                 if (viewModel?.OnClickCommand.CanExecute(null) == true)
                 {
@@ -51,6 +41,5 @@ namespace ChatAppFrontEnd.Views
                 }
             }
         }
-    }
+    }   
 }
-

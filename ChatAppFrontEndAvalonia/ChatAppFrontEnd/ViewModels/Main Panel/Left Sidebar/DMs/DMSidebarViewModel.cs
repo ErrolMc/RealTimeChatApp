@@ -158,7 +158,7 @@ namespace ChatAppFrontEnd.ViewModels
             if (resp.Success == false)
                 return;
             
-            var viewModel = new CreateGroupDMViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
+            var viewModel = new SelectUsersViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
             viewModel.SetupAddToGroup(groupDM.GroupID, resp.Participants);
             
             _overlayService.ShowOverlay(viewModel, topOffset: clickPos.Y, leftOffset: clickPos.X, () => { });
@@ -166,7 +166,7 @@ namespace ChatAppFrontEnd.ViewModels
         
         private void OnClick_CreateGroupDM()
         {
-            var viewModel = new CreateGroupDMViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
+            var viewModel = new SelectUsersViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
             _overlayService.ShowOverlay(viewModel, 60, 130,() => { });
         }
 
