@@ -34,4 +34,3 @@ namespace ChatAppFrontEnd.Source.Other
         }
     }
 }
-

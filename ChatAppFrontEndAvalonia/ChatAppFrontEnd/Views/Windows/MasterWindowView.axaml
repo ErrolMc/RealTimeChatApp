@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ChatAppFrontEnd.Views.Windows.MasterWindowView"
         x:DataType="vm:MasterWindowViewModel"
-        Title="MasterWindowView">
+        Title="ErrolChat">
     
     <Design.DataContext>
         <vm:MasterWindowViewModel />

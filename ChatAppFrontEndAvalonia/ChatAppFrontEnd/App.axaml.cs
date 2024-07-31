@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using ChatApp.Services;
 using ChatApp.Source.Services;
+using ChatAppFrontEnd.Source.ChatPanel;
 using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
 using ChatAppFrontEnd.Source.Services.Concrete;
@@ -61,8 +62,12 @@ namespace ChatAppFrontEnd
             
             collection.AddSingleton<MainPanelViewModel>();
             
-            // register factories
-            collection.AddSingleton<ChatSidebarViewModelFactory>();
+            // chat stuff
+            collection.AddTransient<ChatRunnerFactory>();
+            collection.AddTransient<ChatSidebarViewModelFactory>();
+            collection.AddTransient<FriendChatPanelRunner>();
+            collection.AddTransient<GroupDMChatPanelRunner>();
+            collection.AddTransient<ServerChatPanelRunner>();
             
             _serviceProvider = collection.BuildServiceProvider();
         }

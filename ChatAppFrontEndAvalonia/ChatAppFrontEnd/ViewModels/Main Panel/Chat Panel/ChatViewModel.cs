@@ -1,11 +1,8 @@
 using System;
 using Avalonia.Controls;
-using ChatApp.Services;
-using ChatApp.Shared.Enums;
-using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
-using ChatApp.Source.Services;
+using ChatAppFrontEnd.Source.ChatPanel;
 using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
@@ -14,6 +11,7 @@ namespace ChatAppFrontEnd.ViewModels
 {
     public class ChatViewModel : ViewModelBase
     {
+        #region view bindings
         private ChatHistoryViewModel _chatHistoryViewModel;
         public ChatHistoryViewModel ChatHistoryViewModel
         {
@@ -55,24 +53,24 @@ namespace ChatAppFrontEnd.ViewModels
             get => _sidebarWidth;
             set => this.RaiseAndSetIfChanged(ref _sidebarWidth, value);
         }
+        #endregion
 
         private readonly IChatService _chatService;
         private readonly IAuthenticationService _authenticationService;
-        private readonly IFriendService _friendService;
-        private readonly IGroupService _groupService;
+        private readonly ChatRunnerFactory _runnerFactory;
         private readonly ChatSidebarViewModelFactory _sideBarFactory;
-        
+
+        private ChatPanelRunnerBase _currentRunner;
         private IChatEntity _chatEntity;
         private bool _sendingMessage;
         
-        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, IFriendService friendService, IGroupService groupService, ChatSidebarViewModelFactory sideBarFactory)
+        public ChatViewModel(ChatHistoryViewModel chatHistoryViewModel, IChatService chatService, IAuthenticationService authenticationService, ChatRunnerFactory runnerFactory, ChatSidebarViewModelFactory sideBarFactory)
         {
             _chatService = chatService;
             _authenticationService = authenticationService;
-            _friendService = friendService;
+            _runnerFactory = runnerFactory;
             _sideBarFactory = sideBarFactory;
-            _groupService = groupService;
-            
+
             IsShown = false;
             _sendingMessage = false;
 
@@ -80,45 +78,28 @@ namespace ChatAppFrontEnd.ViewModels
             MessageBoxText = "";
             ChatHistoryViewModel = chatHistoryViewModel;
             ChatTopBarViewModel = new ChatTopBarViewModel();
-        } 
-
-        public void OnShow()
-        {
-            if (_chatService != null)
-                _chatService.OnMessageReceived += OnReceiveMessage;
-            if (_friendService != null)
-                _friendService.OnUnfriended += OnRemoveFriend;
-            if (_groupService != null)
-                _groupService.OnGroupUpdated += OnGroupUpdated;
         }
-
-        public void OnHide()
-        {
-            if (_chatService != null)
-                _chatService.OnMessageReceived -= OnReceiveMessage;
-            if (_friendService != null)
-                _friendService.OnUnfriended -= OnRemoveFriend;
-            if (_groupService != null)
-                _groupService.OnGroupUpdated -= OnGroupUpdated;
-        }
-
-        private void OnReceiveMessage(Message message)
-        {
-            if (!_chatEntity.DoesMessageThreadMatch(message))
-                return;
-            
-            ChatHistoryViewModel.CreateMessage(message.FromUser.UserName, message.MessageContents);
-        }
-
+        
         public async void ShowChat(IChatEntity chatEntity)
         {
+            // set variables
+            _chatEntity = chatEntity;
             _chatService.CurrentChat = chatEntity;
             
-            _chatEntity = chatEntity;
-            MessageBoxText = string.Empty;
+            // setup chat runner (logic for handling events etc)
+            if (_runnerFactory.AreRunnersDifferent(_currentRunner, _chatEntity))
+            {
+                _currentRunner?.UnRegisterEvents();
+                _currentRunner = _runnerFactory.GetRunnerForChatEntity(chatEntity);
+                _currentRunner?.Setup(HideChat, PopulateTopBar);
+                _currentRunner?.RegisterEvents();
+            }
             
+            // setup chat history
+            MessageBoxText = string.Empty;
             await ChatHistoryViewModel.Setup(_chatEntity);
             
+            // setup sidebar
             RightSideBarViewModel = _sideBarFactory.GetViewModel(_chatEntity);
             if (RightSideBarViewModel != null)
             {
@@ -128,35 +109,19 @@ namespace ChatAppFrontEnd.ViewModels
             else
                 ShowSidebar(false);
 
-            ChatTopBarViewModel.Setup(_chatEntity);
+            // setup top bar
+            PopulateTopBar(_chatEntity);
+            
+            // mark shown
             IsShown = true;
         }
-
-        public void HideChat()
-        {
-            ShowSidebar(false);
-            ChatHistoryViewModel.ClearMessages();
-            IsShown = false;
-            ChatTopBarViewModel.IsShown = false;
-        }
-
-        private void OnRemoveFriend(UnfriendNotification notification)
-        {
-            if (_chatService.CurrentChat.ID == notification.FromUserID)
-                HideChat();
-        }
         
-        private void OnGroupUpdated((GroupDMSimple groupDM, GroupUpdateReason reason) res)
+        private void ShowSidebar(bool state)
         {
-            if (_chatService.CurrentChat.ID != res.groupDM.GroupID)
-                return;
-
-            if (res.reason.IsReasonToDeleteLocalGroup())
-                HideChat();
-            else
-                ChatTopBarViewModel.Setup(res.groupDM);
+            SidebarWidth = new GridLength(state ? 200 : 0);
         }
 
+        #region creating messages
         public async void SendMessage()
         {
             if (_sendingMessage || string.IsNullOrEmpty(MessageBoxText))
@@ -175,10 +140,45 @@ namespace ChatAppFrontEnd.ViewModels
             
             _sendingMessage = false;
         }
-
-        private void ShowSidebar(bool state)
+        
+        private void OnReceiveMessage(Message message)
         {
-            SidebarWidth = new GridLength(state ? 200 : 0);
+            if (!_chatEntity.DoesMessageThreadMatch(message))
+                return;
+            
+            ChatHistoryViewModel.CreateMessage(message.FromUser.UserName, message.MessageContents);
         }
+        #endregion
+        
+        #region runner events
+        private void HideChat()
+        {
+            ShowSidebar(false);
+            ChatHistoryViewModel.ClearMessages();
+            IsShown = false;
+            ChatTopBarViewModel.IsShown = false;
+        }
+
+        private void PopulateTopBar(IChatEntity chatEntity)
+        {
+            ChatTopBarViewModel?.Setup(chatEntity);
+        }
+        #endregion
+
+        #region Show/Hide events
+        public void OnShow()
+        {
+            if (_chatService != null)
+                _chatService.OnMessageReceived += OnReceiveMessage;
+            _currentRunner?.RegisterEvents();
+        }
+
+        public void OnHide()
+        {
+            if (_chatService != null)
+                _chatService.OnMessageReceived -= OnReceiveMessage;
+            _currentRunner?.UnRegisterEvents();
+        }
+        #endregion
     }
 }
