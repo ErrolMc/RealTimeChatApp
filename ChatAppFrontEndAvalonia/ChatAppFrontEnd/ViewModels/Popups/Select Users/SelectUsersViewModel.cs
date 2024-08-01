@@ -5,14 +5,13 @@ using System.Linq;
 using System.Windows.Input;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
+using ChatAppFrontEnd.ViewModels.Logic;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
 {
     public class SelectUsersViewModel : ViewModelBase
     {
-        private const int MAX_PEOPLE_IN_GROUP = 10;
-        
         private string _usernameField;
         public string UsernameField
         {
@@ -27,11 +26,11 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _bottomMessageField, value);
         }
         
-        private string _createButtonText;
-        public string CreateButtonText
+        private string _confirmButtonText;
+        public string ConfirmButtonText
         {
-            get => _createButtonText;
-            set => this.RaiseAndSetIfChanged(ref _createButtonText, value);
+            get => _confirmButtonText;
+            set => this.RaiseAndSetIfChanged(ref _confirmButtonText, value);
         }
 
         private bool _bottomMessageActive;
@@ -40,8 +39,13 @@ namespace ChatAppFrontEnd.ViewModels
             get => _bottomMessageActive;
             set => this.RaiseAndSetIfChanged(ref _bottomMessageActive, value);
         }
-        
-        public string SubHeadingText => $"You can add {MAX_PEOPLE_IN_GROUP - _checkedUsers.Count - _existingUsersInGroup - 1} more friends.";
+
+        private string _headingText;
+        public string HeadingText
+        {
+            get => _headingText;
+            set => this.RaiseAndSetIfChanged(ref _headingText, value);
+        }
         
         private ObservableCollection<SelectUsersSelectedUserViewModel> _selectedUsers;
         public ObservableCollection<SelectUsersSelectedUserViewModel> SelectedUsers
@@ -57,27 +61,25 @@ namespace ChatAppFrontEnd.ViewModels
             set => this.RaiseAndSetIfChanged(ref _users, value);
         }
         
-        public ICommand CreateDMCommand { get; }
+        public string SubHeadingText => $"You can add {_logic.MaxAmount - _checkedUsers.Count - _logic.AmountDifference - 1} more {_subHeadingSuffix}.";
+        
+        public ICommand ConfirmCommand { get; }
 
-        private readonly IGroupService _groupService;
-        private readonly Action<GroupDMSimple> _onCreateSuccessCallback;
+        private readonly SelectUsersLogicBase _logic;
+        private readonly List<UserSimple> _allUsers;
+        private readonly string _subHeadingSuffix;
         
-        private List<UserSimple> _allFriends;
         private List<UserSimple> _checkedUsers;
-        private int _existingUsersInGroup;
-        private bool _isCreating;
-        private string _groupID;
         
-        public SelectUsersViewModel(List<UserSimple> allFriends, IGroupService groupService, Action<GroupDMSimple> onCreateSuccessCallback)
+        public SelectUsersViewModel(List<UserSimple> allUsers, string headingText, string confirmButtonText, SelectUsersLogicBase logic, string subHeadingSuffix = "friends")
         {
-            _isCreating = true;
-            _existingUsersInGroup = 0;
-            CreateButtonText = "Create DM";
+            _logic = logic;
+            _subHeadingSuffix = subHeadingSuffix;
             
-            _groupService = groupService;
-            _onCreateSuccessCallback = onCreateSuccessCallback;
+            HeadingText = headingText;
+            ConfirmButtonText = confirmButtonText;
             
-            _allFriends = allFriends.OrderBy(friend => friend.UserName).ToList();
+            _allUsers = allUsers.OrderBy(friend => friend.UserName).ToList();
             _checkedUsers = new List<UserSimple>();
             
             SelectedUsers = new ObservableCollection<SelectUsersSelectedUserViewModel>();
@@ -87,74 +89,43 @@ namespace ChatAppFrontEnd.ViewModels
             UsernameField = string.Empty;
             UpdateUserList();
 
-            CreateDMCommand = ReactiveCommand.Create(OnClick_CreateDM);
-        }
-
-        public void SetupAddToGroup(string groupID, List<UserSimple> existingUsers)
-        {
-            _isCreating = false;
-            _existingUsersInGroup = existingUsers.Count;
-            _groupID = groupID;
-            CreateButtonText = "Add User(s)";
-            
-            HashSet<string> existingUserIDs = existingUsers.Select(user => user.UserID).ToHashSet();
-            _allFriends = _allFriends.Where(user => !existingUserIDs.Contains(user.UserID)).ToList();
-            
-            UpdateUserList();
+            ConfirmCommand = ReactiveCommand.Create(OnClick_Confirm);
         }
 
         public void UpdateUserList()
         {
             Users = new ObservableCollection<SelectUsersUserViewModel>();
             
-            foreach (UserSimple friend in _allFriends)
+            foreach (UserSimple user in _allUsers)
             {
-                if (!friend.UserName.StartsWith(UsernameField, false, null))
+                if (!user.UserName.StartsWith(UsernameField, false, null))
                     continue;
                 
-                Users.Add(new SelectUsersUserViewModel(friend, OnUserCheckChanged) { Checked = _checkedUsers.Contains(friend) });
+                Users.Add(new SelectUsersUserViewModel(user, OnUserCheckChanged) { Checked = _checkedUsers.Contains(user) });
             }
         }
 
-        private async void OnClick_CreateDM()
+        private async void OnClick_Confirm()
         {
             if (_checkedUsers.Count == 0)
                 return;
             
-            // create group dm
-            List<string> friends = _checkedUsers.Select(user => user.UserID).ToList();
+            List<string> users = _checkedUsers.Select(user => user.UserID).ToList();
 
-            bool success = false;
-            string message = string.Empty;
-            GroupDMSimple groupDM = null;
+            var response = await _logic.HandleConfirm(users);
 
-            if (_isCreating)
-            {
-                var response = await _groupService.CreateGroupDM(friends);
-                success = response.success;
-                groupDM = response.groupDMSimple;
-                message = response.message;
-            }
-            else
-            {
-                var response = await _groupService.AddFriendsToGroupDM(_groupID, friends);
-                success = response.success;
-                groupDM = response.groupDMSimple;
-                message = response.message;
-            }
-            
             _checkedUsers = new List<UserSimple>();
             SelectedUsers = new ObservableCollection<SelectUsersSelectedUserViewModel>();
             Users = new ObservableCollection<SelectUsersUserViewModel>();
 
-            if (success == false)
+            if (response.result == false)
             {
                 BottomMessageActive = true;
-                BottomMessageField = message;
+                BottomMessageField = response.message;
                 return;
             }
             
-            _onCreateSuccessCallback?.Invoke(groupDM);
+            _logic.OnSuccess();
         }
 
         private void OnUserCheckChanged(SelectUsersUserViewModel userViewModel)
@@ -171,7 +142,7 @@ namespace ChatAppFrontEnd.ViewModels
             }
             else // checking
             { 
-                if (_checkedUsers.Count >= MAX_PEOPLE_IN_GROUP - 1)
+                if (_checkedUsers.Count >= _logic.MaxAmount - 1)
                     return;
                 
                 SelectedUsers.Add(new SelectUsersSelectedUserViewModel(user, OnRemoveSelectedUser));

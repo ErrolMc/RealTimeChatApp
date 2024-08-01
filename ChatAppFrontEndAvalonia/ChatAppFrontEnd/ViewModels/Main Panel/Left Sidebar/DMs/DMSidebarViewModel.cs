@@ -10,6 +10,7 @@ using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
 using ChatAppFrontEnd.Source.Other;
 using ChatAppFrontEnd.Source.Services;
+using ChatAppFrontEnd.ViewModels.Logic;
 using ReactiveUI;
 
 namespace ChatAppFrontEnd.ViewModels
@@ -93,7 +94,7 @@ namespace ChatAppFrontEnd.ViewModels
             {
                 case UserSimple user:
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Remove Friend", (clickPos) =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Remove Friend", _ =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Remove '{user.UserName}'",
                                 $"Are you sure you want to permanently remove {user.UserName} from your friends?",
@@ -115,7 +116,7 @@ namespace ChatAppFrontEnd.ViewModels
 
                     if (isHost)
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Delete Group", (clickPos) =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Delete Group", _ =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Delete '{groupDM.Name}'",
                                 $"Are you sure you want delete the group {groupDM.Name}?",
@@ -128,7 +129,7 @@ namespace ChatAppFrontEnd.ViewModels
                     }
                     else
                     {
-                        buttons.Add(new RightClickMenuButtonViewModel("Leave Group", (clickPos) =>
+                        buttons.Add(new RightClickMenuButtonViewModel("Leave Group", _ =>
                         {
                             ViewModelBase confirmDialog = new ConfirmRemoveDialogViewModel($"Leave '{groupDM.Name}'",
                                 $"Are you sure you want leave the group {groupDM.Name}?",
@@ -158,15 +159,26 @@ namespace ChatAppFrontEnd.ViewModels
             if (resp.Success == false)
                 return;
             
-            var viewModel = new SelectUsersViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
-            viewModel.SetupAddToGroup(groupDM.GroupID, resp.Participants);
+            HashSet<string> existingUserIDs = resp.Participants.Select(user => user.UserID).ToHashSet();
+            List<UserSimple> users = _friendService.Friends.Where(user => !existingUserIDs.Contains(user.UserID)).ToList();
+
+            SelectUsersLogic_AddToGroupDM selectUsersLogic = new SelectUsersLogic_AddToGroupDM(
+                _groupService,
+                groupDM.GroupID, 
+                existingUserIDs.Count, 
+                _ => _overlayService.HideOverlay());
             
+            var viewModel = new SelectUsersViewModel(users, "Select Friends", "Add Users(s)", selectUsersLogic);
             _overlayService.ShowOverlay(viewModel, topOffset: clickPos.Y, leftOffset: clickPos.X, () => { });
         }
         
         private void OnClick_CreateGroupDM()
         {
-            var viewModel = new SelectUsersViewModel(_friendService.Friends, _groupService, (group) => _overlayService.HideOverlay());
+            SelectUsersLogic_CreateGroupDM selectUsersLogic = new SelectUsersLogic_CreateGroupDM(
+                _groupService,
+                _ => _overlayService.HideOverlay());
+            
+            var viewModel = new SelectUsersViewModel(_friendService.Friends, "Select Friends", "Create Group", selectUsersLogic);
             _overlayService.ShowOverlay(viewModel, 60, 130,() => { });
         }
 
