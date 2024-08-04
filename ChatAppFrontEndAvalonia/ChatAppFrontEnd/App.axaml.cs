@@ -96,7 +96,7 @@ namespace ChatAppFrontEnd
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
             {
-                singleViewPlatform.MainView = new MasterWindowView()
+                singleViewPlatform.MainView = new MasterControlView()
                 {
                     DataContext = masterWindowViewModel
                 };

@@ -41,7 +41,7 @@ namespace ChatAppFrontEnd.Views
         {
             ((Border)sender).Background = new SolidColorBrush(_hovered ? HoveredColor : NormalColor);
 
-            if (_hovered && this.DataContext is RightClickMenuButtonViewModel viewModel && this.VisualRoot is Window window)
+            if (_hovered && this.DataContext is RightClickMenuButtonViewModel viewModel && this.VisualRoot is Visual window)
             {
                 if (e.InitialPressMouseButton != MouseButton.Left)
                     return;

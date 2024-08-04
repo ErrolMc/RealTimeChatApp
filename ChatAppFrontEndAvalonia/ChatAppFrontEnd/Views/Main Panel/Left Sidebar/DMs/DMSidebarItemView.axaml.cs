@@ -43,7 +43,7 @@ namespace ChatAppFrontEnd.Views
             
             // this definitely breaks MVVM, but I couldn't figure out any other way 
             // to change the color on release and call the OnClickCommand
-            if (_hovered && this.DataContext is DMSidebarItemViewModel viewModel && this.VisualRoot is Window window)
+            if (_hovered && this.DataContext is DMSidebarItemViewModel viewModel && this.VisualRoot is Visual window)
             {
                 bool leftClick = e.InitialPressMouseButton == MouseButton.Left;
                 Point mousePos = e.GetPosition(window);
