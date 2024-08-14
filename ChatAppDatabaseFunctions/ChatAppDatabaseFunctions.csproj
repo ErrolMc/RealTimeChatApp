@@ -4,6 +4,9 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="local.settings.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Enums.cs" Link="Code\Shared\Enums.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
@@ -18,6 +21,12 @@
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.28" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.1" />
@@ -28,9 +37,11 @@
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local.settings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    <None Update="localfunctionapp.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="localhost.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,7 @@ namespace ChatAppSignalRServer
             builder.Services.AddControllers();
 
             // Add SignalR services to the container
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR().AddMessagePackProtocol();
 
             // Register the custom IUserIdProvider
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIDProvider>();
@@ -31,10 +31,11 @@ namespace ChatAppSignalRServer
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                    .WithOrigins(NetworkConstants.FUNCTIONS_URI)
+                    .WithOrigins(NetworkConstants.FUNCTIONS_URI, NetworkConstants.WEBAPP_URI)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .AllowCredentials());
+                    .AllowCredentials()
+                    );
             });
 
             // This registers JWT bearer token services to the DI container and sets up authentication.
@@ -43,10 +44,6 @@ namespace ChatAppSignalRServer
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // ... other parameters like issuer, audience, signing key, etc.
-
-                        // This line tells ASP.NET Core which claim in the JWT should be used to name the user.
-                        // It's how you tell ASP.NET to use a particular claim from the JWT as the user's identity.
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
@@ -54,7 +51,24 @@ namespace ChatAppSignalRServer
                         ValidIssuer = NetworkConstants.FUNCTIONS_URI,
                         ValidAudience = NetworkConstants.SIGNALR_URI,
                         NameClaimType = "userid",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Keys.SIGNALR_AUTH_ISSUER_SIGNING_KEY)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Keys.SIGNALR_AUTH_ISSUER_SIGNING_KEY))
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // Check if the request is for a SignalR hub and contains a token.
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                path.StartsWithSegments("/NotificationHub"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
                     };
                 });
 
@@ -71,11 +85,10 @@ namespace ChatAppSignalRServer
                 app.UseSwaggerUI();
             }
 
-            app.UseRouting();
             app.UseHttpsRedirection();
-
             app.UseCors("CorsPolicy"); // Apply the CORS policy
 
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 

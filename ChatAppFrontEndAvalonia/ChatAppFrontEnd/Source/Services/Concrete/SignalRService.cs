@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using ChatApp.Shared;
@@ -7,7 +8,11 @@ using ChatApp.Shared.Constants;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Utils;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
 {
@@ -33,20 +38,22 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
             if (responseData.Status)
             {
-                Console.WriteLine("Got signalR token");
+                Console.WriteLine("SignalRService: Got token");
                 
                 try
                 {
                     _connection = new HubConnectionBuilder()
-                        .WithUrl(NetworkConstants.SIGNALR_URI + Hub, options =>
+                        .WithUrl($"{NetworkConstants.SIGNALR_URI}/{Hub}", options =>
                         {
                             options.AccessTokenProvider = () => Task.FromResult(responseData.AccessToken);
+                            
                         })
+                        .AddMessagePackProtocol()
                         .Build();
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Error: " + e.Message);
+                    Console.WriteLine("SignalRService Error: " + e.Message);
                     return (false, e.Message);
                 }
                 

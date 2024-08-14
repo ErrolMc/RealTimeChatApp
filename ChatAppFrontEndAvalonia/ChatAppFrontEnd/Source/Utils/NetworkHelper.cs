@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace ChatAppFrontEnd.Source.Utils
                 string json = JsonConvert.SerializeObject(requestData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await httpClient.PostAsync(NetworkConstants.FUNCTIONS_URI + "api/" + functionName, content);
+                HttpResponseMessage response = await httpClient.PostAsync($"{NetworkConstants.FUNCTIONS_URI}/api/{functionName}", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

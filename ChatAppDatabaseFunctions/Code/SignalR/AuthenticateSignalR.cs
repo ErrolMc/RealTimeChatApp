@@ -18,6 +18,7 @@ using ChatApp.Shared.Keys;
 using ChatApp.Shared.Constants;
 using System.Security.Cryptography.Xml;
 using ChatApp.Shared;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -30,7 +31,7 @@ namespace ChatAppDatabaseFunctions.Code
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(req.Body, Encoding.UTF8).ReadToEndAsync();
             AuthenticateRequestData requestData = JsonConvert.DeserializeObject<AuthenticateRequestData>(requestBody);
 
             if (requestData == null)
@@ -59,13 +60,17 @@ namespace ChatAppDatabaseFunctions.Code
                 expires: DateTime.Now.AddMinutes(60), // token expiration time
                 signingCredentials: creds);
 
-            return new OkObjectResult(
-                new AuthenticateResponseData() 
-                { 
-                    Status = true, 
-                    Message = "Successfully created SignalR token", 
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token) 
-                });
+            var result = new AuthenticateResponseData()
+            {
+                Status = true,
+                Message = "Successfully created SignalR token",
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token)
+            };
+
+            return new OkObjectResult(result)
+            {
+                ContentTypes = new MediaTypeCollection { "application/json" }
+            };
         }
     }
 }

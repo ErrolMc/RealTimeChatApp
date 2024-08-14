@@ -29,9 +29,18 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             Console.WriteLine("HandleNotification: " + json);
             
-            var notificationData = JsonConvert.DeserializeObject<NotificationData>(json);
-            if (notificationData == null)
+            NotificationData notificationData = null;
+
+            try
+            {
+                notificationData = JsonConvert.DeserializeObject<NotificationData>(json);
+                if (notificationData == null)
+                    return false;
+            }
+            catch (Exception e)
+            {
                 return false;
+            }
 
             NotificationType notificationType = (NotificationType)notificationData.NotificationType;
             switch (notificationType)

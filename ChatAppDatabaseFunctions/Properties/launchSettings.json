@@ -1,9 +1,7 @@
 {
   "profiles": {
     "ChatAppDatabaseFunctions": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7182",
-      "launchBrowser": false
+      "commandName": "Project"
     }
   }
 }

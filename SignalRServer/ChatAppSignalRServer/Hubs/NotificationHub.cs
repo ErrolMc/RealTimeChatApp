@@ -4,9 +4,11 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using ChatApp.Shared.Messages;
 using ChatApp.Shared.Notifications;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChatAppSignalRServer.Hubs
 {
+    [Authorize]
     public class NotificationHub : Hub
     {
         public static Dictionary<string, string> _connectedUsers = new Dictionary<string, string>();
@@ -32,30 +34,6 @@ namespace ChatAppSignalRServer.Hubs
             }
 
             return base.OnDisconnectedAsync(exception);
-        }
-
-        public async void SendDirectMessage(string toUserID, string messageJson)
-        {
-            NotificationData notificationData = new NotificationData()
-            {
-                RecipientUserID = toUserID,
-                NotificationType = (int)NotificationType.DirectMessage,
-                NotificationJson = messageJson,
-            };
-
-            await Clients.User(toUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(notificationData));
-        }
-
-        public async void SendGroupDMMessage(string toUserID, string messageJson)
-        {
-            NotificationData notificationData = new NotificationData()
-            {
-                RecipientUserID = toUserID,
-                NotificationType = (int)NotificationType.GroupDMMessage,
-                NotificationJson = messageJson,
-            };
-
-            await Clients.User(toUserID).SendAsync("OnNotificationReceived", JsonConvert.SerializeObject(notificationData));
         }
     }
 }

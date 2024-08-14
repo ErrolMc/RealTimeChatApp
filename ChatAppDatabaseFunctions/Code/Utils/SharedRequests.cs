@@ -29,7 +29,7 @@ namespace ChatAppDatabaseFunctions.Code
 
                 using (var httpClient = new HttpClient(httpClientHandler))
                 {
-                    string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}api/Notifications/send-notification";
+                    string signalRServerEndpoint = $"{NetworkConstants.SIGNALR_URI}/api/Notifications/send-notification";
 
                     HttpContent content = new StringContent(notificationJSON, Encoding.UTF8, "application/json");
                     var response = await httpClient.PostAsync(signalRServerEndpoint, content);
