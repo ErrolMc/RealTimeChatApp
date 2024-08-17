@@ -37,6 +37,7 @@ namespace ChatAppFrontEnd
             collection.AddSingleton<INavigationService, NavigationService>();
             collection.AddSingleton<ISignalRService, SignalRService>();
             collection.AddSingleton<IOverlayService, OverlayService>();
+            collection.AddSingleton<ICachingService, CachingService>();
             
             // using lazy to get around circular dependency (SignalRService -> NotificationService -> ChatService -> SignalRService)
             collection.AddTransient<INotificationService, NotificationService>(provider =>
