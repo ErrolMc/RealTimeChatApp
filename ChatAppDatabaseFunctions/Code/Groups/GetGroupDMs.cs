@@ -41,7 +41,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new GetGroupDMsResponseData { Success = false, Message = userResp.message });
             }
 
-            var groupDMResp = await SharedQueries.GetGroupDMsFromIDs(userResp.user.GroupDMs);
+            var groupDMResp = await SharedQueries.GetChatThreadsFromIDs(userResp.user.GroupDMs);
             if (groupDMResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new GetGroupDMsResponseData { Success = false, Message = groupDMResp.message });

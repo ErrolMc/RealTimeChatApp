@@ -40,25 +40,25 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 return new OkObjectResult(new AddFriendsToGroupDMResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            var groupDMResp = await SharedQueries.GetGroupDMFromGroupID(requestData.GroupID);
+            var groupDMResp = await SharedQueries.GetChatThreadFromThreadID(requestData.GroupID);
             if (groupDMResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new AddFriendsToGroupDMResponseData { Success = false, Message = $"Couldn't find group with id {requestData.GroupID}" });
             }
 
             // add user ids to group
-            GroupDM groupDM = groupDMResp.groupDM;
+            ChatThread groupDM = groupDMResp.thread;
             HashSet<string> usersToAdd = requestData.UsersToAdd.ToHashSet();
 
             foreach (string userID in requestData.UsersToAdd)
             {
-                if (groupDM.ParticipantUserIDs.Contains(userID))
+                if (groupDM.Users.Contains(userID))
                     usersToAdd.Remove(userID);
                 else
-                    groupDM.ParticipantUserIDs.Add(userID);
+                    groupDM.Users.Add(userID);
             }
 
-            var getUserResp = await SharedQueries.GetUsers(groupDM.ParticipantUserIDs);
+            var getUserResp = await SharedQueries.GetUsers(groupDM.Users);
             if (getUserResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new AddFriendsToGroupDMResponseData { Success = false, Message = "Couldn't get participant user info from database" });
@@ -77,7 +77,7 @@ namespace ChatAppDatabaseFunctions.Code.Groups
             // replace group
             try
             {
-                var groupReplaceResponse = await DatabaseStatics.GroupDMsContainer.ReplaceItemAsync(groupDM, groupDM.ID, new PartitionKey(groupDM.ThreadID));
+                var groupReplaceResponse = await DatabaseStatics.ChatThreadsContainer.ReplaceItemAsync(groupDM, groupDM.ID, new PartitionKey(groupDM.ID));
                 if (groupReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     return new OkObjectResult(new AddFriendsToGroupDMResponseData { Success = false, Message = $"Couldn't replace group {requestData.GroupID}" });

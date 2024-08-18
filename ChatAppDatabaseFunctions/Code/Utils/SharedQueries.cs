@@ -140,16 +140,16 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, GroupDM groupDM)> GetGroupDMFromGroupID(string groupID)
+        public static async Task<(bool connectionSuccess, string message, ChatThread thread)> GetChatThreadFromThreadID(string threadID)
         {
             try
             {
-                var groupResponse = await DatabaseStatics.GroupDMsContainer.ReadItemAsync<GroupDM>(groupID, new PartitionKey(groupID));
+                var groupResponse = await DatabaseStatics.ChatThreadsContainer.ReadItemAsync<ChatThread>(threadID, new PartitionKey(threadID));
 
                 if (groupResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine($"GetGroupDMFromGroupID Error {groupResponse.StatusCode}");
-                    return (true, $"Cant find Group DM {groupID}", null);
+                    return (true, $"Cant find Chat Thread {threadID}", null);
                 }
 
                 return (true, "Success", groupResponse.Resource);
@@ -161,23 +161,23 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<GroupDM> groupDMs)> GetGroupDMsFromIDs(List<string> groupIDs)
+        public static async Task<(bool connectionSuccess, string message, List<ChatThread> groupDMs)> GetChatThreadsFromIDs(List<string> threadIDs)
         {
-            if (groupIDs == null || groupIDs.Count() == 0)
-                return (false, "No group ids provided", new List<GroupDM>());
+            if (threadIDs == null || threadIDs.Count() == 0)
+                return (false, "No group ids provided", new List<ChatThread>());
 
             try
             {
-                string inClause = string.Join(", ", groupIDs.Select(id => $"'{id}'"));
+                string inClause = string.Join(", ", threadIDs.Select(id => $"'{id}'"));
                 string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
                 QueryDefinition queryDefinition = new QueryDefinition(queryString);
-                FeedIterator<GroupDM> queryResultSetIterator = DatabaseStatics.GroupDMsContainer.GetItemQueryIterator<GroupDM>(queryDefinition);
+                FeedIterator<ChatThread> queryResultSetIterator = DatabaseStatics.ChatThreadsContainer.GetItemQueryIterator<ChatThread>(queryDefinition);
 
-                List<GroupDM> groupDMs = new List<GroupDM>();
+                List<ChatThread> groupDMs = new List<ChatThread>();
                 while (queryResultSetIterator.HasMoreResults)
                 {
-                    FeedResponse<GroupDM> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-                    foreach (GroupDM groupDM in currentResultSet)
+                    FeedResponse<ChatThread> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                    foreach (ChatThread groupDM in currentResultSet)
                     {
                         groupDMs.Add(groupDM);
                     }
@@ -188,7 +188,7 @@ namespace ChatAppDatabaseFunctions.Code
             catch (Exception ex)
             {
                 Console.WriteLine($"GetGroupDMs Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<GroupDM>());
+                return (false, GENERIC_DATABASE_ERROR, new List<ChatThread>());
             }
         }
     }

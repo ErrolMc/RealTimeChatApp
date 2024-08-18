@@ -100,13 +100,13 @@ namespace ChatAppDatabaseFunctions.Code
                     break;
                 case MessageType.GroupMessage:
                     {
-                        var getGroupDMResponse = await SharedQueries.GetGroupDMFromGroupID(requestData.ThreadID);
+                        var getGroupDMResponse = await SharedQueries.GetChatThreadFromThreadID(requestData.ThreadID);
                         if (getGroupDMResponse.connectionSuccess == false)
                         {
                             return new OkObjectResult(new SendMessageResponseData { Success = true, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} added to DB but couldnt get group from DB to send notifications" });
                         }
 
-                        var getParticipantsResp = await SharedQueries.GetUsers(getGroupDMResponse.groupDM.ParticipantUserIDs);
+                        var getParticipantsResp = await SharedQueries.GetUsers(getGroupDMResponse.thread.Users);
                         if (getParticipantsResp.connectionSuccess == false)
                         {
                             return new OkObjectResult(new SendMessageResponseData { Success = true, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} added to DB but couldnt get group participants from DB to send notifications" });

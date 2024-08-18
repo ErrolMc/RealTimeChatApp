@@ -16,7 +16,7 @@ namespace ChatApp.Shared.ExtensionMethods
             return users.Select(user => user.ToUserSimple()).ToList();
         }
 
-        public static List<GroupDMSimple> ToGroupDMSimpleList(this List<GroupDM> groupDMs)
+        public static List<GroupDMSimple> ToGroupDMSimpleList(this List<ChatThread> groupDMs)
         {
             return groupDMs.Select(groupDM => groupDM.ToGroupDMSimple()).ToList();
         }

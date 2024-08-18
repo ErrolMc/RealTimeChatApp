@@ -17,6 +17,7 @@
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Code\Shared\Misc.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs" Link="Code\Utils\SharedStaticMethods.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
   </ItemGroup>
@@ -57,6 +58,7 @@
     <None Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Code\Shared\Misc.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Code\Shared\NetworkConstants.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Code\Shared\NotificationData.cs.meta" />
+    <None Include="..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs.meta" Link="Code\Utils\SharedStaticMethods.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Code\Shared\TableData.cs.meta" />
     <None Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Code\Shared\TableDataSimple.cs.meta" />
   </ItemGroup>

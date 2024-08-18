@@ -32,15 +32,15 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new GetGroupParticipantsResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            var groupDMResp = await SharedQueries.GetGroupDMFromGroupID(groupID);
+            var groupDMResp = await SharedQueries.GetChatThreadFromThreadID(groupID);
             if (groupDMResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new GetGroupParticipantsResponseData { Success = false, Message = groupDMResp.message });
             }
 
-            GroupDM groupDM = groupDMResp.groupDM;
+            ChatThread groupDM = groupDMResp.thread;
 
-            var participantResp = await SharedQueries.GetUsers(groupDM.ParticipantUserIDs);
+            var participantResp = await SharedQueries.GetUsers(groupDM.Users);
             if (participantResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new GetGroupParticipantsResponseData { Success = false, Message = participantResp.message });

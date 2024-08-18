@@ -15,6 +15,11 @@ using User = ChatApp.Shared.Tables.User;
 using System.ComponentModel;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared;
+using ChatApp.Shared.Tables;
+using System.Collections.Generic;
+using ChatApp.Shared.GroupDMs;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -54,6 +59,27 @@ namespace ChatAppDatabaseFunctions.Code
             {
                 return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });
             }
+
+            // create thread
+            ChatThread thread = new ChatThread()
+            {
+                ID = SharedStaticMethods.CreateHashedDirectMessageID(fromUser.UserID, toUser.UserID),
+                IsGroupDM = false,
+                MessageVNum = 0,
+                Users = new List<string> { fromUser.UserID, toUser.UserID },
+                OwnerUserID = null,
+                Name = null,
+            };
+
+            try
+            {
+                ItemResponse<ChatThread> createThreadResp = await DatabaseStatics.ChatThreadsContainer.CreateItemAsync(thread, new PartitionKey(thread.ID));
+            }
+            catch (Exception ex)
+            {
+                log.LogError($"An error occurred when creating thread for friend DM: {ex.Message}");
+                return new OkObjectResult(new RespondToFriendRequestResponseData { Success = false, Message = "Error when creating thread" });
+            };
 
             toUser.FriendRequests.Remove(fromUser.UserID);
             fromUser.OutgoingFriendRequests.Remove(toUser.UserID);

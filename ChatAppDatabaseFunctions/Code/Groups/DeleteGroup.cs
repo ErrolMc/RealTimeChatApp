@@ -36,15 +36,15 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            var groupDMResp = await SharedQueries.GetGroupDMFromGroupID(groupID);
+            var groupDMResp = await SharedQueries.GetChatThreadFromThreadID(groupID);
             if (groupDMResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = $"Couldn't find group with id {groupID}" });
             }
 
-            GroupDM groupDM = groupDMResp.groupDM;
+            ChatThread groupDM = groupDMResp.thread;
 
-            var getParticipantsResp = await SharedQueries.GetUsers(groupDM.ParticipantUserIDs);
+            var getParticipantsResp = await SharedQueries.GetUsers(groupDM.Users);
             if (getParticipantsResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = "Couldn't get participant user info from database" });
@@ -53,19 +53,19 @@ namespace ChatAppDatabaseFunctions.Code.Groups
             // replace group
             try
             {
-                var groupReplaceResponse = await DatabaseStatics.GroupDMsContainer.ReplaceItemAsync(groupDM, groupDM.ID, new PartitionKey(groupDM.ThreadID));
-                if (groupReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                var groupReplaceResponse = await DatabaseStatics.ChatThreadsContainer.DeleteItemAsync<ChatThread>(groupDM.ID, new PartitionKey(groupDM.ID));
+                if (groupReplaceResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
                 {
-                    return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = $"Couldn't replace group {groupID}" });
+                    return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = $"Couldn't delete group {groupID}" });
                 }
             }
             catch (Exception ex)
             {
-                return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = $"Group Replace Exception: {ex.Message}" });
+                return new OkObjectResult(new DeleteGroupDMResponseData { Success = false, Message = $"Group delete Exception: {ex.Message}" });
             }
 
-            // delete messaes
-            var deleteMessagesResponse = await SharedQueries.DeleteMessagesByThreadID(groupDM.ThreadID);
+            // delete messages
+            var deleteMessagesResponse = await SharedQueries.DeleteMessagesByThreadID(groupDM.ID);
             if (deleteMessagesResponse.connectionSuccess == false)
             {
                 Console.WriteLine($"Delete Group {groupDM.ID} could'nt delete messages");
@@ -99,7 +99,7 @@ namespace ChatAppDatabaseFunctions.Code.Groups
             }
 
             if (failedDatabaseUpdates.Count > 0)
-                return new OkObjectResult(new DeleteGroupDMResponseData() { Success = false, ReplaceGroupSuccess = true, ReplaceUserSuccess = false, Message = $"Successfully deleted group! Coundn't update database for {failedDatabaseUpdates.Count}/{groupDM.ParticipantUserIDs.Count} users" });
+                return new OkObjectResult(new DeleteGroupDMResponseData() { Success = false, ReplaceGroupSuccess = true, ReplaceUserSuccess = false, Message = $"Successfully deleted group! Coundn't update database for {failedDatabaseUpdates.Count}/{groupDM.Users.Count} users" });
 
             return new OkObjectResult(new DeleteGroupDMResponseData() { Success = true, ReplaceGroupSuccess = true, ReplaceUserSuccess = true, Message = $"Successfully deleted group!" });
         }

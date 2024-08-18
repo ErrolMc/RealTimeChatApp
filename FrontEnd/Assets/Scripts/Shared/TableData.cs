@@ -21,6 +21,7 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("friendrequests")] public List<string> FriendRequests { get; set; } = new List<string>();
         [JsonProperty("outgoingfriendrequests")] public List<string> OutgoingFriendRequests { get; set; } = new List<string>();
         [JsonProperty("groupdms")] public List<string> GroupDMs { get; set; } = new List<string>();
+        [JsonProperty("friendvnum")] public int FriendsVNum { get; set; } = 0;
         // profile image (id?)
 
         public UserSimple ToUserSimple()
@@ -42,14 +43,15 @@ namespace ChatApp.Shared.Tables
     }
 
     [Serializable]
-    public class GroupDM
+    public class ChatThread
     {
         [JsonProperty("id")] public string ID { get; set; }
-        [JsonProperty("threadid")] public string ThreadID { get; set; }
+        [JsonProperty("isgroupdm")] public bool IsGroupDM { get; set; }
+        [JsonProperty("messagevnum")] public int MessageVNum { get; set; }
+        [JsonProperty("users")] public List<string> Users { get; set; } = new List<string>();
+        //[JsonProperty("pinnedmessages")] public List<string> PinnedMessages { get; set; } = new List<string>();
         [JsonProperty("owner")] public string OwnerUserID { get; set; }
-        [JsonProperty("participants")] public List<string> ParticipantUserIDs { get; set; } = new List<string>();
-        [JsonProperty("hascustomname")] public bool HasCustomName { get; set; }
-        [JsonProperty("name")] public string Name { get; set; }
+        [JsonProperty("name")] public string Name { get; set; } // {a} at front = auto name, {c} at front = custom name
 
         public GroupDMSimple ToGroupDMSimple()
         {

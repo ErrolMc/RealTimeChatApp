@@ -12,6 +12,8 @@ using ChatApp.Shared.Misc;
 using Microsoft.Azure.Cosmos;
 using User = ChatApp.Shared.Tables.User;
 using System.Runtime.InteropServices;
+using ChatApp.Shared;
+using ChatApp.Shared.Tables;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -50,6 +52,21 @@ namespace ChatAppDatabaseFunctions.Code
             if (toUser == null || fromUser == null)
             {
                 return new OkObjectResult(new GenericResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" });
+            }
+
+            // remove thread
+            try
+            {
+                string threadID = SharedStaticMethods.CreateHashedDirectMessageID(toUser.UserID, fromUser.UserID);
+                var threadRemoveResponse = await DatabaseStatics.ChatThreadsContainer.DeleteItemAsync<ChatThread>(threadID, new PartitionKey(threadID));
+                if (threadRemoveResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
+                {
+                    return new OkObjectResult(new GenericResponseData { Success = false, Message = $"Couldnt remove thread from database" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OkObjectResult(new GenericResponseData { Success = false, Message = $"RemoveFriend Remove Thread Exception: {ex.Message}" });
             }
 
             toUser.Friends.Remove(fromUser.UserID);

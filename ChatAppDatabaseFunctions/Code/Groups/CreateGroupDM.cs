@@ -56,20 +56,20 @@ namespace ChatAppDatabaseFunctions.Code
 
             // create the group data structure
             string threadID = Guid.NewGuid().ToString();
-            GroupDM groupDM = new GroupDM()
+            ChatThread groupDM = new ChatThread()
             {
                 ID = threadID,
-                ThreadID = threadID,
+                IsGroupDM = true,
+                MessageVNum = 0,
                 OwnerUserID = requestData.Creator,
-                ParticipantUserIDs = requestData.Participants,
-                HasCustomName = false,
+                Users = requestData.Participants,
                 Name = participants.GetGroupName()
             };
 
             // create the group
             try
             {
-                ItemResponse<GroupDM> createGroupResp = await DatabaseStatics.GroupDMsContainer.CreateItemAsync(groupDM, new PartitionKey(threadID));
+                ItemResponse<ChatThread> createGroupResp = await DatabaseStatics.ChatThreadsContainer.CreateItemAsync(groupDM, new PartitionKey(threadID));
             }
             catch (Exception ex)
             {
@@ -115,7 +115,7 @@ namespace ChatAppDatabaseFunctions.Code
             }
 
             if (failedDatabaseUpdates.Count > 0)
-                return new OkObjectResult(new CreateGroupDMResponseData() { CreatedGroupSuccess = true, UpdateDatabaseSuccess = false, Message = $"Successfully created group! Coundn't update database for {failedNotifications.Count}/{groupDM.ParticipantUserIDs.Count} users", GroupDMSimple = groupDM.ToGroupDMSimple() });
+                return new OkObjectResult(new CreateGroupDMResponseData() { CreatedGroupSuccess = true, UpdateDatabaseSuccess = false, Message = $"Successfully created group! Coundn't update database for {failedNotifications.Count}/{groupDM.Users.Count} users", GroupDMSimple = groupDM.ToGroupDMSimple() });
             
             return new OkObjectResult(new CreateGroupDMResponseData() { CreatedGroupSuccess = true, UpdateDatabaseSuccess = true, Message = $"Successfully created group!", GroupDMSimple = groupDM.ToGroupDMSimple() });
         }

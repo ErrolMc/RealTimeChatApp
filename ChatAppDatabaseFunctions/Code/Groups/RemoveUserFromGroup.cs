@@ -40,20 +40,20 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = "Invalid request data" });
             }
 
-            var groupDMResp = await SharedQueries.GetGroupDMFromGroupID(requestData.GroupID);
+            var groupDMResp = await SharedQueries.GetChatThreadFromThreadID(requestData.GroupID);
             if (groupDMResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = $"Couldn't find group with id {requestData.GroupID}" });
             }
 
-            var getParticipantsResp = await SharedQueries.GetUsers(groupDMResp.groupDM.ParticipantUserIDs);
+            var getParticipantsResp = await SharedQueries.GetUsers(groupDMResp.thread.Users);
             if (getParticipantsResp.connectionSuccess == false)
             {
                 return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = "Couldn't get participant user info from database" });
             }
 
             // update the data
-            GroupDM groupDM = groupDMResp.groupDM;
+            ChatThread groupDM = groupDMResp.thread;
             List<User> participants = getParticipantsResp.users;
             User userToRemove = participants.FirstOrDefault(u => u.UserID == requestData.UserID);
 
@@ -62,7 +62,7 @@ namespace ChatAppDatabaseFunctions.Code.Groups
                 return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = $"Couldn't find user {requestData.UserID} in group {requestData.GroupID}" });
             }
 
-            bool updatedGroup = groupDM.ParticipantUserIDs.Remove(requestData.UserID);
+            bool updatedGroup = groupDM.Users.Remove(requestData.UserID);
             bool updatedUser = userToRemove.GroupDMs.Remove(requestData.GroupID);
 
             if (!updatedGroup && !updatedUser)
@@ -87,7 +87,7 @@ namespace ChatAppDatabaseFunctions.Code.Groups
             {
                 try
                 {
-                    var groupReplaceResponse = await DatabaseStatics.GroupDMsContainer.ReplaceItemAsync(groupDM, groupDM.ID, new PartitionKey(groupDM.ThreadID));
+                    var groupReplaceResponse = await DatabaseStatics.ChatThreadsContainer.ReplaceItemAsync(groupDM, groupDM.ID, new PartitionKey(groupDM.ID));
                     if (groupReplaceResponse.StatusCode != System.Net.HttpStatusCode.OK)
                     {
                         return new OkObjectResult(new RemoveFromGroupResponseData { Success = false, Message = $"Couldn't replace group {requestData.GroupID} after removing user {requestData.UserID}" });
