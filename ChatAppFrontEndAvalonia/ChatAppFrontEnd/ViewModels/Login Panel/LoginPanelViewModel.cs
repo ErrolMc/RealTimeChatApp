@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ChatApp.Services;
 using ChatAppFrontEnd.Source.Other;
@@ -12,14 +13,17 @@ namespace ChatAppFrontEnd.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ICachingService _cachingService;
         private readonly ISignalRService _signalRService;
         private readonly IFriendService _friendService;
+        private readonly IOverlayService _overlayService;
 
         private string _username;
         private string _password;
         private string _responseText;
         
         private bool _talkingToServer = false;
+        private bool _isMainContentVisible = false;
 
         public string Username
         {
@@ -44,33 +48,75 @@ namespace ChatAppFrontEnd.ViewModels
             get => _talkingToServer;
             set => this.RaiseAndSetIfChanged(ref _talkingToServer, value);
         }
+        
+        public bool IsMainContentVisible
+        {
+            get => _isMainContentVisible;
+            set => this.RaiseAndSetIfChanged(ref _isMainContentVisible, value);
+        }
 
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
         
-        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, ISignalRService signalRService, IFriendService friendService, IOverlayService overlayService)
+        public LoginPanelViewModel(INavigationService navigationService, IAuthenticationService authenticationService, ISignalRService signalRService, IFriendService friendService, IOverlayService overlayService, ICachingService cachingService)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
             _signalRService = signalRService;
             _friendService = friendService;
+            _cachingService = cachingService;
+            _overlayService = overlayService;
 
             ResponseText = string.Empty;
             TalkingToServer = false;
+            IsMainContentVisible = false;
             
             LoginCommand = ReactiveCommand.Create(PerformLogin);
             GoToRegisterCommand = ReactiveCommand.Create(GoToRegister);
 
             if (DebugHelper.IS_DEBUG)
             {
-                overlayService.ShowOverlay(new DebugLoginPanelViewModel((d_username, d_pass) =>
+                _overlayService.ShowOverlay(new DebugLoginPanelViewModel((d_username, d_pass) =>
                 {
                     Username = d_username;
                     Password = d_pass;
                     PerformLogin();
-                    overlayService.HideOverlay();
+                    _overlayService.HideOverlay();
                 }), 100, 100, () => { });
             }
+        }
+
+        public override async void OnShow()
+        {
+            bool cacheSetup = await _cachingService.Setup();
+
+            (bool getTokenSuccess, string token) = await _cachingService.GetLoginToken();
+            if (getTokenSuccess == false)
+            {
+                IsMainContentVisible = true;
+                return;
+            }
+
+            var loginResponse = await _authenticationService.TryAutoLogin(token);   
+            if (loginResponse.success == false)
+            {
+                bool res = await _cachingService.ClearLoginToken();
+                IsMainContentVisible = true;
+                return;
+            }
+            
+            var notificationResponse = await _signalRService.ConnectToSignalR(loginResponse.user);
+            if (notificationResponse.success == false)
+            {
+                IsMainContentVisible = true;
+                return;
+            }
+            
+            _authenticationService.CurrentUser = loginResponse.user;
+            
+            bool friendRequestResponse = await _friendService.GetFriendRequests();
+            _overlayService.HideOverlay(); // hide debug overlay
+            _navigationService.Navigate<MainPanelViewModel>();
         }
 
         private async void PerformLogin()
@@ -102,7 +148,7 @@ namespace ChatAppFrontEnd.ViewModels
                 TalkingToServer = false;
                 return;
             }
-            
+
             // setup data that other viewmodels will use
             _authenticationService.CurrentUser = loginResponse.user;
             bool friendRequestResponse = await _friendService.GetFriendRequests();

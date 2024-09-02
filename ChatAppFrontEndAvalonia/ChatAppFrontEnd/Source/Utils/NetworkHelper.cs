@@ -45,6 +45,5 @@ namespace ChatAppFrontEnd.Source.Utils
             }
         }
     }
-    
 }
 

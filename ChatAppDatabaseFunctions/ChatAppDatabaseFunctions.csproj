@@ -4,12 +4,10 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="local.settings.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Enums.cs" Link="Code\Shared\Enums.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
+    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Friends.cs" Link="Code\Shared\Friends.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs" Link="Code\Shared\FunctionNames.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Code\Shared\GroupDMs.cs" />
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Code\Shared\Keys.cs" />
@@ -22,12 +20,6 @@
     <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="local.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.28" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.1" />
@@ -35,10 +27,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="host.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="certificate.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="localfunctionapp.pfx">
+    <None Update="host.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="localhost.pfx">

@@ -7,6 +7,7 @@ namespace ChatApp.Shared
         
         public const string LOGIN = "Login";
         public const string REGISTER = "Register";
+        public const string AUTO_LOGIN = "AutoLogin";
 
         public const string GET_MESSAGES = "GetMessages";
         public const string SEND_MESSAGE = "SendMessage";

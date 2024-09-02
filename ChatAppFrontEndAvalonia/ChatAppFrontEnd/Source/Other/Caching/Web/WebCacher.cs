@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.JavaScript;
 using ChatApp.Shared.TableDataSimple;
 using Newtonsoft.Json; 
 
-namespace ChatAppFrontEnd.Source.Other.Caching
+namespace ChatAppFrontEnd.Source.Other.Caching.Web
 {
     public partial class CallJavaScript
     {
@@ -14,30 +14,26 @@ namespace ChatAppFrontEnd.Source.Other.Caching
 
         [JSImport("getAllUsers", "app")]
         internal static partial Task<string> GetAllUsers();
+        
+        [JSImport("saveLoginToken", "app")]
+        internal static partial Task<string> SaveLoginToken(string token);
+
+        [JSImport("getLoginToken", "app")]
+        internal static partial Task<string> GetLoginToken();
     }
     
-    public class WebCacher : ICacher
+    public partial class WebCacher : ICacher
     {
         public WebCacher()
         {
             
         }
 
-        public async void Run()
+        public async Task<bool> Setup()
         {
-            await JSHost.ImportAsync("app", "../app.js"); 
-            
-            var friend1 = new UserSimple() { UserID = "id5", UserName = "name 5" }; 
-            var friend2 = new UserSimple() { UserID = "id6", UserName = "name 6" }; 
-            
-            await AddFriend(friend1);
-            await AddFriend(friend2);
-            
-            List<UserSimple> users = await GetFriends();
-            foreach (var user in users)
-            {
-                Console.WriteLine($"{user.UserID}: {user.UserName}");
-            }
+            await JSHost.ImportAsync("app", "../app.js");
+
+            return true;
         }
 
         private async Task<bool> AddFriend(UserSimple friend)

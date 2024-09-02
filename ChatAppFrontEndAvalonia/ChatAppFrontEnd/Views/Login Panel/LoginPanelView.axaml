@@ -27,7 +27,7 @@
         <KeyBinding Gesture="Enter" Command="{Binding LoginCommand}"/>
     </UserControl.KeyBindings>
     
-    <Grid>
+    <Grid IsVisible="{Binding IsMainContentVisible}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>

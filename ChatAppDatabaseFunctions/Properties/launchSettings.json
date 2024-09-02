@@ -1,7 +1,8 @@
 {
   "profiles": {
     "ChatAppDatabaseFunctions": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--useHttps --cert \"certificate.pfx\" --password \"123\""
     }
   }
 }

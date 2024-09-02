@@ -20,6 +20,8 @@
             <Button Command="{Binding BackCommand}" Width="70" Height="70" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0">
                 <Image Source="/Assets/ExitIcon.png"/>
             </Button>
+            
+            <Button Classes="RedButton" Content="Logout" FontSize="14" VerticalAlignment="Bottom" HorizontalAlignment="Left" Command="{Binding LogoutCommand}" Margin="40, 0, 0, 40"/>
         </Grid>
     </Grid>
     

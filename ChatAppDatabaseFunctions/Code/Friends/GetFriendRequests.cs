@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using ChatApp.Shared;
 using ChatApp.Shared.ExtensionMethods;
 using ChatApp.Shared.TableDataSimple;
+using ChatApp.Shared.Friends;
 
 namespace ChatAppDatabaseFunctions.Code
 {

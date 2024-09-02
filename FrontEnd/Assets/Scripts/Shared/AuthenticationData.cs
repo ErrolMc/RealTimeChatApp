@@ -13,10 +13,18 @@ namespace ChatApp.Shared.Authentication
         public string Password { get; set; }
     }
 
+    [Serializable]
     public class UserLoginResponseData
     {
         public bool Status { get; set; }
         public string Message { get; set; }
         public User User { get; set; }
+        public string LoginToken { get; set; }
+    }
+
+    [Serializable]
+    public class AutoLoginData
+    {
+        public string Token { get; set; }
     }
 }

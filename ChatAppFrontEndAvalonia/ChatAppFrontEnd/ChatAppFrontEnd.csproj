@@ -19,6 +19,7 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+        <PackageReference Include="LiteDB.Async" Version="0.1.8" />
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.8" />
@@ -32,6 +33,9 @@
       </Compile>
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs">
         <Link>Source\Shared\Enums.cs</Link>
+      </Compile>
+      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Friends.cs">
+        <Link>Source\Shared\Friends.cs</Link>
       </Compile>
       <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs">
         <Link>Source\Shared\FunctionNames.cs</Link>
