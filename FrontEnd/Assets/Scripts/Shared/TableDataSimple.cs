@@ -20,6 +20,7 @@ namespace ChatApp.Shared.TableDataSimple
         public string Owner { get; set; }
         public string GroupID { get; set; }
         
+        [JsonIgnore]
         public string ID 
         { 
             get => GroupID;
@@ -44,16 +45,26 @@ namespace ChatApp.Shared.TableDataSimple
             return message.FromUser.UserID == UserID;
         }
         
+        [JsonIgnore]
         public string ID 
         { 
             get => UserID;
             set => UserID = value;
         }
 
+        [JsonIgnore]
         public string Name
         {
             get => UserName;
             set => UserName = value;
         }
+    }
+
+    [Serializable]
+    public class MessageSimple
+    {
+        public string UserID { get; set; }
+        public string Message { get; set; }
+        public long TimeStamp { get; set; }
     }
 }

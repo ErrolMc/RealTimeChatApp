@@ -70,7 +70,10 @@ namespace ChatAppDatabaseFunctions.Code
             }
 
             toUser.Friends.Remove(fromUser.UserID);
+            toUser.FriendsVNum++;
+
             fromUser.Friends.Remove(toUser.UserID);
+            fromUser.FriendsVNum++;
 
             try
             {

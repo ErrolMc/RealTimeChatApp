@@ -13,6 +13,16 @@ namespace ChatAppFrontEnd.Source.Services
         Task<(bool, string)> GetLoginToken();
         Task<bool> ClearLoginToken();
         
+        // messages
+        Task<int> GetThreadVNum(string threadID);
+        Task<List<MessageSimple>> GetMessagesFromThread(string threadID);
+        Task<bool> AddMessagesToThread(string threadID, List<MessageSimple> messages);
+        Task<bool> ClearMessageThread(string threadID);
+        
+        // friends
+        Task<List<UserSimple>> GetFriends();
+        Task<int> GetFriendsVNum();
+        Task<bool> CacheFriends(List<UserSimple> friends, int vNum);
     }
 }
 

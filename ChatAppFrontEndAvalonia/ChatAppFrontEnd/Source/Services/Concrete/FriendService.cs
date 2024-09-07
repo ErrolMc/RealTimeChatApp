@@ -8,12 +8,14 @@ using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatAppFrontEnd.Source.Utils;
+using ChatApp.Shared.Friends;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
 {
     public class FriendService : IFriendService
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly ICachingService _cachingService;
         
         public List<UserSimple> Friends { get; set; }
         public List<UserSimple> FriendRequests { get; set; }
@@ -25,9 +27,10 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public event Action<UnfriendNotification> OnUnfriended;
         public event Action FriendsListUpdated;
 
-        public FriendService(IAuthenticationService authenticationService)
+        public FriendService(IAuthenticationService authenticationService, ICachingService cachingService)
         {
             _authenticationService = authenticationService;
+            _cachingService = cachingService;
             
             Friends = new List<UserSimple>();
             FriendRequests = new List<UserSimple>();
@@ -135,14 +138,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             if (_authenticationService?.CurrentUser == null)
                 return new GetFriendsResponseData() { Success = false, Message = "Current User is null"};
+
+            int vNum = await _cachingService.GetFriendsVNum();
             
-            UserSimple requestData = new UserSimple
+            GetFriendsRequestData requestData = new GetFriendsRequestData
             {   
-                UserName = _authenticationService.CurrentUser.Username,
                 UserID = _authenticationService.CurrentUser.UserID,
+                LocalVNum = vNum
             };
             
-            var response = await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetFriendsResponseData>(FunctionNames.GET_FRIENDS, requestData);
+            var response = await NetworkHelper.PerformFunctionPostRequest<GetFriendsRequestData, GetFriendsResponseData>(FunctionNames.GET_FRIENDS, requestData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -155,7 +160,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 Console.WriteLine("FriendService - Failed to Get Friends");
                 return new GetFriendsResponseData() { Success = false, Message = "Request failed" };
             }
-            
+
+            if (response.ResponseData.HasUpdate == false)
+            {
+                Console.WriteLine("FriendService - GetFriends: Getting from cache");
+                response.ResponseData.Friends = await _cachingService.GetFriends();
+                return response.ResponseData;
+            }
+
+            bool cacheSuccess = await _cachingService.CacheFriends(response.ResponseData.Friends, response.ResponseData.VNum);
+
             Console.WriteLine("FriendService - GetFriends: " + response.Message);
             return response.ResponseData;
         }

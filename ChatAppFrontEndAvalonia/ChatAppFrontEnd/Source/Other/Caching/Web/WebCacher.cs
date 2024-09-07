@@ -2,77 +2,85 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
-using ChatApp.Shared.TableDataSimple;
-using Newtonsoft.Json; 
 
 namespace ChatAppFrontEnd.Source.Other.Caching.Web
 {
     public partial class CallJavaScript
     {
-        [JSImport("addUser", "app")]
-        internal static partial Task<string> AddUser(string userJson);
+        [JSImport("SaveString", "functions")]
+        internal static partial Task<string> SaveString(string key, string value);
 
-        [JSImport("getAllUsers", "app")]
-        internal static partial Task<string> GetAllUsers();
+        [JSImport("GetString", "functions")]
+        internal static partial Task<string> GetString(string key);
         
-        [JSImport("saveLoginToken", "app")]
-        internal static partial Task<string> SaveLoginToken(string token);
+        [JSImport("GetFriends", "functions")]
+        internal static partial Task<string> GetFriends();
 
-        [JSImport("getLoginToken", "app")]
-        internal static partial Task<string> GetLoginToken();
+        [JSImport("CacheFriends", "functions")]
+        internal static partial Task<string> CacheFriends(string friendsJson);
+        
+        [JSImport("ClearCache", "functions")]
+        internal static partial Task<string> ClearCache();
     }
     
     public partial class WebCacher : ICacher
     {
-        public WebCacher()
-        {
-            
-        }
-
         public async Task<bool> Setup()
         {
-            await JSHost.ImportAsync("app", "../app.js");
-
-            return true;
-        }
-
-        private async Task<bool> AddFriend(UserSimple friend)
-        {
             try
             {
-                string json = JsonConvert.SerializeObject(friend);
-                string result = await CallJavaScript.AddUser(json);
+                await JSHost.ImportAsync("functions", "../functions.js");
                 return true;
             }
-            catch (JSException ex) // This catches JavaScript exceptions specifically
+            catch (Exception e)
             {
-                Console.WriteLine("JavaScript error: " + ex.Message);
-                return false;
-            }
-            catch (Exception ex) // Generic exception catch, in case other kinds of errors occur
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.WriteLine("Cache Setup Error: " + e.Message);
                 return false;
             }
         }
 
-        private async Task<List<UserSimple>> GetFriends()
+        public async Task<bool> ClearCache()
         {
             try
             {
-                string usersJson = await CallJavaScript.GetAllUsers();
-                List<UserSimple> users = JsonConvert.DeserializeObject<List<UserSimple>>(usersJson);
-                return users;
+                string message = await CallJavaScript.ClearCache();
+                return true;
             }
-            catch (JSException ex) // This catches JavaScript exceptions specifically
+            catch (Exception e)
             {
-                Console.WriteLine("JavaScript error: " + ex.Message);
-                return new List<UserSimple>();
+                Console.WriteLine("ClearCache Error: " + e.Message);
+                return false;
             }
-            catch (Exception ex) // Generic exception catch, in case other kinds of errors occur
+        }
+
+        public async Task<bool> SaveString(string key, string value)
+        {
+            try
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
-                return new List<UserSimple>();
+                string message = await CallJavaScript.SaveString(key, value);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Save String Error: " + e.Message);
+                return false;
+            }
+        }
+
+        public async Task<(bool, string)> GetString(string key)
+        {
+            try
+            {
+                string token = await CallJavaScript.GetString(key);
+                if (string.IsNullOrEmpty(token))
+                    return (false, string.Empty);
+                
+                return (true, token);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Get String Error: " + e.Message);
+                return (false, string.Empty);
             }
         }
     }

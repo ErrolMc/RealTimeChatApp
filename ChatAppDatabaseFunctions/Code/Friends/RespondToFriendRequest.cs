@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using ChatApp.Shared.GroupDMs;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ChatApp.Shared.Friends;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -87,10 +88,16 @@ namespace ChatAppDatabaseFunctions.Code
             if (requestData.Status)
             {
                 if (!toUser.Friends.Contains(fromUser.UserID))
+                {
                     toUser.Friends.Add(fromUser.UserID);
+                    toUser.FriendsVNum++;
+                }
 
                 if (!fromUser.Friends.Contains(toUser.UserID))
+                {
                     fromUser.Friends.Add(toUser.UserID);
+                    fromUser.FriendsVNum++;
+                }
             }
 
             try

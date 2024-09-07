@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using ChatApp.Shared;
 using ChatApp.Shared.ExtensionMethods;
 using ChatApp.Shared.TableDataSimple;
+using ChatApp.Shared.Friends;
 
 namespace ChatAppDatabaseFunctions.Code
 {
@@ -31,22 +32,28 @@ namespace ChatAppDatabaseFunctions.Code
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            UserSimple requestData = JsonConvert.DeserializeObject<UserSimple>(requestBody);
+            GetFriendsRequestData requestData = JsonConvert.DeserializeObject<GetFriendsRequestData>(requestBody);
 
             if (requestData == null)
             {
-                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = "Invalid request data" });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = "Invalid request data" });
             }
 
             var userResp = await SharedQueries.GetUserFromUserID(requestData.UserID);
             if (userResp.connectionSuccess == false)
             {
-                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = userResp.message });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = userResp.message });
+            }
+
+            // check the cache before any more database calls
+            if (userResp.user.FriendsVNum == requestData.LocalVNum)
+            {
+                return new OkObjectResult(new GetFriendsResponseData { Success = true, HasUpdate = false, VNum = -1, Message = "Friends list up to date" });
             }
 
             if (userResp.user.Friends == null || userResp.user.Friends.Count == 0)
             {
-                return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = "No friends found" });
+                return new OkObjectResult(new GetFriendsResponseData { Success = true, HasUpdate = true, VNum = userResp.user.FriendsVNum, Message = "No friends found" });
             }
 
             (bool success, string message, List<User> friends) = await SharedQueries.GetUsers(userResp.user.Friends);
@@ -54,10 +61,10 @@ namespace ChatAppDatabaseFunctions.Code
             if (success == false)
             {
                 Console.WriteLine($"An error occurred: {message}");
-                return new OkObjectResult(new GetFriendsResponseData { Success = false, Message = "An error occurred while getting friends" });
+                return new OkObjectResult(new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = "An error occurred while getting friends" });
             }
 
-            return new OkObjectResult(new GetFriendsResponseData { Success = true, Message = $"{friends.Count} Friends retrieved", Friends = friends.ToUserSimpleList() });
+            return new OkObjectResult(new GetFriendsResponseData { Success = true, HasUpdate = true, Message = $"{friends.Count} Friends retrieved", VNum = userResp.user.FriendsVNum, Friends = friends.ToUserSimpleList() });
         }
     }
 }
