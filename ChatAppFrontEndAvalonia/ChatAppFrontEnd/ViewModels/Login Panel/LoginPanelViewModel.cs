@@ -100,7 +100,7 @@ namespace ChatAppFrontEnd.ViewModels
             var loginResponse = await _authenticationService.TryAutoLogin(token);   
             if (loginResponse.success == false)
             {
-                bool res = await _cachingService.ClearLoginToken();
+                bool res = await _cachingService.ClearCache();
                 IsMainContentVisible = true;
                 return;
             }

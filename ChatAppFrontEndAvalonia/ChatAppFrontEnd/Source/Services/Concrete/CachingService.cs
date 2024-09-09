@@ -25,6 +25,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return await _cacher.Setup();
         }
         
+        public async Task<bool> ClearCache()
+        {
+            return await _cacher.ClearCache();
+        }
+        
         #region auth
         public async Task<bool> SaveLoginToken(string token)
         {
@@ -34,11 +39,6 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public async Task<(bool, string)> GetLoginToken()
         {
             return await _cacher.GetString(LOGIN_TOKEN_KEY);
-        }
-
-        public async Task<bool> ClearLoginToken()
-        {
-            return await SaveLoginToken(string.Empty);
         }
         #endregion
 

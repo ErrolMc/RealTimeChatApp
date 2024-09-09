@@ -11,7 +11,7 @@ namespace ChatAppFrontEnd.Source.Services
         // auth
         Task<bool> SaveLoginToken(string token);
         Task<(bool, string)> GetLoginToken();
-        Task<bool> ClearLoginToken();
+        Task<bool> ClearCache();
         
         // messages
         Task<int> GetThreadVNum(string threadID);

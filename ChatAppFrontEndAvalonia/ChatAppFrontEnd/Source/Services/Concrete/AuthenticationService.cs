@@ -82,7 +82,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public async Task<bool> TryLogout()
         {
-            return await _cachingService.ClearLoginToken();
+            return await _cachingService.ClearCache();
         }
 
         private static readonly HttpClient httpClient = new HttpClient();
