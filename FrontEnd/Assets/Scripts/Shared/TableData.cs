@@ -40,11 +40,6 @@ namespace ChatApp.Shared.Tables
         [JsonProperty("messagetype")] public int MessageType { get; set; }
         [JsonProperty("timestamp")] public long TimeStamp { get; set; }
         // attachments ?
-
-        public MessageSimple ToMessageSimple()
-        {
-            return new MessageSimple() { UserID = FromUser.UserID, Message = MessageContents, TimeStamp = TimeStamp };
-        }
     }
 
     [Serializable]

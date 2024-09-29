@@ -45,6 +45,7 @@ namespace ChatAppFrontEnd.ViewModels
         public override void OnShow()
         {
             _chatView.OnShow();
+            _sideBarBottomView.OnShow();
             _dmSidebarView.Setup(OnSelectChat);
         }
 

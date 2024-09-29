@@ -32,6 +32,14 @@ namespace ChatApp.Shared.GroupDMs
         public bool ReplaceUserSuccess { get; set; } = false;
         public string Message { get; set; }
     }
+    
+    [Serializable]
+    public class GetGroupDMsRequestData
+    {
+        public string UserID { get; set; }
+        public string UserName { get; set; }
+        public int VNum { get; set; }
+    }
 
     [Serializable]
     public class GetGroupDMsResponseData

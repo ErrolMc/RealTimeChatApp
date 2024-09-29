@@ -6,9 +6,11 @@ using ChatApp.Services;
 using ChatApp.Shared;
 using ChatApp.Shared.Enums;
 using ChatApp.Shared.GroupDMs;
+using ChatApp.Shared.Messages;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 using ChatAppFrontEnd.Source.Utils;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
@@ -16,14 +18,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     public class GroupService : IGroupService
     {
         private readonly IAuthenticationService _authenticationService;
-
+        private readonly ICachingService _cachingService;
+        
         public event Action OnGroupDMsUpdated;
         public event Action<(GroupDMSimple groupDM, GroupUpdateReason reason)> OnGroupUpdated;
         public List<GroupDMSimple> GroupDMs { get; set; }
         
-        public GroupService(IAuthenticationService authenticationService)
+        public GroupService(IAuthenticationService authenticationService, ICachingService cachingService)
         {
             _authenticationService = authenticationService;
+            _cachingService = cachingService;
             GroupDMs = new List<GroupDMSimple>();
         }
 
@@ -160,6 +164,25 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
             GroupDMs = response.ResponseData.GroupDMs;
             
+            // update threads
+            List<ThreadCache> threadsOnDisk = await _cachingService.GetAllThreads();
+            HashSet<string> groupThreadsOnDisk = threadsOnDisk
+                .Where(thread => (MessageType)thread.Type == MessageType.GroupMessage)
+                .Select(thread => thread.ThreadID).ToHashSet();
+            
+            List<ThreadCache> threadsToAdd = new List<ThreadCache>();
+            foreach (GroupDMSimple group in GroupDMs)
+            {
+                if (!groupThreadsOnDisk.Remove(group.GroupID))
+                    threadsToAdd.Add(new ThreadCache() { ThreadID = group.GroupID, Type = (int)MessageType.GroupMessage, TimeStamp = 0 });
+            }
+            
+            if (threadsToAdd.Count > 0)
+                await _cachingService.AddThreads(threadsToAdd);
+            
+            if (groupThreadsOnDisk.Count > 0)
+                await _cachingService.RemoveThreads(groupThreadsOnDisk.ToList());
+            
             return true;
         }
         
@@ -167,6 +190,8 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             GroupDMs?.Add(groupDM);
             OnGroupDMsUpdated?.Invoke();
+            
+            _cachingService.AddThreads(new List<ThreadCache>() { new() { ThreadID = groupDM.GroupID, Type = (int)MessageType.GroupMessage, TimeStamp = 0 } });
         }
 
         public void UpdateGroupLocally(GroupDMSimple groupDM, GroupUpdateReason reason)
@@ -175,7 +200,10 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             {
                 GroupDMSimple localGroupDM = GroupDMs.FirstOrDefault(gp => gp.GroupID == groupDM.GroupID);
                 if (localGroupDM != null)
+                {
                     GroupDMs?.Remove(localGroupDM);
+                    _cachingService.RemoveThreads(new List<string>() { localGroupDM.GroupID });
+                }
             }
             
             OnGroupUpdated?.Invoke((groupDM, reason));

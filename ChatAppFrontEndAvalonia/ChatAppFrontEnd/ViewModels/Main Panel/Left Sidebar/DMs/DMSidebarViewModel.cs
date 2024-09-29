@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using ChatApp.Services;
+using ChatApp.Shared;
 using ChatApp.Shared.Enums;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Source.Services;

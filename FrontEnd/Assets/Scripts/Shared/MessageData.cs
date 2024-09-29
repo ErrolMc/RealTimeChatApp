@@ -36,6 +36,7 @@ namespace ChatApp.Shared.Messages
     public class GetMessagesRequestData
     {
         public string ThreadID { get; set; }
+        public long LocalTimeStamp { get; set; }
     }
 
     [Serializable]

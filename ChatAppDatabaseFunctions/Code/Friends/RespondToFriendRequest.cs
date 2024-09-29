@@ -66,7 +66,6 @@ namespace ChatAppDatabaseFunctions.Code
             {
                 ID = SharedStaticMethods.CreateHashedDirectMessageID(fromUser.UserID, toUser.UserID),
                 IsGroupDM = false,
-                MessageVNum = 0,
                 Users = new List<string> { fromUser.UserID, toUser.UserID },
                 OwnerUserID = null,
                 Name = null,

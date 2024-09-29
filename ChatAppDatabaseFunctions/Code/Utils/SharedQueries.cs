@@ -114,6 +114,28 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
+        public static async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
+        {
+            try
+            {
+                List<Message> messages = new List<Message>();
+                IQueryable<Message> query = DatabaseStatics.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID && m.TimeStamp > timeStamp);
+                FeedIterator<Message> iterator = query.ToFeedIterator();
+
+                while (iterator.HasMoreResults)
+                {
+                    FeedResponse<Message> response = await iterator.ReadNextAsync();
+                    messages.AddRange(response.ToList());
+                }
+                return (true, $"Gotten {messages.Count} messages", messages);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
+                return (false, GENERIC_DATABASE_ERROR, new List<Message>());
+            }
+        }
+
         public static async Task<(bool connectionSuccess, string message)> DeleteMessagesByThreadID(string threadID)
         {
             try

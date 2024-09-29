@@ -4,6 +4,7 @@ using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.ChatPanel;
 using ChatAppFrontEnd.Source.Other;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
 
@@ -141,12 +142,12 @@ namespace ChatAppFrontEnd.ViewModels
             _sendingMessage = false;
         }
         
-        private void OnReceiveMessage(Message message)
+        private void OnReceiveMessage(MessageCache message)
         {
             if (!_chatEntity.DoesMessageThreadMatch(message))
                 return;
             
-            ChatHistoryViewModel.CreateMessage(message.FromUser.UserName, message.MessageContents);
+            ChatHistoryViewModel.CreateMessage(message.FromUser.UserName, message.Message);
         }
         #endregion
         

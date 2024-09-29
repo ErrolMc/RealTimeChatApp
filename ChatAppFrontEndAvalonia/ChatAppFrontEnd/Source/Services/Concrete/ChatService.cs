@@ -6,6 +6,7 @@ using ChatApp.Shared;
 using ChatApp.Shared.Messages;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 using ChatAppFrontEnd.Source.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
@@ -16,21 +17,24 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     {
         private readonly ISignalRService _signalRService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ICachingService _cachingService;
         
         private HubConnection Connection => _signalRService.Connection;
 
         public IChatEntity CurrentChat { get; set; }
-        public event Action<Message> OnMessageReceived;
+        public event Action<MessageCache> OnMessageReceived;
 
-        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService)
+        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService, ICachingService cachingService)
         {
             _signalRService = signalRService;
             _authenticationService = authenticationService;
+            _cachingService = cachingService;
         }
         
-        public void OnReceiveMessage(Message message)
+        public async void OnReceiveMessage(Message message)
         {
-            OnMessageReceived?.Invoke(message);
+            await _cachingService.CacheMessages(new List<Message>() { message });
+            OnMessageReceived?.Invoke(message.ToMessageCache());
         }
         
         public async Task<bool> SendMessage(IChatEntity chatEntity, string messageContents)
@@ -89,7 +93,9 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                     Console.WriteLine($"SendDirectMessage Fail: {responseData.ResponseMessage}");
                     return (false, null);
                 }
-
+                
+                await _cachingService.CacheMessages(new List<Message>() { responseData.Message });
+                
                 return (true, responseData);
             }
             catch (Exception ex)
@@ -99,50 +105,55 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             }
         }
         
-        public async Task<List<Message>> GetMessages(IChatEntity chatEntity)
+        public async Task<List<MessageCache>> GetMessages(IChatEntity chatEntity)
+        {
+            List<Message> uncachedMessages = await GetUncachedMessagesFromDatabase(chatEntity);
+            if (uncachedMessages.Count > 0)
+                await _cachingService.CacheMessages(uncachedMessages);
+            List<MessageCache> allMessages = await _cachingService.GetMessagesFromThread(GetThreadIDFromChatEntity(chatEntity));
+            return allMessages;
+        }
+
+        private async Task<List<Message>> GetUncachedMessagesFromDatabase(IChatEntity chatEntity)
+        {
+            string threadID = GetThreadIDFromChatEntity(chatEntity);
+            long timeStamp = await _cachingService.GetThreadTimeStamp(threadID);
+                    
+            GetMessagesRequestData requestData = new GetMessagesRequestData()
+            {
+                ThreadID = threadID,
+                LocalTimeStamp = timeStamp
+            };
+                    
+            var response = 
+                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
+
+            if (response.ConnectionSuccess)
+                return response.ResponseData.Messages;
+                    
+            Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
+            return new List<Message>();
+        }
+
+        private string GetThreadIDFromChatEntity(IChatEntity chatEntity)
         {
             switch (chatEntity)
             {
                 case UserSimple user:
                 {
+                    if (_authenticationService.CurrentUser == null)
+                        return string.Empty;
+                    
                     string fromUserId = _authenticationService.CurrentUser.UserID;
-                    GetMessagesRequestData requestData = new GetMessagesRequestData()
-                    {
-                        ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, chatEntity.ID),
-                    };
-                    
-                    var response = 
-                        await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
-
-                    if (!response.ConnectionSuccess)
-                    {
-                        Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
-                        return new List<Message>();
-                    }
-                    
-                    return response.ResponseData.Messages;
+                    return SharedStaticMethods.CreateHashedDirectMessageID(fromUserId, user.UserID);
                 }
                 case GroupDMSimple groupDM:
                 {
-                    GetMessagesRequestData requestData = new GetMessagesRequestData()
-                    {
-                        ThreadID = groupDM.GroupID
-                    };
-
-                    var response = 
-                        await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
-
-                    if (!response.ConnectionSuccess)
-                    {
-                        Console.WriteLine($"GetDirectMessages Fail: {response.Message}");
-                        return new List<Message>();
-                    }
-            
-                    return response.ResponseData.Messages;
+                    return groupDM.GroupID;
                 }
             }
 
-            return new List<Message>();
+            return string.Empty;
         }
     }
 }

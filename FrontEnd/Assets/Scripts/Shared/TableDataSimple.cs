@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using ChatApp.Shared.Tables;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
+using LiteDB;
 
 namespace ChatApp.Shared.TableDataSimple
 {
@@ -10,7 +12,7 @@ namespace ChatApp.Shared.TableDataSimple
     {
         string ID { get; set; }
         string Name { get; set; }
-        bool DoesMessageThreadMatch(Message message);
+        bool DoesMessageThreadMatch(MessageCache message);
     }
     
     [Serializable]
@@ -27,9 +29,23 @@ namespace ChatApp.Shared.TableDataSimple
             set => GroupID = value;
         }
         
-        public bool DoesMessageThreadMatch(Message message)
+        public bool DoesMessageThreadMatch(MessageCache message)
         {
             return message.ThreadID == GroupID;
+        }
+    }
+    
+    [Serializable]
+    public class GroupDMSimpleCache : GroupDMSimple
+    {
+        public int MessageVNum { get; set; }
+
+        public GroupDMSimpleCache(GroupDMSimpleCache groupDmSimple, int messageVNum = 0)
+        {
+            Name = groupDmSimple.Name;
+            Owner = groupDmSimple.Owner;
+            GroupID = groupDmSimple.GroupID;
+            MessageVNum = messageVNum;
         }
     }
     
@@ -40,7 +56,7 @@ namespace ChatApp.Shared.TableDataSimple
         public string UserName { get; set; }
         // profile image (id?)
 
-        public bool DoesMessageThreadMatch(Message message)
+        public bool DoesMessageThreadMatch(MessageCache message)
         {
             return message.FromUser.UserID == UserID;
         }
@@ -58,13 +74,5 @@ namespace ChatApp.Shared.TableDataSimple
             get => UserName;
             set => UserName = value;
         }
-    }
-
-    [Serializable]
-    public class MessageSimple
-    {
-        public string UserID { get; set; }
-        public string Message { get; set; }
-        public long TimeStamp { get; set; }
     }
 }

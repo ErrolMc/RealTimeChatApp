@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ChatApp.Shared.TableDataSimple;
+using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Other.Caching;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 using ChatAppFrontEnd.Source.Other.Caching.Desktop;
 using ChatAppFrontEnd.Source.Other.Caching.Web;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
 {
-    public class CachingService : ICachingService
+    public partial class CachingService : ICachingService
     {
         private const string LOGIN_TOKEN_KEY = "LoginToken";
         private const string FRIENDS_VNUM_KEY = "FriendsVNum";
+        private const string GROUPS_VNUM_KEY = "GroupsVNum";
         
         private readonly ICacher _cacher;
 
@@ -29,7 +33,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         {
             return await _cacher.ClearCache();
         }
-        
+
         #region auth
         public async Task<bool> SaveLoginToken(string token)
         {
@@ -41,30 +45,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return await _cacher.GetString(LOGIN_TOKEN_KEY);
         }
         #endregion
-
-        #region messages
-        public async Task<int> GetThreadVNum(string threadID)
+        
+        #region groupDMs
+        public async Task<int> GetGroupDMsVNum()
         {
-            await Task.Delay(1);
-            return -1;
-        }
-
-        public async Task<List<MessageSimple>> GetMessagesFromThread(string threadID)
-        {
-            await Task.Delay(1);
-            return new List<MessageSimple>();
-        }
-
-        public async Task<bool> AddMessagesToThread(string threadID, List<MessageSimple> messages)
-        {
-            await Task.Delay(1);
-            return true;
-        }
-
-        public async Task<bool> ClearMessageThread(string threadID)
-        {
-            await Task.Delay(1);
-            return true;
+            return await GetIntVNum(GROUPS_VNUM_KEY);
         }
         #endregion
 
@@ -86,9 +71,23 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return await SaveIntVNum(FRIENDS_VNUM_KEY, vNum);
         }
         #endregion
+
+        #region messages
+        public async Task<List<MessageCache>> GetMessagesFromThread(string threadID)
+        {
+            return await _cacher.GetMessagesFromThread(threadID);
+        }
+
+        public async Task<bool> CacheMessages(List<Message> messages)
+        {
+            List<MessageCache> messageCaches = messages.Select(message => message.ToMessageCache()).ToList();
+            bool timeStampResult = await UpdateThreadTimeStamp(messages);
+            
+            return await _cacher.CacheMessages(messageCaches);
+        }
+        #endregion
         
         #region shared
-
         private async Task<bool> SaveIntVNum(string key, int vNum)
         {
             return await _cacher.SaveString(key, vNum.ToString());

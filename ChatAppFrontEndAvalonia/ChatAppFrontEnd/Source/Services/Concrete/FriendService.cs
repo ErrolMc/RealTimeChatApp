@@ -9,6 +9,8 @@ using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
 using ChatAppFrontEnd.Source.Utils;
 using ChatApp.Shared.Friends;
+using ChatApp.Shared.Messages;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
 {
@@ -55,8 +57,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             if (Friends.Contains(user))
                 return;
             
-            Friends.Add(user);
+            Friends.Add(new UserSimpleCache(user));
             FriendsListUpdated?.Invoke();
+            
+            if (_authenticationService?.CurrentUser != null)
+                _cachingService.AddThreads(new List<ThreadCache>() { new() { ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(user.UserID, _authenticationService?.CurrentUser.UserID), Type = (int)MessageType.DirectMessage, TimeStamp = 0} });
         }
 
         public async Task<bool> GetFriendRequests()
@@ -130,6 +135,9 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             Friends.Remove(friend);
             OnUnfriended?.Invoke(notification);
             FriendsListUpdated?.Invoke();
+
+            if (_authenticationService?.CurrentUser != null)
+                _cachingService.RemoveThreads(new List<string>() { SharedStaticMethods.CreateHashedDirectMessageID(friend.UserID, _authenticationService?.CurrentUser.UserID) });
         }
         #endregion
         
@@ -168,7 +176,29 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 return response.ResponseData;
             }
 
+            // cache the friends
             bool cacheSuccess = await _cachingService.CacheFriends(response.ResponseData.Friends, response.ResponseData.VNum);
+            
+            // update threads
+            List<ThreadCache> threadsOnDisk = await _cachingService.GetAllThreads();
+            HashSet<string> friendThreadsOnDisk = threadsOnDisk
+                .Where(thread => (MessageType)thread.Type == MessageType.DirectMessage)
+                .Select(thread => thread.ThreadID).ToHashSet();
+            
+            List<ThreadCache> threadsToAdd = new List<ThreadCache>();
+            foreach (UserSimple friend in response.ResponseData.Friends)
+            {
+                string threadID = SharedStaticMethods.CreateHashedDirectMessageID(friend.UserID, requestData.UserID);
+                
+                if (!friendThreadsOnDisk.Remove(threadID))
+                    threadsToAdd.Add(new ThreadCache() { ThreadID = threadID, Type = (int)MessageType.DirectMessage, TimeStamp = 0 });
+            }
+            
+            if (threadsToAdd.Count > 0)
+                await _cachingService.AddThreads(threadsToAdd);
+            
+            if (friendThreadsOnDisk.Count > 0)
+                await _cachingService.RemoveThreads(friendThreadsOnDisk.ToList());
 
             Console.WriteLine("FriendService - GetFriends: " + response.Message);
             return response.ResponseData;

@@ -27,7 +27,10 @@ namespace ChatAppFrontEnd.ViewModels
 
             FriendsCommand = ReactiveCommand.Create(GotoFriends);
             SettingsCommand = ReactiveCommand.Create(GotoSettings);
+        }
 
+        public void OnShow()
+        {
             if (_authenticationService.CurrentUser != null)
                 NameText = _authenticationService.CurrentUser.Username;
             else

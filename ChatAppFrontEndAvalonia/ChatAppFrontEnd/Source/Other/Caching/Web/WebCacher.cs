@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -21,10 +22,32 @@ namespace ChatAppFrontEnd.Source.Other.Caching.Web
         
         [JSImport("ClearCache", "functions")]
         internal static partial Task<string> ClearCache();
+        
+        [JSImport("AddThreads", "functions")]
+        internal static partial Task<string> AddThreads(string threadsJson);
+        
+        [JSImport("RemoveThreads", "functions")]
+        internal static partial Task<string> RemoveThreads(string threadIDsJson);
+        
+        [JSImport("GetAllThreads", "functions")]
+        internal static partial Task<string> GetAllThreads();
+        
+        [JSImport("UpdateThread", "functions")]
+        internal static partial Task<string> UpdateThread(string threadJson);
+        
+        [JSImport("CacheMessages", "functions")]
+        internal static partial Task<string> CacheMessages(string messagesJson);
+        
+        [JSImport("ClearMessageThread", "functions")]
+        internal static partial Task<string> ClearMessageThread(string threadID);
+        
+        [JSImport("GetMessagesFromThread", "functions")]
+        internal static partial Task<string> GetMessagesFromThread(string threadID);
     }
     
     public partial class WebCacher : ICacher
     {
+        [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
         public async Task<bool> Setup()
         {
             try

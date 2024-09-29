@@ -6,6 +6,7 @@ using ChatApp.Shared.GroupDMs;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 using ChatAppFrontEnd.Source.Services;
 using ReactiveUI;
 
@@ -34,9 +35,9 @@ namespace ChatAppFrontEnd.ViewModels
         {
             ClearMessages();
             
-            List<Message> respMessages = await _chatService.GetMessages(chatEntity);
-            foreach (Message messageData in respMessages)
-                CreateMessage(messageData.FromUser.UserName, messageData.MessageContents);
+            List<MessageCache> respMessages = await _chatService.GetMessages(chatEntity);
+            foreach (MessageCache messageData in respMessages)
+                CreateMessage(messageData.FromUser.UserName, messageData.Message);
         }
 
         public void CreateMessage(string fromUserName, string contents)

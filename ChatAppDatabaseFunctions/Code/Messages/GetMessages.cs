@@ -32,7 +32,7 @@ namespace ChatAppDatabaseFunctions.Code
                 return new OkObjectResult(new GetMessagesResponseData { Success = false, ResponseMessage = "Invalid request data" });
             }
 
-            var messagesResp = await SharedQueries.GetMessagesByThreadID(requestData.ThreadID);
+            var messagesResp = await SharedQueries.GetMessagesByThreadIDAfterTimeStamp(requestData.ThreadID, requestData.LocalTimeStamp);
 
             if (messagesResp.connectionSuccess == false)
             {

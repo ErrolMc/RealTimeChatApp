@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChatApp.Shared;
 using ChatApp.Shared.TableDataSimple;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 
 namespace ChatAppFrontEnd.Source.Other.Caching.Desktop
 {

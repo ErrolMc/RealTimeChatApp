@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
+using ChatApp.Shared.TableDataSimple;
+using ChatAppFrontEnd.Source.Other.Caching.Data;
 
 namespace ChatApp.Shared
 {
@@ -18,6 +21,14 @@ namespace ChatApp.Shared
                     builder.Append(bytes[i].ToString("x2"));
                 return builder.ToString();
             }
+        }
+        
+        public static List<UserSimple> ToUserSimpleList(this List<UserSimpleCache> userCacheList)
+        {
+            List<UserSimple> userSimples = new List<UserSimple>();
+            foreach (UserSimpleCache userCache in userCacheList)
+                userSimples.Add(userCache);
+            return userSimples;
         }
     }
 }
