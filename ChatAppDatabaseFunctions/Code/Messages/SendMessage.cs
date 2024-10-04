@@ -129,7 +129,7 @@ namespace ChatAppDatabaseFunctions.Code
                     break;
             }
 
-            return new OkObjectResult(new SendMessageResponseData { Success = true, NotificationSuccess = true, ResponseMessage = $"Message {message.ID} sent and added to DB" });
+            return new OkObjectResult(new SendMessageResponseData { Success = true, NotificationSuccess = true, ResponseMessage = $"Message {message.ID} sent and added to DB", Message = message });
         }
     }
 }

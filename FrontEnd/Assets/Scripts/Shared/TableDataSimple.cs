@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using ChatApp.Shared.Tables;
+#if FRONTEND
 using ChatAppFrontEnd.Source.Other.Caching.Data;
 using LiteDB;
+#endif
 
 namespace ChatApp.Shared.TableDataSimple
 {
@@ -12,7 +14,9 @@ namespace ChatApp.Shared.TableDataSimple
     {
         string ID { get; set; }
         string Name { get; set; }
+#if FRONTEND
         bool DoesMessageThreadMatch(MessageCache message);
+#endif
     }
     
     [Serializable]
@@ -21,7 +25,10 @@ namespace ChatApp.Shared.TableDataSimple
         public string Name { get; set; }
         public string Owner { get; set; }
         public string GroupID { get; set; }
-        
+
+#if FRONTEND
+        [BsonIgnore]
+#endif
         [JsonIgnore]
         public string ID 
         { 
@@ -29,10 +36,12 @@ namespace ChatApp.Shared.TableDataSimple
             set => GroupID = value;
         }
         
+#if FRONTEND
         public bool DoesMessageThreadMatch(MessageCache message)
         {
             return message.ThreadID == GroupID;
         }
+#endif
     }
     
     [Serializable]
@@ -56,11 +65,16 @@ namespace ChatApp.Shared.TableDataSimple
         public string UserName { get; set; }
         // profile image (id?)
 
+#if FRONTEND
         public bool DoesMessageThreadMatch(MessageCache message)
         {
             return message.FromUser.UserID == UserID;
         }
-        
+#endif
+
+#if FRONTEND
+        [BsonIgnore]
+#endif
         [JsonIgnore]
         public string ID 
         { 
@@ -68,6 +82,9 @@ namespace ChatApp.Shared.TableDataSimple
             set => UserID = value;
         }
 
+#if FRONTEND
+        [BsonIgnore]
+#endif
         [JsonIgnore]
         public string Name
         {
