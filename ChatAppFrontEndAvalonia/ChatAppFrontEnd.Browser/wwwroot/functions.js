@@ -26,7 +26,11 @@ export function OpenDatabase()
                 db.createObjectStore(threadStoreName, { keyPath: "ThreadID" });
 
             if (!db.objectStoreNames.contains(messagesStoreName))
-                db.createObjectStore(messagesStoreName, { keyPath: "MessageID" });
+            {
+                const messageStore = db.createObjectStore(messagesStoreName, { keyPath: "MessageID" });
+                messageStore.createIndex("ThreadID", "ThreadID", { unique: false });
+            }
+                
         };
 
         request.onerror = function(event) 
