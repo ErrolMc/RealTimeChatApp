@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Other\Keys.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Other\Misc.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Other\TableData.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Other\MessageData.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
-    <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs" Link="Other\Enums.cs" />
+    <Compile Include="..\..\ChatAppShared\Keys.cs" Link="Other\Keys.cs" />
+    <Compile Include="..\..\ChatAppShared\Misc.cs" Link="Other\Misc.cs" />
+    <Compile Include="..\..\ChatAppShared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
+    <Compile Include="..\..\ChatAppShared\NotificationData.cs" Link="Other\NotificationData.cs" />
+    <Compile Include="..\..\ChatAppShared\TableData.cs" Link="Other\TableData.cs" />
+    <Compile Include="..\..\ChatAppShared\MessageData.cs" Link="Other\MessageData.cs" />
+    <Compile Include="..\..\ChatAppShared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
+    <Compile Include="..\..\ChatAppShared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
+    <Compile Include="..\..\ChatAppShared\Enums.cs" Link="Other\Enums.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,18 +24,6 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Other\Keys.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Other\Misc.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Other\NetworkConstants.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Other\NotificationData.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Other\TableData.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Other\MessageData.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs.meta" Link="Other\GroupDMs.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Other\TableDataSimple.cs.meta" />
-    <None Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs.meta" Link="Other\Enums.cs.meta" />
   </ItemGroup>
 
 </Project>

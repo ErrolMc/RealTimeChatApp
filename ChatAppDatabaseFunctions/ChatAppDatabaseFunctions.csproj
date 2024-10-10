@@ -4,20 +4,20 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Enums.cs" Link="Code\Shared\Enums.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Friends.cs" Link="Code\Shared\Friends.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs" Link="Code\Shared\FunctionNames.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs" Link="Code\Shared\GroupDMs.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs" Link="Code\Shared\Keys.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\MessageData.cs" Link="Code\Shared\MessageData.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs" Link="Code\Shared\Misc.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs" Link="Code\Utils\SharedStaticMethods.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
-    <Compile Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
+    <Compile Include="..\ChatAppShared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
+    <Compile Include="..\ChatAppShared\Enums.cs" Link="Code\Shared\Enums.cs" />
+    <Compile Include="..\ChatAppShared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
+    <Compile Include="..\ChatAppShared\Friends.cs" Link="Code\Shared\Friends.cs" />
+    <Compile Include="..\ChatAppShared\FunctionNames.cs" Link="Code\Shared\FunctionNames.cs" />
+    <Compile Include="..\ChatAppShared\GroupDMs.cs" Link="Code\Shared\GroupDMs.cs" />
+    <Compile Include="..\ChatAppShared\Keys.cs" Link="Code\Shared\Keys.cs" />
+    <Compile Include="..\ChatAppShared\MessageData.cs" Link="Code\Shared\MessageData.cs" />
+    <Compile Include="..\ChatAppShared\Misc.cs" Link="Code\Shared\Misc.cs" />
+    <Compile Include="..\ChatAppShared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
+    <Compile Include="..\ChatAppShared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
+    <Compile Include="..\ChatAppShared\SharedStaticMethods.cs" Link="Code\Utils\SharedStaticMethods.cs" />
+    <Compile Include="..\ChatAppShared\TableData.cs" Link="Code\Shared\TableData.cs" />
+    <Compile Include="..\ChatAppShared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
@@ -42,19 +42,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\Shared\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs.meta" Link="Code\Shared\AuthenticationData.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\ExtensionMethods.cs.meta" Link="Code\Shared\ExtensionMethods.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs.meta" Link="Code\Shared\FunctionNames.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs.meta" Link="Code\Shared\GroupDMs.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\Keys.cs.meta" Link="Code\Shared\Keys.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\MessageData.cs.meta" Link="Code\Shared\MessageData.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\Misc.cs.meta" Link="Code\Shared\Misc.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs.meta" Link="Code\Shared\NetworkConstants.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs.meta" Link="Code\Shared\NotificationData.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs.meta" Link="Code\Utils\SharedStaticMethods.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\TableData.cs.meta" Link="Code\Shared\TableData.cs.meta" />
-    <None Include="..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs.meta" Link="Code\Shared\TableDataSimple.cs.meta" />
   </ItemGroup>
 </Project>

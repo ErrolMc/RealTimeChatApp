@@ -34,43 +34,43 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\AuthenticationData.cs">
+      <Compile Include="..\..\ChatAppShared\AuthenticationData.cs">
         <Link>Source\Shared\AuthenticationData.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Enums.cs">
+      <Compile Include="..\..\ChatAppShared\Enums.cs">
         <Link>Source\Shared\Enums.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Friends.cs">
+      <Compile Include="..\..\ChatAppShared\Friends.cs">
         <Link>Source\Shared\Friends.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\FunctionNames.cs">
+      <Compile Include="..\..\ChatAppShared\FunctionNames.cs">
         <Link>Source\Shared\FunctionNames.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\GroupDMs.cs">
+      <Compile Include="..\..\ChatAppShared\GroupDMs.cs">
         <Link>Source\Shared\GroupDMs.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Keys.cs">
+      <Compile Include="..\..\ChatAppShared\Keys.cs">
         <Link>Source\Shared\Keys.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\MessageData.cs">
+      <Compile Include="..\..\ChatAppShared\MessageData.cs">
         <Link>Source\Shared\MessageData.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\Misc.cs">
+      <Compile Include="..\..\ChatAppShared\Misc.cs">
         <Link>Source\Shared\Misc.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NetworkConstants.cs">
+      <Compile Include="..\..\ChatAppShared\NetworkConstants.cs">
         <Link>Source\Shared\NetworkConstants.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\NotificationData.cs">
+      <Compile Include="..\..\ChatAppShared\NotificationData.cs">
         <Link>Source\Shared\NotificationData.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\SharedStaticMethods.cs">
+      <Compile Include="..\..\ChatAppShared\SharedStaticMethods.cs">
         <Link>Source\Shared\SharedStaticMethods.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableData.cs">
+      <Compile Include="..\..\ChatAppShared\TableData.cs">
         <Link>Source\Shared\TableData.cs</Link>
       </Compile>
-      <Compile Include="..\..\FrontEnd\Assets\Scripts\Shared\TableDataSimple.cs">
+      <Compile Include="..\..\ChatAppShared\TableDataSimple.cs">
         <Link>Source\Shared\TableDataSimple.cs</Link>
       </Compile>
     </ItemGroup>
