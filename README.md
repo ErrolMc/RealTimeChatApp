@@ -2,93 +2,41 @@
 
 A modern, cross-platform real-time chat application built with Avalonia UI, Azure Functions, and SignalR.
 
-## Architecture
+## Documentation
 
-The application is built using a microservices architecture with the following components:
-
-### Frontend (ChatAppFrontEndAvalonia)
-- Built with Avalonia UI for cross-platform support
-- Supports multiple platforms:
-  - Desktop (Windows, macOS, Linux)
-  - Mobile (iOS, Android)
-  - Browser (WebAssembly)
-- Provides a modern, responsive user interface
-
-### Backend Services
-
-#### Azure Functions (ChatAppDatabaseFunctions)
-- Handles data persistence and business logic
-- Integrates with Azure Cosmos DB for data storage
-- RESTful API endpoints for:
-  - User management
-  - Message handling
-  - Chat room operations
-
-#### SignalR Server
-- Enables real-time communication
-- Manages WebSocket connections
-- Handles message broadcasting
-- Provides presence awareness
-
-### Data Storage
-- Azure Cosmos DB
-- Scalable NoSQL database
-- Stores:
-  - User profiles
-  - Chat messages
-  - Chat room information
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [API Documentation](docs/api/API.md)
+- [Development Guide](docs/guides/DEVELOPMENT.md)
+- [Architecture Decisions](docs/adr/001-architecture-choice.md)
 
 ## Features
 
 - Real-time messaging
-- Cross-platform support
+- Cross-platform support (Windows, macOS, Linux, iOS, Android, Web)
 - User authentication and authorization
 - Message history
 - Multiple chat room support
 - Presence indicators
 - Message persistence
 
-## Prerequisites
+## Quick Start
+
+### Prerequisites
 
 - .NET 6.0 SDK or later
 - Azure subscription
 - Azure Cosmos DB instance
 - Azure SignalR Service
 
-## Setup Instructions
+### Setup
 
 1. Clone the repository:
 ```bash
 git clone https://github.com/ErrolMc/RealTimeChatApp.git
+cd RealTimeChatApp
 ```
 
-2. Configure Azure Services:
-   - Create an Azure Cosmos DB instance
-   - Set up Azure Functions
-   - Configure Azure SignalR Service
-
-3. Configure connection strings:
-   - Update the connection strings in the Azure Functions configuration
-   - Update the SignalR connection settings
-   - Configure the frontend application settings
-
-4. Running the Frontend:
-```bash
-cd ChatAppFrontEndAvalonia/ChatAppFrontEnd.Desktop
-dotnet run
-```
-
-5. Running the Backend:
-```bash
-cd ChatAppDatabaseFunctions
-func start
-```
-
-6. Running the SignalR Server:
-```bash
-cd SignalRServer
-dotnet run
-```
+2. Follow the [Development Guide](docs/guides/DEVELOPMENT.md) for detailed setup instructions.
 
 ## Project Structure
 
@@ -108,31 +56,6 @@ dotnet run
 └── SignalRServer/             # Real-time communication server
 ```
 
-## Development
+## License
 
-### Building the Frontend
-```bash
-cd ChatAppFrontEndAvalonia
-dotnet build
-```
-
-### Building the Backend
-```bash
-cd ChatAppDatabaseFunctions
-dotnet build
-```
-
-## Deployment
-
-### Frontend
-- Desktop: Build and distribute the executable
-- Mobile: Deploy through respective app stores
-- Web: Deploy to a web server
-
-### Backend
-1. Deploy Azure Functions using Azure CLI:
-```bash
-func azure functionapp publish <FunctionAppName>
-```
-
-2. Deploy SignalR Server to Azure App Service
+This project is licensed under the MIT License - see the LICENSE file for details.
