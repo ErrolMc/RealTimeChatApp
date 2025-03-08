@@ -59,7 +59,7 @@ The application is built using a microservices architecture with the following c
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ErrolMc/RealTimeChatApp
+git clone https://github.com/ErrolMc/RealTimeChatApp.git
 ```
 
 2. Configure Azure Services:
