@@ -86,18 +86,6 @@ Real-time communication hub managing WebSocket connections.
    Client -> Azure Functions -> Cosmos DB
    ```
 
-### Security
-
-#### Authentication
-- Azure AD B2C integration
-- JWT token-based authentication
-- Secure token storage
-
-#### Authorization
-- Role-based access control
-- Chat room-specific permissions
-- Message encryption
-
 ### Scalability
 
 #### Frontend
