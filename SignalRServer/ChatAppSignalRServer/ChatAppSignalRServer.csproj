@@ -8,15 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\ChatAppShared\Keys.cs" Link="Other\Keys.cs" />
-    <Compile Include="..\..\ChatAppShared\Misc.cs" Link="Other\Misc.cs" />
-    <Compile Include="..\..\ChatAppShared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
-    <Compile Include="..\..\ChatAppShared\NotificationData.cs" Link="Other\NotificationData.cs" />
-    <Compile Include="..\..\ChatAppShared\TableData.cs" Link="Other\TableData.cs" />
-    <Compile Include="..\..\ChatAppShared\MessageData.cs" Link="Other\MessageData.cs" />
-    <Compile Include="..\..\ChatAppShared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
-    <Compile Include="..\..\ChatAppShared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
-    <Compile Include="..\..\ChatAppShared\Enums.cs" Link="Other\Enums.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\Enums.cs" Link="Other\Enums.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\Keys.cs" Link="Other\Keys.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Other\MessageData.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\TableData.cs" Link="Other\TableData.cs" />
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +23,10 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Other\" />
   </ItemGroup>
 
 </Project>

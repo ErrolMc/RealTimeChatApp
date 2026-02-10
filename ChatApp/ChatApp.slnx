@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="../ChatAppDatabaseFunctions/ChatAppDatabaseFunctions.csproj" />
+  <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/ChatAppFrontEnd.Browser.csproj" />
+  <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Desktop/ChatAppFrontEnd.Desktop.csproj" />
+  <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd/ChatAppFrontEnd.csproj" />
+  <Project Path="../SignalRServer/ChatAppSignalRServer/ChatAppSignalRServer.csproj" />
+  <Project Path="ChatApp.Shared/ChatApp.Shared.csproj" Id="bf45c5d6-4b13-46be-92bf-43fd90ed134b" />
+  <Project Path="E:/Personal Projects/Cloud/ChatAppGithub/ChatApp/ChatApp.AppHost/ChatApp.AppHost.csproj" Id="da4418ec-ec22-4d50-96d2-a972f4f425d3" />
+  <Project Path="E:/Personal Projects/Cloud/ChatAppGithub/ChatApp/ChatApp.ServiceDefaults/ChatApp.ServiceDefaults.csproj" Id="85b2221c-f928-4dc5-96ab-b5d3371c46f0" />
+</Solution>

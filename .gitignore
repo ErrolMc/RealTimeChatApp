@@ -62,3 +62,12 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Aspire projects
+ChatApp/bin/
+ChatApp/obj/
+ChatApp/ChatApp.Shared/bin/
+ChatApp/ChatApp.Shared/obj/
+ChatApp/ChatApp.AppHost/bin/
+ChatApp/ChatApp.AppHost/obj/
+ChatApp/ChatApp.ServiceDefaults/bin/
+ChatApp/ChatApp.ServiceDefaults/obj/

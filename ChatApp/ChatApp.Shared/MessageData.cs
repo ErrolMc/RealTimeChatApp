@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ChatApp.Shared.Misc;
 using ChatApp.Shared.Tables;
 
 namespace ChatApp.Shared.Messages

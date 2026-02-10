@@ -18,6 +18,23 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\AuthenticationData.cs" Link="Source\Shared\AuthenticationData.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\Enums.cs" Link="Source\Shared\Enums.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\ExtensionMethods.cs" Link="Source\Shared\ExtensionMethods.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\Friends.cs" Link="Source\Shared\Friends.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\FunctionNames.cs" Link="Source\Shared\FunctionNames.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Source\Shared\GroupDMs.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\Keys.cs" Link="Source\Shared\Keys.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Source\Shared\MessageData.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\Misc.cs" Link="Source\Shared\Misc.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Source\Shared\NetworkConstants.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Source\Shared\NotificationData.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\SharedStaticMethods.cs" Link="Source\Shared\SharedStaticMethods.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\TableData.cs" Link="Source\Shared\TableData.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Source\Shared\TableDataSimple.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
@@ -34,44 +51,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\..\ChatAppShared\AuthenticationData.cs">
-        <Link>Source\Shared\AuthenticationData.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\Enums.cs">
-        <Link>Source\Shared\Enums.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\Friends.cs">
-        <Link>Source\Shared\Friends.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\FunctionNames.cs">
-        <Link>Source\Shared\FunctionNames.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\GroupDMs.cs">
-        <Link>Source\Shared\GroupDMs.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\Keys.cs">
-        <Link>Source\Shared\Keys.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\MessageData.cs">
-        <Link>Source\Shared\MessageData.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\Misc.cs">
-        <Link>Source\Shared\Misc.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\NetworkConstants.cs">
-        <Link>Source\Shared\NetworkConstants.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\NotificationData.cs">
-        <Link>Source\Shared\NotificationData.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\SharedStaticMethods.cs">
-        <Link>Source\Shared\SharedStaticMethods.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\TableData.cs">
-        <Link>Source\Shared\TableData.cs</Link>
-      </Compile>
-      <Compile Include="..\..\ChatAppShared\TableDataSimple.cs">
-        <Link>Source\Shared\TableDataSimple.cs</Link>
-      </Compile>
+      <Folder Include="Source\Shared\" />
     </ItemGroup>
 </Project>
