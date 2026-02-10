@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="../ChatAppDatabaseFunctions/ChatAppDatabaseFunctions.csproj" />
+  <Project Path="../ChatApp.Backend/ChatApp.Backend.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/ChatAppFrontEnd.Browser.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Desktop/ChatAppFrontEnd.Desktop.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd/ChatAppFrontEnd.csproj" />

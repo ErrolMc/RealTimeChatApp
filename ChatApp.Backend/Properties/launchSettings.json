@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ChatAppDatabaseFunctions": {
+    "ChatApp.Backend": {
       "commandName": "Project",
       "commandLineArgs": "--useHttps --cert \"certificate.pfx\" --password \"123\""
     }

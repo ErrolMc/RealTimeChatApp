@@ -1,27 +1,25 @@
-﻿using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using User = ChatApp.Shared.Tables.User;
-using ChatApp.Shared.Misc;
 
-namespace ChatAppDatabaseFunctions.Code
+namespace ChatApp.Backend.Services
 {
-    public static class SharedQueries
+    public class QueryService
     {
         private const string GENERIC_DATABASE_ERROR = "Database Connection/Query Error";
+        private readonly DatabaseService _db;
 
-        public static async Task<(bool connectionSuccess, string message, User user)> GetUserFromUsername(string username)
+        public QueryService(DatabaseService db)
+        {
+            _db = db;
+        }
+
+        public async Task<(bool connectionSuccess, string message, User user)> GetUserFromUsername(string username)
         {
             try
             {
-                IQueryable<User> query = DatabaseStatics.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == username);
+                IQueryable<User> query = _db.UsersContainer.GetItemLinqQueryable<User>().Where(u => u.Username == username);
                 FeedIterator<User> iterator = query.ToFeedIterator();
                 FeedResponse<User> users = await iterator.ReadNextAsync();
 
@@ -37,11 +35,11 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, User user)> GetUserFromUserID(string userID)
+        public async Task<(bool connectionSuccess, string message, User user)> GetUserFromUserID(string userID)
         {
             try
             {
-                var userResponse = await DatabaseStatics.UsersContainer.ReadItemAsync<User>(userID, new PartitionKey(userID));
+                var userResponse = await _db.UsersContainer.ReadItemAsync<User>(userID, new PartitionKey(userID));
 
                 if (userResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -58,7 +56,7 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<User> users)> GetUsers(List<string> userIDs)
+        public async Task<(bool connectionSuccess, string message, List<User> users)> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
                 return (false, "No user ids provided", new List<User>());
@@ -68,7 +66,7 @@ namespace ChatAppDatabaseFunctions.Code
                 string inClause = string.Join(", ", userIDs.Select(id => $"'{id}'"));
                 string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
                 QueryDefinition queryDefinition = new QueryDefinition(queryString);
-                FeedIterator<User> queryResultSetIterator = DatabaseStatics.UsersContainer.GetItemQueryIterator<User>(queryDefinition);
+                FeedIterator<User> queryResultSetIterator = _db.UsersContainer.GetItemQueryIterator<User>(queryDefinition);
 
                 List<User> users = new List<User>();
                 while (queryResultSetIterator.HasMoreResults)
@@ -92,12 +90,12 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadID(string threadID)
+        public async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadID(string threadID)
         {
             try
             {
                 List<Message> messages = new List<Message>();
-                IQueryable<Message> query = DatabaseStatics.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID);
+                IQueryable<Message> query = _db.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID);
                 FeedIterator<Message> iterator = query.ToFeedIterator();
 
                 while (iterator.HasMoreResults)
@@ -114,12 +112,12 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
+        public async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
         {
             try
             {
                 List<Message> messages = new List<Message>();
-                IQueryable<Message> query = DatabaseStatics.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID && m.TimeStamp > timeStamp);
+                IQueryable<Message> query = _db.MessagesContainer.GetItemLinqQueryable<Message>().Where(m => m.ThreadID == threadID && m.TimeStamp > timeStamp);
                 FeedIterator<Message> iterator = query.ToFeedIterator();
 
                 while (iterator.HasMoreResults)
@@ -136,7 +134,7 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message)> DeleteMessagesByThreadID(string threadID)
+        public async Task<(bool connectionSuccess, string message)> DeleteMessagesByThreadID(string threadID)
         {
             try
             {
@@ -148,7 +146,7 @@ namespace ChatAppDatabaseFunctions.Code
 
                 var deleteTasks = messagesToDelete.Select(async message =>
                 {
-                    await DatabaseStatics.MessagesContainer.DeleteItemAsync<Message>(message.ID, new PartitionKey(message.ThreadID));
+                    await _db.MessagesContainer.DeleteItemAsync<Message>(message.ID, new PartitionKey(message.ThreadID));
                 });
 
                 await Task.WhenAll(deleteTasks);
@@ -162,11 +160,11 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, ChatThread thread)> GetChatThreadFromThreadID(string threadID)
+        public async Task<(bool connectionSuccess, string message, ChatThread thread)> GetChatThreadFromThreadID(string threadID)
         {
             try
             {
-                var groupResponse = await DatabaseStatics.ChatThreadsContainer.ReadItemAsync<ChatThread>(threadID, new PartitionKey(threadID));
+                var groupResponse = await _db.ChatThreadsContainer.ReadItemAsync<ChatThread>(threadID, new PartitionKey(threadID));
 
                 if (groupResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -183,7 +181,7 @@ namespace ChatAppDatabaseFunctions.Code
             }
         }
 
-        public static async Task<(bool connectionSuccess, string message, List<ChatThread> groupDMs)> GetChatThreadsFromIDs(List<string> threadIDs)
+        public async Task<(bool connectionSuccess, string message, List<ChatThread> groupDMs)> GetChatThreadsFromIDs(List<string> threadIDs)
         {
             if (threadIDs == null || threadIDs.Count() == 0)
                 return (false, "No group ids provided", new List<ChatThread>());
@@ -193,7 +191,7 @@ namespace ChatAppDatabaseFunctions.Code
                 string inClause = string.Join(", ", threadIDs.Select(id => $"'{id}'"));
                 string queryString = $"SELECT * FROM c WHERE c.id IN ({inClause})";
                 QueryDefinition queryDefinition = new QueryDefinition(queryString);
-                FeedIterator<ChatThread> queryResultSetIterator = DatabaseStatics.ChatThreadsContainer.GetItemQueryIterator<ChatThread>(queryDefinition);
+                FeedIterator<ChatThread> queryResultSetIterator = _db.ChatThreadsContainer.GetItemQueryIterator<ChatThread>(queryDefinition);
 
                 List<ChatThread> groupDMs = new List<ChatThread>();
                 while (queryResultSetIterator.HasMoreResults)

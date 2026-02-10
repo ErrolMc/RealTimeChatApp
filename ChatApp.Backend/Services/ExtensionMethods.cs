@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using User = ChatApp.Shared.Tables.User;
 
-namespace ChatAppDatabaseFunctions.Code.Utils
+namespace ChatApp.Backend.Services
 {
     public static class ExtensionMethods
     {

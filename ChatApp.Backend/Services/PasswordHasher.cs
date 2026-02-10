@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatAppDatabaseFunctions.Code
+namespace ChatApp.Backend.Services
 {
     public static class PasswordHasher
     {

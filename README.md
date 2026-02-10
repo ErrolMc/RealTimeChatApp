@@ -36,7 +36,7 @@ The frontend is built using Avalonia UI, providing a cross-platform user interfa
 
 #### 2. Backend Services
 
-##### 2.1 Azure Functions (ChatAppDatabaseFunctions)
+##### 2.1 Backend API (ChatApp.Backend)
 Serverless functions handling data persistence and business logic.
 
 **Key Responsibilities:**
@@ -136,7 +136,7 @@ cd RealTimeChatApp
 ```
 
 2. Configure Azure Resources:
-   - Create a local.settings.json in the ChatAppDatabaseFunctions directory:
+   - Create a local.settings.json in the ChatApp.Backend directory:
    ```json
    {
      "IsEncrypted": false,
@@ -172,8 +172,8 @@ cd RealTimeChatApp
 #### Start Backend Services
 1. Run Azure Functions:
 ```bash
-cd ChatAppDatabaseFunctions
-func start
+cd ChatApp.Backend
+dotnet run
 ```
 
 2. Run SignalR Server:
@@ -636,7 +636,7 @@ Selected for:
 │   ├── ChatAppFrontEnd.iOS     # iOS-specific code
 │   └── ChatAppFrontEnd.Browser # Browser-specific code
 │
-├── ChatAppDatabaseFunctions/   # Azure Functions backend
+├── ChatApp.Backend/            # Backend API
 │   └── Code/                  # Backend business logic
 │
 ├── ChatAppShared/             # Shared models and utilities
