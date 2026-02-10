@@ -3,6 +3,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Infrastructure
 var cosmos = builder.AddAzureCosmosDB("cosmos")
     .RunAsEmulator(emulator => emulator
+        .WithLifetime(ContainerLifetime.Persistent)   
         .WithDataVolume("chatapp-cosmos-data")
         .WithHttpsEndpoint(targetPort: 8081, name: "explorer", isProxied: false)
         .WithUrlForEndpoint("explorer", url =>
@@ -12,7 +13,8 @@ var cosmos = builder.AddAzureCosmosDB("cosmos")
         }));
 
 var signalr = builder.AddAzureSignalR("signalr")
-    .RunAsEmulator();
+    .RunAsEmulator(emulator =>
+        emulator.WithLifetime(ContainerLifetime.Persistent));
 
 // Backend API
 var backend = builder.AddProject<Projects.ChatApp_Backend>("backend")
