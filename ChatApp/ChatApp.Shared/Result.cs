@@ -33,7 +33,7 @@ namespace ChatApp.Shared
         public static Result Failure(string errorMessage) => new Result(ResultType.UnknownFailure, errorMessage);
     }
 
-    public class Result<T> : Result where T : new()
+    public class Result<T> : Result
     {
         public T Data { get; set; }
 
@@ -44,7 +44,7 @@ namespace ChatApp.Shared
 
         public Result(ResultType resultType, string errorMessage) : base(resultType, errorMessage)
         {
-            Data = new T();
+            Data = default;
         }
 
         public Result(ResultType resultType, string errorMessage, T data) : base(resultType, errorMessage)
@@ -53,6 +53,6 @@ namespace ChatApp.Shared
         }
 
         public static Result<T> Success(T data) => new Result<T>(ResultType.Success, string.Empty) { Data = data };
-        public static new Result<T> Failure(string errorMessage) => new Result<T>(ResultType.UnknownFailure, errorMessage) { Data = new T() };
+        public static new Result<T> Failure(string errorMessage) => new Result<T>(ResultType.UnknownFailure, errorMessage) { Data = default };
     }
 }

@@ -60,7 +60,7 @@ namespace ChatApp.Backend.Services
         public async Task<Result<List<User>>> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
-                return new Result<List<User>>(ResultType.InputError, "No user ids provided");
+                return new Result<List<User>>(ResultType.InputError, "No user ids provided", new List<User>());
 
             try
             {
