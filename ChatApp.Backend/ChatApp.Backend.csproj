@@ -5,20 +5,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\ChatApp\ChatApp.Shared\AuthenticationData.cs" Link="Code\Shared\AuthenticationData.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\Enums.cs" Link="Code\Shared\Enums.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\ExtensionMethods.cs" Link="Code\Shared\ExtensionMethods.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\Friends.cs" Link="Code\Shared\Friends.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\FunctionNames.cs" Link="Code\Shared\FunctionNames.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Code\Shared\GroupDMs.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\Keys.cs" Link="Code\Shared\Keys.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Code\Shared\MessageData.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\Misc.cs" Link="Code\Shared\Misc.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Code\Shared\NetworkConstants.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Code\Shared\NotificationData.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\SharedStaticMethods.cs" Link="Code\Shared\SharedStaticMethods.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\TableData.cs" Link="Code\Shared\TableData.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Code\Shared\TableDataSimple.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\AuthenticationData.cs" Link="Source\Shared\AuthenticationData.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\EndpointNames.cs" Link="Source\Shared\EndpointNames.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\Enums.cs" Link="Source\Shared\Enums.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\ExtensionMethods.cs" Link="Source\Shared\ExtensionMethods.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\Friends.cs" Link="Source\Shared\Friends.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Source\Shared\GroupDMs.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\Keys.cs" Link="Source\Shared\Keys.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Source\Shared\MessageData.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\Misc.cs" Link="Source\Shared\Misc.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Source\Shared\NetworkConstants.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Source\Shared\NotificationData.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\Result.cs" Link="Source\Shared\Result.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\SharedStaticMethods.cs" Link="Source\Shared\SharedStaticMethods.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\TableData.cs" Link="Source\Shared\TableData.cs" />
+    <Compile Include="..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Source\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
@@ -34,5 +35,8 @@
     <None Update="localhost.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Shared\" />
   </ItemGroup>
 </Project>

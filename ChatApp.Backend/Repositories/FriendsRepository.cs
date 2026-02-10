@@ -26,21 +26,15 @@ namespace ChatApp.Backend.Repositories
         public async Task<FriendRequestNotificationResponseData> SendFriendRequest(FriendRequestNotification requestData)
         {
             var toUserResp = await _queries.GetUserFromUsername(requestData.ToUserName);
-            if (toUserResp.connectionSuccess == false)
-                return new FriendRequestNotificationResponseData { Status = false, Message = toUserResp.message };
-
-            if (toUserResp.user == null)
-                return new FriendRequestNotificationResponseData { Status = false, Message = "No to user with that username!" };
+            if (toUserResp.IsSuccessful == false)
+                return new FriendRequestNotificationResponseData { Status = false, Message = toUserResp.ErrorMessage };
 
             var fromUserResp = await _queries.GetUserFromUserID(requestData.FromUser.UserID);
-            if (fromUserResp.connectionSuccess == false)
-                return new FriendRequestNotificationResponseData { Status = false, Message = fromUserResp.message };
+            if (fromUserResp.IsSuccessful == false)
+                return new FriendRequestNotificationResponseData { Status = false, Message = fromUserResp.ErrorMessage };
 
-            if (fromUserResp.user == null)
-                return new FriendRequestNotificationResponseData { Status = false, Message = "No from user with that username!" };
-
-            User toUser = toUserResp.user;
-            User fromUser = fromUserResp.user;
+            User toUser = toUserResp.Data;
+            User fromUser = fromUserResp.Data;
 
             if (fromUser.Friends.Contains(toUser.UserID))
                 return new FriendRequestNotificationResponseData { Status = false, Message = "The 2 users are already friends!" };
@@ -69,15 +63,15 @@ namespace ChatApp.Backend.Repositories
         public async Task<(RespondToFriendRequestResponseData result, UserSimple fromUser, UserSimple toUser)> RespondToFriendRequest(RespondToFriendRequestData requestData)
         {
             var toUserResp = await _queries.GetUserFromUserID(requestData.ToUserID);
-            if (toUserResp.connectionSuccess == false)
-                return (new RespondToFriendRequestResponseData { Success = false, Message = toUserResp.message }, null, null);
+            if (toUserResp.IsSuccessful == false)
+                return (new RespondToFriendRequestResponseData { Success = false, Message = toUserResp.ErrorMessage }, null, null);
 
             var fromUserResp = await _queries.GetUserFromUserID(requestData.FromUserID);
-            if (fromUserResp.connectionSuccess == false)
-                return (new RespondToFriendRequestResponseData { Success = false, Message = fromUserResp.message }, null, null);
+            if (fromUserResp.IsSuccessful == false)
+                return (new RespondToFriendRequestResponseData { Success = false, Message = fromUserResp.ErrorMessage }, null, null);
 
-            User toUser = toUserResp.user;
-            User fromUser = fromUserResp.user;
+            User toUser = toUserResp.Data;
+            User fromUser = fromUserResp.Data;
 
             if (toUser == null || fromUser == null)
                 return (new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" }, null, null);
@@ -95,7 +89,7 @@ namespace ChatApp.Backend.Repositories
             {
                 await _db.ChatThreadsContainer.CreateItemAsync(thread, new PartitionKey(thread.ID));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (new RespondToFriendRequestResponseData { Success = false, Message = "Error when creating thread" }, null, null);
             }
@@ -135,60 +129,57 @@ namespace ChatApp.Backend.Repositories
         public async Task<GetFriendsResponseData> GetFriends(GetFriendsRequestData requestData)
         {
             var userResp = await _queries.GetUserFromUserID(requestData.UserID);
-            if (userResp.connectionSuccess == false)
-                return new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = userResp.message };
+            if (userResp.IsSuccessful == false)
+                return new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = userResp.ErrorMessage };
 
-            if (userResp.user.FriendsVNum == requestData.LocalVNum)
+            if (userResp.Data.FriendsVNum == requestData.LocalVNum)
                 return new GetFriendsResponseData { Success = true, HasUpdate = false, VNum = -1, Message = "Friends list up to date" };
 
-            if (userResp.user.Friends == null || userResp.user.Friends.Count == 0)
-                return new GetFriendsResponseData { Success = true, HasUpdate = true, VNum = userResp.user.FriendsVNum, Message = "No friends found" };
+            if (userResp.Data.Friends == null || userResp.Data.Friends.Count == 0)
+                return new GetFriendsResponseData { Success = true, HasUpdate = true, VNum = userResp.Data.FriendsVNum, Message = "No friends found" };
 
-            (bool success, string message, List<User> friends) = await _queries.GetUsers(userResp.user.Friends);
+            Result<List<User>> friendsResult = await _queries.GetUsers(userResp.Data.Friends);
 
-            if (success == false)
+            if (friendsResult.IsSuccessful == false)
             {
-                Console.WriteLine($"An error occurred: {message}");
+                Console.WriteLine($"An error occurred: {friendsResult.ErrorMessage}");
                 return new GetFriendsResponseData { Success = false, HasUpdate = false, VNum = -1, Message = "An error occurred while getting friends" };
             }
 
-            return new GetFriendsResponseData { Success = true, HasUpdate = true, Message = $"{friends.Count} Friends retrieved", VNum = userResp.user.FriendsVNum, Friends = friends.ToUserSimpleList() };
+            return new GetFriendsResponseData { Success = true, HasUpdate = true, Message = $"{friendsResult.Data.Count} Friends retrieved", VNum = userResp.Data.FriendsVNum, Friends = friendsResult.Data.ToUserSimpleList() };
         }
 
         public async Task<GetFriendRequestsResponseData> GetFriendRequests(UserSimple requestData)
         {
             var userResp = await _queries.GetUserFromUserID(requestData.UserID);
 
-            if (userResp.connectionSuccess == false)
-                return new GetFriendRequestsResponseData { Success = false, Message = userResp.message };
+            if (userResp.IsSuccessful == false)
+                return new GetFriendRequestsResponseData { Success = false, Message = userResp.ErrorMessage };
 
-            if (userResp.user == null)
-                return new GetFriendRequestsResponseData { Success = false, Message = $"Cant find user {requestData.UserID}" };
+            var reqResp = await _queries.GetUsers(userResp.Data.FriendRequests);
+            var outResp = await _queries.GetUsers(userResp.Data.OutgoingFriendRequests);
 
-            var reqResp = await _queries.GetUsers(userResp.user.FriendRequests);
-            var outResp = await _queries.GetUsers(userResp.user.OutgoingFriendRequests);
+            if (reqResp.IsException)
+                return new GetFriendRequestsResponseData { Success = false, Message = reqResp.ErrorMessage };
 
-            if (reqResp.connectionSuccess == false)
-                return new GetFriendRequestsResponseData { Success = false, Message = reqResp.message };
+            if (outResp.IsException)
+                return new GetFriendRequestsResponseData { Success = false, Message = outResp.ErrorMessage };
 
-            if (outResp.connectionSuccess == false)
-                return new GetFriendRequestsResponseData { Success = false, Message = outResp.message };
-
-            return new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.users.ToUserSimpleList(), OutgoingFriendRequests = outResp.users.ToUserSimpleList() };
+            return new GetFriendRequestsResponseData { Success = true, Message = "Success", FriendRequests = reqResp.Data.ToUserSimpleList(), OutgoingFriendRequests = outResp.Data.ToUserSimpleList() };
         }
 
         public async Task<GenericResponseData> RemoveFriend(UnfriendNotification requestData)
         {
             var toUserResp = await _queries.GetUserFromUserID(requestData.ToUserID);
-            if (toUserResp.connectionSuccess == false)
-                return new GenericResponseData { Success = false, Message = toUserResp.message };
+            if (toUserResp.IsSuccessful == false)
+                return new GenericResponseData { Success = false, Message = toUserResp.ErrorMessage };
 
             var fromUserResp = await _queries.GetUserFromUserID(requestData.FromUserID);
-            if (fromUserResp.connectionSuccess == false)
-                return new GenericResponseData { Success = false, Message = fromUserResp.message };
+            if (fromUserResp.IsSuccessful == false)
+                return new GenericResponseData { Success = false, Message = fromUserResp.ErrorMessage };
 
-            User toUser = toUserResp.user;
-            User fromUser = fromUserResp.user;
+            User toUser = toUserResp.Data;
+            User fromUser = fromUserResp.Data;
 
             if (toUser == null || fromUser == null)
                 return new GenericResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" };
@@ -223,7 +214,7 @@ namespace ChatApp.Backend.Repositories
             }
 
             var deleteMessagesResponse = await _queries.DeleteMessagesByThreadID(requestData.ThreadID);
-            if (deleteMessagesResponse.connectionSuccess == false)
+            if (deleteMessagesResponse.IsException)
                 Console.WriteLine($"Remove friend from {requestData.FromUserID} to {requestData.ToUserID} could'nt delete messages");
 
             return new GenericResponseData { Success = true, Message = "Successfully removed friend" };

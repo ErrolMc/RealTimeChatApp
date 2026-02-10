@@ -22,7 +22,7 @@
       <Compile Include="..\..\ChatApp\ChatApp.Shared\Enums.cs" Link="Source\Shared\Enums.cs" />
       <Compile Include="..\..\ChatApp\ChatApp.Shared\ExtensionMethods.cs" Link="Source\Shared\ExtensionMethods.cs" />
       <Compile Include="..\..\ChatApp\ChatApp.Shared\Friends.cs" Link="Source\Shared\Friends.cs" />
-      <Compile Include="..\..\ChatApp\ChatApp.Shared\FunctionNames.cs" Link="Source\Shared\FunctionNames.cs" />
+      <Compile Include="..\..\ChatApp\ChatApp.Shared\EndpointNames.cs" Link="Source\Shared\EndpointNames.cs" />
       <Compile Include="..\..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Source\Shared\GroupDMs.cs" />
       <Compile Include="..\..\ChatApp\ChatApp.Shared\Keys.cs" Link="Source\Shared\Keys.cs" />
       <Compile Include="..\..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Source\Shared\MessageData.cs" />

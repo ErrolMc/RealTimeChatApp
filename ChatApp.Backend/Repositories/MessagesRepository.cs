@@ -21,16 +21,13 @@ namespace ChatApp.Backend.Repositories
         public async Task<(SendMessageResponseData result, List<string> recipientUserIds)> SendMessage(SendMessageRequestData requestData)
         {
             var fromUserResp = await _queries.GetUserFromUserID(requestData.FromUserID);
-            if (fromUserResp.connectionSuccess == false)
-                return (new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = fromUserResp.message }, new List<string>());
-
-            if (fromUserResp.user == null)
-                return (new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = $"Couldnt find user {requestData.FromUserID}" }, new List<string>());
+            if (fromUserResp.IsSuccessful == false)
+                return (new SendMessageResponseData { Success = false, NotificationSuccess = false, ResponseMessage = fromUserResp.ErrorMessage }, new List<string>());
 
             Message message = new Message()
             {
                 ID = Guid.NewGuid().ToString(),
-                FromUser = fromUserResp.user.ToUserSimple(),
+                FromUser = fromUserResp.Data.ToUserSimple(),
                 ThreadID = requestData.ThreadID,
                 MessageContents = requestData.Message,
                 MessageType = requestData.MessageType,
@@ -52,14 +49,14 @@ namespace ChatApp.Backend.Repositories
                 case MessageType.GroupMessage:
                     {
                         var getGroupDMResponse = await _queries.GetChatThreadFromThreadID(requestData.ThreadID);
-                        if (getGroupDMResponse.connectionSuccess == false)
+                        if (getGroupDMResponse.IsSuccessful == false)
                             return (new SendMessageResponseData { Success = true, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} added to DB but couldnt get group from DB to send notifications" }, new List<string>());
 
-                        var getParticipantsResp = await _queries.GetUsers(getGroupDMResponse.thread.Users);
-                        if (getParticipantsResp.connectionSuccess == false)
+                        var getParticipantsResp = await _queries.GetUsers(getGroupDMResponse.Data.Users);
+                        if (getParticipantsResp.IsSuccessful == false)
                             return (new SendMessageResponseData { Success = true, NotificationSuccess = false, ResponseMessage = $"Message {message.ID} added to DB but couldnt get group participants from DB to send notifications" }, new List<string>());
 
-                        recipientUserIds = getParticipantsResp.users
+                        recipientUserIds = getParticipantsResp.Data
                             .Where(user => user.UserID != requestData.FromUserID)
                             .Select(user => user.UserID)
                             .ToList();
@@ -74,10 +71,10 @@ namespace ChatApp.Backend.Repositories
         {
             var messagesResp = await _queries.GetMessagesByThreadIDAfterTimeStamp(requestData.ThreadID, requestData.LocalTimeStamp);
 
-            if (messagesResp.connectionSuccess == false)
+            if (messagesResp.IsSuccessful == false)
                 return new GetMessagesResponseData { Success = false, ResponseMessage = $"Failed to get messages for Thread {requestData.ThreadID}" };
 
-            return new GetMessagesResponseData { Success = true, ResponseMessage = "Success", Messages = messagesResp.messages };
+            return new GetMessagesResponseData { Success = true, ResponseMessage = "Success", Messages = messagesResp.Data };
         }
     }
 }

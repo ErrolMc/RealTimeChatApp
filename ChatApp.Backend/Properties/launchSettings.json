@@ -2,6 +2,8 @@
   "profiles": {
     "ChatApp.Backend": {
       "commandName": "Project",
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7071",
       "commandLineArgs": "--useHttps --cert \"certificate.pfx\" --password \"123\""
     }
   }

@@ -27,18 +27,15 @@ namespace ChatApp.Backend.Repositories
         {
             var resp = await _queries.GetUserFromUsername(loginData.UserName);
 
-            if (resp.connectionSuccess == false)
-                return new UserLoginResponseData { Status = false, Message = resp.message, User = null };
+            if (resp.IsSuccessful == false)
+                return new UserLoginResponseData { Status = false, Message = resp.ErrorMessage, User = null };
 
-            if (resp.user == null)
-                return new UserLoginResponseData { Status = false, Message = "Username doesnt exist!", User = null };
-
-            bool correctPassword = PasswordHasher.VerifyPassword(loginData.Password, resp.user.HashedPassword);
+            bool correctPassword = PasswordHasher.VerifyPassword(loginData.Password, resp.Data.HashedPassword);
 
             if (correctPassword)
             {
                 var token = GenerateJwtToken(loginData.UserName);
-                return new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = resp.user, LoginToken = token };
+                return new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = resp.Data, LoginToken = token };
             }
 
             return new UserLoginResponseData { Status = false, Message = "Wrong password!", User = null };
@@ -48,10 +45,10 @@ namespace ChatApp.Backend.Repositories
         {
             var userResp = await _queries.GetUserFromUsername(loginData.UserName);
 
-            if (userResp.connectionSuccess == false)
-                return new UserLoginResponseData { Status = false, Message = userResp.message };
+            if (userResp.IsException)
+                return new UserLoginResponseData { Status = false, Message = userResp.ErrorMessage };
 
-            if (userResp.user != null)
+            if (userResp.Data != null)
                 return new UserLoginResponseData { Status = false, Message = "Username already exists!" };
 
             string userID = Guid.NewGuid().ToString();
@@ -84,14 +81,11 @@ namespace ChatApp.Backend.Repositories
             string userName = claim.Value;
             var userResp = await _queries.GetUserFromUsername(userName);
 
-            if (userResp.connectionSuccess == false)
-                return new UserLoginResponseData { Status = false, Message = userResp.message, User = null };
-
-            if (userResp.user == null)
-                return new UserLoginResponseData { Status = false, Message = "User doesnt exist!", User = null };
+            if (userResp.IsSuccessful == false)
+                return new UserLoginResponseData { Status = false, Message = userResp.ErrorMessage, User = null };
 
             string newToken = GenerateJwtToken(userName);
-            return new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = userResp.user, LoginToken = newToken };
+            return new UserLoginResponseData { Status = true, Message = "Logged in successfully!", User = userResp.Data, LoginToken = newToken };
         }
 
         public static string GenerateJwtToken(string username)

@@ -44,7 +44,7 @@ namespace ChatApp.Backend.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: NetworkConstants.FUNCTIONS_URI,
+                issuer: NetworkConstants.BACKEND_URI,
                 audience: NetworkConstants.SIGNALR_URI,
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),

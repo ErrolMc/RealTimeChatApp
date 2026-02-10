@@ -31,7 +31,7 @@ namespace ChatAppSignalRServer
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                    .WithOrigins(NetworkConstants.FUNCTIONS_URI, NetworkConstants.WEBAPP_URI)
+                    .WithOrigins(NetworkConstants.BACKEND_URI, NetworkConstants.WEBAPP_URI)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
@@ -48,7 +48,7 @@ namespace ChatAppSignalRServer
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = NetworkConstants.FUNCTIONS_URI,
+                        ValidIssuer = NetworkConstants.BACKEND_URI,
                         ValidAudience = NetworkConstants.SIGNALR_URI,
                         NameClaimType = "userid",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Keys.SIGNALR_AUTH_ISSUER_SIGNING_KEY))

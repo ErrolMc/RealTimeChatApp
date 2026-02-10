@@ -43,7 +43,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
 
             var response =
-                await NetworkHelper.PerformFunctionPostRequest<CreateGroupDMRequestData, CreateGroupDMResponseData>(FunctionNames.CREATE_GROUP_DM, requestData);
+                await NetworkHelper.PerformBackendPostRequest<CreateGroupDMRequestData, CreateGroupDMResponseData>(EndpointNames.CREATE_GROUP_DM, requestData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -69,7 +69,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformFunctionPostRequest<AddFriendsToGroupDMRequestData, AddFriendsToGroupDMResponseData>(FunctionNames.ADD_FRIENDS_TO_GROUP, requestData);
+                await NetworkHelper.PerformBackendPostRequest<AddFriendsToGroupDMRequestData, AddFriendsToGroupDMResponseData>(EndpointNames.ADD_FRIENDS_TO_GROUP, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -96,7 +96,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformFunctionPostRequest<RemoveFromGroupRequestData, RemoveFromGroupResponseData>(FunctionNames.REMOVE_USER_FROM_GROUP, requestData);
+                await NetworkHelper.PerformBackendPostRequest<RemoveFromGroupRequestData, RemoveFromGroupResponseData>(EndpointNames.REMOVE_USER_FROM_GROUP, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -119,7 +119,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public async Task<(bool success, string message)> DeleteGroup(string groupID)
         {
-            var response = await NetworkHelper.PerformFunctionPostRequest<string, DeleteGroupDMResponseData>(FunctionNames.DELETE_GROUP, groupID);
+            var response = await NetworkHelper.PerformBackendPostRequest<string, DeleteGroupDMResponseData>(EndpointNames.DELETE_GROUP, groupID);
             
             if (response.ConnectionSuccess == false)
             {
@@ -148,7 +148,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 UserID = _authenticationService.CurrentUser.UserID,
             };
             
-            var response = await NetworkHelper.PerformFunctionPostRequest<UserSimple, GetGroupDMsResponseData>(FunctionNames.GET_GROUP_DMS, requestData);
+            var response = await NetworkHelper.PerformBackendPostRequest<UserSimple, GetGroupDMsResponseData>(EndpointNames.GET_GROUP_DMS, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -211,7 +211,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)
         {
-            var response = await NetworkHelper.PerformFunctionPostRequest<string, GetGroupParticipantsResponseData>(FunctionNames.GET_GROUP_PARTICIPANTS, groupID);
+            var response = await NetworkHelper.PerformBackendPostRequest<string, GetGroupParticipantsResponseData>(EndpointNames.GET_GROUP_PARTICIPANTS, groupID);
             
             if (response.ConnectionSuccess == false)
             {

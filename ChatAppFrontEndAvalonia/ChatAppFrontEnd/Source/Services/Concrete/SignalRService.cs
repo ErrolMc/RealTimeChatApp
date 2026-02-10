@@ -99,7 +99,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response = 
-                await NetworkHelper.PerformFunctionPostRequest<AuthenticateRequestData, AuthenticateResponseData>(FunctionNames.AUTHENTICATE_SIGNALR, requestData);
+                await NetworkHelper.PerformBackendPostRequest<AuthenticateRequestData, AuthenticateResponseData>(EndpointNames.AUTHENTICATE_SIGNALR, requestData);
             
             if (response.ConnectionSuccess == false)
             {

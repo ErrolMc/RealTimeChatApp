@@ -23,16 +23,45 @@ namespace ChatApp.Backend.Services
 
         public DatabaseService(IConfiguration configuration)
         {
-            var cosmosUri = configuration["CosmosDb:Uri"] ?? NetworkConstants.COSMOSDB_URI;
-            var cosmosKey = configuration["CosmosDb:PrimaryKey"] ?? PrimaryKey;
+            var connectionString = configuration.GetConnectionString("cosmos");
             var databaseId = configuration["CosmosDb:DatabaseId"] ?? DatabaseId;
 
-            _cosmosClient = new CosmosClient(cosmosUri, cosmosKey);
-            _database = _cosmosClient.GetDatabase(databaseId);
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                _cosmosClient = new CosmosClient(connectionString, new CosmosClientOptions
+                {
+                    HttpClientFactory = () => new HttpClient(new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    }),
+                    ConnectionMode = ConnectionMode.Gateway,
+                    LimitToEndpoint = true
+                });
+            }
+            else
+            {
+                var cosmosUri = configuration["CosmosDb:Uri"] ?? NetworkConstants.COSMOSDB_URI;
+                var cosmosKey = configuration["CosmosDb:PrimaryKey"] ?? PrimaryKey;
+                _cosmosClient = new CosmosClient(cosmosUri, cosmosKey);
+            }
+
+            _database = InitializeDatabase(databaseId).GetAwaiter().GetResult();
 
             UsersContainer = _database.GetContainer(UsersContainerID);
             MessagesContainer = _database.GetContainer(MessagesContainerID);
             ChatThreadsContainer = _database.GetContainer(ChatThreadsContainerID);
+        }
+
+        private async Task<Database> InitializeDatabase(string databaseId)
+        {
+            var dbResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+            var db = dbResponse.Database;
+
+            await db.CreateContainerIfNotExistsAsync(UsersContainerID, "/userid");
+            await db.CreateContainerIfNotExistsAsync(MessagesContainerID, "/threadid");
+            await db.CreateContainerIfNotExistsAsync(ChatThreadsContainerID, "/id");
+
+            return db;
         }
     }
 }

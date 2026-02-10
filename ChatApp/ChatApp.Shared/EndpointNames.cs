@@ -1,7 +1,7 @@
 
 namespace ChatApp.Shared
 {
-    public static class FunctionNames
+    public static class EndpointNames
     {
         public const string AUTHENTICATE_SIGNALR = "AuthenticateSignalR";
         

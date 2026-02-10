@@ -24,10 +24,10 @@ namespace ChatApp.Backend.Repositories
         public async Task<(CreateGroupDMResponseData result, List<string> notifyUserIds)> CreateGroupDM(CreateGroupDMRequestData requestData)
         {
             var getParticipantsResp = await _queries.GetUsers(requestData.Participants);
-            if (getParticipantsResp.connectionSuccess == false)
+            if (getParticipantsResp.IsSuccessful == false)
                 return (new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Couldn't get participant user info from database" }, new List<string>());
 
-            List<User> participants = getParticipantsResp.users;
+            List<User> participants = getParticipantsResp.Data;
             bool ownerFound = participants.GetOwnerAndPutAtFront(out User owner, requestData.Creator);
 
             if (!ownerFound)
@@ -48,7 +48,7 @@ namespace ChatApp.Backend.Repositories
             {
                 await _db.ChatThreadsContainer.CreateItemAsync(groupDM, new PartitionKey(threadID));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (new CreateGroupDMResponseData { CreatedGroupSuccess = false, UpdateDatabaseSuccess = false, Message = "Database error" }, new List<string>());
             }
@@ -82,38 +82,38 @@ namespace ChatApp.Backend.Repositories
         public async Task<GetGroupDMsResponseData> GetGroupDMs(UserSimple requestData)
         {
             var userResp = await _queries.GetUserFromUserID(requestData.UserID);
-            if (userResp.connectionSuccess == false)
-                return new GetGroupDMsResponseData { Success = false, Message = userResp.message };
+            if (userResp.IsSuccessful == false)
+                return new GetGroupDMsResponseData { Success = false, Message = userResp.ErrorMessage };
 
-            var groupDMResp = await _queries.GetChatThreadsFromIDs(userResp.user.GroupDMs);
-            if (groupDMResp.connectionSuccess == false)
-                return new GetGroupDMsResponseData { Success = false, Message = groupDMResp.message };
+            var groupDMResp = await _queries.GetChatThreadsFromIDs(userResp.Data.GroupDMs);
+            if (groupDMResp.IsSuccessful == false)
+                return new GetGroupDMsResponseData { Success = false, Message = groupDMResp.ErrorMessage };
 
-            List<GroupDMSimple> groupDMSimples = groupDMResp.groupDMs.ToGroupDMSimpleList();
+            List<GroupDMSimple> groupDMSimples = groupDMResp.Data.ToGroupDMSimpleList();
             return new GetGroupDMsResponseData() { Success = true, Message = $"Gathered {groupDMSimples.Count} group dms", GroupDMs = groupDMSimples };
         }
 
         public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)
         {
             var groupDMResp = await _queries.GetChatThreadFromThreadID(groupID);
-            if (groupDMResp.connectionSuccess == false)
-                return new GetGroupParticipantsResponseData { Success = false, Message = groupDMResp.message };
+            if (groupDMResp.IsSuccessful == false)
+                return new GetGroupParticipantsResponseData { Success = false, Message = groupDMResp.ErrorMessage };
 
-            ChatThread groupDM = groupDMResp.thread;
+            ChatThread groupDM = groupDMResp.Data;
             var participantResp = await _queries.GetUsers(groupDM.Users);
-            if (participantResp.connectionSuccess == false)
-                return new GetGroupParticipantsResponseData { Success = false, Message = participantResp.message };
+            if (participantResp.IsSuccessful == false)
+                return new GetGroupParticipantsResponseData { Success = false, Message = participantResp.ErrorMessage };
 
-            return new GetGroupParticipantsResponseData { Success = true, Message = "Success", OwnerUserID = groupDM.OwnerUserID, Participants = participantResp.users.ToUserSimpleList() };
+            return new GetGroupParticipantsResponseData { Success = true, Message = "Success", OwnerUserID = groupDM.OwnerUserID, Participants = participantResp.Data.ToUserSimpleList() };
         }
 
         public async Task<(AddFriendsToGroupDMResponseData result, List<string> addedUserIds, List<string> updatedUserIds)> AddFriendsToGroup(AddFriendsToGroupDMRequestData requestData)
         {
             var groupDMResp = await _queries.GetChatThreadFromThreadID(requestData.GroupID);
-            if (groupDMResp.connectionSuccess == false)
+            if (groupDMResp.IsSuccessful == false)
                 return (new AddFriendsToGroupDMResponseData { Success = false, Message = $"Couldn't find group with id {requestData.GroupID}" }, new List<string>(), new List<string>());
 
-            ChatThread groupDM = groupDMResp.thread;
+            ChatThread groupDM = groupDMResp.Data;
             HashSet<string> usersToAdd = requestData.UsersToAdd.ToHashSet();
 
             foreach (string userID in requestData.UsersToAdd)
@@ -125,10 +125,10 @@ namespace ChatApp.Backend.Repositories
             }
 
             var getUserResp = await _queries.GetUsers(groupDM.Users);
-            if (getUserResp.connectionSuccess == false)
+            if (getUserResp.IsSuccessful == false)
                 return (new AddFriendsToGroupDMResponseData { Success = false, Message = "Couldn't get participant user info from database" }, new List<string>(), new List<string>());
 
-            List<User> participants = getUserResp.users;
+            List<User> participants = getUserResp.Data;
             bool ownerFound = participants.GetOwnerAndPutAtFront(out User owner, groupDM.OwnerUserID);
             if (!ownerFound)
                 return (new AddFriendsToGroupDMResponseData { Success = false, Message = "Couldn't get creator user info from database" }, new List<string>(), new List<string>());
@@ -183,15 +183,15 @@ namespace ChatApp.Backend.Repositories
         public async Task<(RemoveFromGroupResponseData result, List<string> remainingParticipantIds, string ownerUserID, GroupDMSimple groupDMSimple)> RemoveUserFromGroup(RemoveFromGroupRequestData requestData)
         {
             var groupDMResp = await _queries.GetChatThreadFromThreadID(requestData.GroupID);
-            if (groupDMResp.connectionSuccess == false)
+            if (groupDMResp.IsSuccessful == false)
                 return (new RemoveFromGroupResponseData { Success = false, Message = $"Couldn't find group with id {requestData.GroupID}" }, new List<string>(), null, null);
 
-            var getParticipantsResp = await _queries.GetUsers(groupDMResp.thread.Users);
-            if (getParticipantsResp.connectionSuccess == false)
+            var getParticipantsResp = await _queries.GetUsers(groupDMResp.Data.Users);
+            if (getParticipantsResp.IsSuccessful == false)
                 return (new RemoveFromGroupResponseData { Success = false, Message = "Couldn't get participant user info from database" }, new List<string>(), null, null);
 
-            ChatThread groupDM = groupDMResp.thread;
-            List<User> participants = getParticipantsResp.users;
+            ChatThread groupDM = groupDMResp.Data;
+            List<User> participants = getParticipantsResp.Data;
             User userToRemove = participants.FirstOrDefault(u => u.UserID == requestData.UserID);
 
             if (userToRemove == null)
@@ -249,13 +249,13 @@ namespace ChatApp.Backend.Repositories
         public async Task<(DeleteGroupDMResponseData result, List<string> notifyUserIds, GroupDMSimple groupDMSimple)> DeleteGroup(string groupID)
         {
             var groupDMResp = await _queries.GetChatThreadFromThreadID(groupID);
-            if (groupDMResp.connectionSuccess == false)
+            if (groupDMResp.IsSuccessful == false)
                 return (new DeleteGroupDMResponseData { Success = false, Message = $"Couldn't find group with id {groupID}" }, new List<string>(), null);
 
-            ChatThread groupDM = groupDMResp.thread;
+            ChatThread groupDM = groupDMResp.Data;
 
             var getParticipantsResp = await _queries.GetUsers(groupDM.Users);
-            if (getParticipantsResp.connectionSuccess == false)
+            if (getParticipantsResp.IsSuccessful == false)
                 return (new DeleteGroupDMResponseData { Success = false, Message = "Couldn't get participant user info from database" }, new List<string>(), null);
 
             try
@@ -273,7 +273,7 @@ namespace ChatApp.Backend.Repositories
 
             List<string> notifyUserIds = new List<string>();
             List<string> failedDatabaseUpdates = new List<string>();
-            foreach (User user in getParticipantsResp.users)
+            foreach (User user in getParticipantsResp.Data)
             {
                 user.GroupDMs.Remove(groupID);
                 var replaceResponse = await _db.UsersContainer.ReplaceItemAsync(user, user.UserID, new PartitionKey(user.UserID));

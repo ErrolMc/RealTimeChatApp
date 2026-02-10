@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\ChatApp\ChatApp.Shared\Misc.cs" Link="Other\Misc.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\Enums.cs" Link="Other\Enums.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\Keys.cs" Link="Other\Keys.cs" />

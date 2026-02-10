@@ -46,7 +46,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 Token = token
             };
             
-            var response = await NetworkHelper.PerformFunctionPostRequest<AutoLoginData, UserLoginResponseData>(FunctionNames.AUTO_LOGIN, requestData);
+            var response = await NetworkHelper.PerformBackendPostRequest<AutoLoginData, UserLoginResponseData>(EndpointNames.AUTO_LOGIN, requestData);
 
             if (response.ConnectionSuccess == false)
                 return (false, response.Message, null);
@@ -73,7 +73,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 Password = password
             };
 
-            var response = await NetworkHelper.PerformFunctionPostRequest<UserLoginData, UserLoginResponseData>(FunctionNames.REGISTER, requestData);
+            var response = await NetworkHelper.PerformBackendPostRequest<UserLoginData, UserLoginResponseData>(EndpointNames.REGISTER, requestData);
 
             if (response.ConnectionSuccess == false)
                 return (false, response.Message);
@@ -86,18 +86,18 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         }
 
         private static readonly HttpClient httpClient = new HttpClient();
-        private async Task<FunctionPostResponse<UserLoginResponseData>> PerformLoginRequest(UserLoginData requestData) 
+        private async Task<BackendPostResponse<UserLoginResponseData>> PerformLoginRequest(UserLoginData requestData) 
         {
             try
             {
                 string json = JsonConvert.SerializeObject(requestData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 
-                HttpResponseMessage response = await httpClient.PostAsync($"{NetworkConstants.FUNCTIONS_URI}/api/{FunctionNames.LOGIN}", content);
+                HttpResponseMessage response = await httpClient.PostAsync($"{NetworkConstants.BACKEND_URI}/api/{EndpointNames.LOGIN}", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new FunctionPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = response.ReasonPhrase, ResponseData = null };
+                    return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = response.ReasonPhrase, ResponseData = null };
                 }
                 
                 string responseContent = await response.Content.ReadAsStringAsync();
@@ -113,11 +113,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                         responseData.Status = true;
                 }
 
-                return new FunctionPostResponse<UserLoginResponseData>() { ConnectionSuccess = true, Message = "Request Success", ResponseData = responseData };
+                return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = true, Message = "Request Success", ResponseData = responseData };
             }
             catch (Exception ex)
             {
-                return new FunctionPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = $"Exception: {ex.Message}", ResponseData = null };
+                return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = $"Exception: {ex.Message}", ResponseData = null };
             }
         }
     }

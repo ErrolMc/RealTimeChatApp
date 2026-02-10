@@ -2,6 +2,7 @@ using ChatApp.Shared.Tables;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos;
 using User = ChatApp.Shared.Tables.User;
+using ChatApp.Shared;
 
 namespace ChatApp.Backend.Services
 {
@@ -15,7 +16,7 @@ namespace ChatApp.Backend.Services
             _db = db;
         }
 
-        public async Task<(bool connectionSuccess, string message, User user)> GetUserFromUsername(string username)
+        public async Task<Result<User>> GetUserFromUsername(string username)
         {
             try
             {
@@ -24,18 +25,18 @@ namespace ChatApp.Backend.Services
                 FeedResponse<User> users = await iterator.ReadNextAsync();
 
                 if (!users.Any())
-                    return (true, $"Cant find user {username}", null);
+                    return new Result<User>(ResultType.NotFound, $"No user with username {username}");
 
-                return (true, "Success", users.First());
+                return Result<User>.Success(users.First());
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUserFromUserName Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, null);
+                return Result<User>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, User user)> GetUserFromUserID(string userID)
+        public async Task<Result<User>> GetUserFromUserID(string userID)
         {
             try
             {
@@ -44,22 +45,22 @@ namespace ChatApp.Backend.Services
                 if (userResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine($"GetUserFromUserID Error {userResponse.StatusCode}");
-                    return (true, $"Cant find user {userID}", null);
+                    return new Result<User>(ResultType.NotFound, $"Cant find user {userID}");
                 }
 
-                return (true, "Success", userResponse.Resource);
+                return Result<User>.Success(userResponse.Resource);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUserFromUserID Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, null);
+                return Result<User>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, List<User> users)> GetUsers(List<string> userIDs)
+        public async Task<Result<List<User>>> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
-                return (false, "No user ids provided", new List<User>());
+                return new Result<List<User>>(ResultType.InputError, "No user ids provided");
 
             try
             {
@@ -79,18 +80,18 @@ namespace ChatApp.Backend.Services
                 }
 
                 if (userIDs.Count != users.Count)
-                    return (false, "Coundn't get all users", users);
+                    return new Result<List<User>>(ResultType.FoundButInvalid, "Coundn't get all users", users);
 
-                return (true, "Successfully got users", users);
+                return Result<List<User>>.Success(users);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetUsers Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<User>());
+                return Result<List<User>>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadID(string threadID)
+        public async Task<Result<List<Message>>> GetMessagesByThreadID(string threadID)
         {
             try
             {
@@ -103,16 +104,16 @@ namespace ChatApp.Backend.Services
                     FeedResponse<Message> response = await iterator.ReadNextAsync();
                     messages.AddRange(response.ToList());
                 }
-                return (true, $"Gotten {messages.Count} messages", messages);
+                return Result<List<Message>>.Success(messages);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<Message>());
+                return Result<List<Message>>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, List<Message> messages)> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
+        public async Task<Result<List<Message>>> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
         {
             try
             {
@@ -125,24 +126,24 @@ namespace ChatApp.Backend.Services
                     FeedResponse<Message> response = await iterator.ReadNextAsync();
                     messages.AddRange(response.ToList());
                 }
-                return (true, $"Gotten {messages.Count} messages", messages);
+                return Result<List<Message>>.Success(messages);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error retrieving messages for thread ID {threadID}: {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<Message>());
+                return Result<List<Message>>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message)> DeleteMessagesByThreadID(string threadID)
+        public async Task<Result> DeleteMessagesByThreadID(string threadID)
         {
             try
             {
                 var getResponse = await GetMessagesByThreadID(threadID);
-                if (getResponse.connectionSuccess == false)
-                    return (false, getResponse.message);
+                if (getResponse.IsSuccessful == false)
+                    return Result.Failure(getResponse.ErrorMessage);
 
-                List<Message> messagesToDelete = getResponse.messages;
+                List<Message> messagesToDelete = getResponse.Data;
 
                 var deleteTasks = messagesToDelete.Select(async message =>
                 {
@@ -151,16 +152,16 @@ namespace ChatApp.Backend.Services
 
                 await Task.WhenAll(deleteTasks);
 
-                return (true, $"Deleted {messagesToDelete.Count} messages");
+                return Result.Success();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error deleting messages for thread ID {threadID}: {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR);
+                return Result.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, ChatThread thread)> GetChatThreadFromThreadID(string threadID)
+        public async Task<Result<ChatThread>> GetChatThreadFromThreadID(string threadID)
         {
             try
             {
@@ -169,22 +170,22 @@ namespace ChatApp.Backend.Services
                 if (groupResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     Console.WriteLine($"GetGroupDMFromGroupID Error {groupResponse.StatusCode}");
-                    return (true, $"Cant find Chat Thread {threadID}", null);
+                    return new Result<ChatThread>(ResultType.NotFound, $"Cant find Chat Thread {threadID}");
                 }
 
-                return (true, "Success", groupResponse.Resource);
+                return Result<ChatThread>.Success(groupResponse.Resource);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetGroupDMFromGroupID Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, null);
+                return Result<ChatThread>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
 
-        public async Task<(bool connectionSuccess, string message, List<ChatThread> groupDMs)> GetChatThreadsFromIDs(List<string> threadIDs)
+        public async Task<Result<List<ChatThread>>> GetChatThreadsFromIDs(List<string> threadIDs)
         {
             if (threadIDs == null || threadIDs.Count() == 0)
-                return (false, "No group ids provided", new List<ChatThread>());
+                return new Result<List<ChatThread>>(ResultType.InputError, "No group ids provided");
 
             try
             {
@@ -203,12 +204,12 @@ namespace ChatApp.Backend.Services
                     }
                 }
 
-                return (true, "Successfully got GroupDMs", groupDMs);
+                return Result<List<ChatThread>>.Success(groupDMs);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetGroupDMs Error {ex.Message}");
-                return (false, GENERIC_DATABASE_ERROR, new List<ChatThread>());
+                return Result<List<ChatThread>>.Failure(GENERIC_DATABASE_ERROR);
             }
         }
     }

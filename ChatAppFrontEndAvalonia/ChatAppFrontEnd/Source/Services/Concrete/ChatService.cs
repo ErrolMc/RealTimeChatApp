@@ -74,7 +74,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 };
                 
                 var response = 
-                    await NetworkHelper.PerformFunctionPostRequest<SendMessageRequestData, SendMessageResponseData>(FunctionNames.SEND_MESSAGE, requestData);
+                    await NetworkHelper.PerformBackendPostRequest<SendMessageRequestData, SendMessageResponseData>(EndpointNames.SEND_MESSAGE, requestData);
 
                 if (response.ConnectionSuccess == false)
                 {
@@ -126,7 +126,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
                     
             var response = 
-                await NetworkHelper.PerformFunctionPostRequest<GetMessagesRequestData, GetMessagesResponseData>(FunctionNames.GET_MESSAGES, requestData);
+                await NetworkHelper.PerformBackendPostRequest<GetMessagesRequestData, GetMessagesResponseData>(EndpointNames.GET_MESSAGES, requestData);
 
             if (response.ConnectionSuccess)
                 return response.ResponseData.Messages;

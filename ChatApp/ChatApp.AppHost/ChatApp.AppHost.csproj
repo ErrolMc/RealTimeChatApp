@@ -17,4 +17,10 @@
     <PackageReference Include="Microsoft.Azure.SignalR.Management" Version="1.32.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\ChatApp.Backend\ChatApp.Backend.csproj" />
+    <ProjectReference Include="..\..\SignalRServer\ChatAppSignalRServer\ChatAppSignalRServer.csproj" />
+    <ProjectReference Include="..\..\ChatAppFrontEndAvalonia\ChatAppFrontEnd.Desktop\ChatAppFrontEnd.Desktop.csproj" />
+  </ItemGroup>
+
 </Project>
