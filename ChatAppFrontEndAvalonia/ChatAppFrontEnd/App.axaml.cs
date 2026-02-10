@@ -109,10 +109,14 @@ namespace ChatAppFrontEnd
             base.OnFrameworkInitializationCompleted();
         }
         
-        private void OnApplicationExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
+        private async void OnApplicationExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
             var signalRService = _serviceProvider.GetService<ISignalRService>();
             signalRService?.OnApplicationQuit();
+
+            var cachingService = _serviceProvider.GetService<ICachingService>();
+            if (cachingService != null)
+                await cachingService.SaveIsLoggedIn(false);
         }
     }
 }

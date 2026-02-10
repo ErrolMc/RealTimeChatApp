@@ -13,6 +13,8 @@ namespace ChatAppFrontEnd.Source.Services
         // auth
         Task<bool> SaveLoginToken(string token);
         Task<(bool, string)> GetLoginToken();
+        Task<bool> SaveIsLoggedIn(bool isLoggedIn);
+        Task<bool> GetIsLoggedIn();
         Task<bool> ClearCache();
         
         // threads

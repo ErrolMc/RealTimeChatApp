@@ -14,6 +14,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     public partial class CachingService : ICachingService
     {
         private const string LOGIN_TOKEN_KEY = "LoginToken";
+        private const string IS_LOGGED_IN_KEY = "IsLoggedIn";
         private const string FRIENDS_VNUM_KEY = "FriendsVNum";
         private const string GROUPS_VNUM_KEY = "GroupsVNum";
         
@@ -43,6 +44,17 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public async Task<(bool, string)> GetLoginToken()
         {
             return await _cacher.GetString(LOGIN_TOKEN_KEY);
+        }
+
+        public async Task<bool> SaveIsLoggedIn(bool isLoggedIn)
+        {
+            return await _cacher.SaveString(IS_LOGGED_IN_KEY, isLoggedIn.ToString());
+        }
+
+        public async Task<bool> GetIsLoggedIn()
+        {
+            (bool success, string value) = await _cacher.GetString(IS_LOGGED_IN_KEY);
+            return success && bool.TryParse(value, out bool result) && result;
         }
         #endregion
         

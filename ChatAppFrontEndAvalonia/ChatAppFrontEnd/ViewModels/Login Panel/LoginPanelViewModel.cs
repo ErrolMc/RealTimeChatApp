@@ -97,7 +97,15 @@ namespace ChatAppFrontEnd.ViewModels
                 return;
             }
 
-            var loginResponse = await _authenticationService.TryAutoLogin(token);   
+            bool isAlreadyLoggedIn = await _cachingService.GetIsLoggedIn();
+            if (isAlreadyLoggedIn)
+            {
+                await _cachingService.ClearCache();
+                IsMainContentVisible = true;
+                return;
+            }
+
+            var loginResponse = await _authenticationService.TryAutoLogin(token);
             if (loginResponse.success == false)
             {
                 bool res = await _cachingService.ClearCache();

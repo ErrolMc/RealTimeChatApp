@@ -56,12 +56,15 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             if (responseData.Status)
             {
                 responseData.Status = false;
-                    
+
                 bool tokenResult = await _cachingService.SaveLoginToken(responseData.LoginToken);
                 if (tokenResult)
+                {
+                    await _cachingService.SaveIsLoggedIn(true);
                     responseData.Status = true;
+                }
             }
-            
+
             return (responseData.Status, responseData.Message, responseData.User);
         }
 
@@ -107,10 +110,13 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 if (responseData.Status)
                 {
                     responseData.Status = false;
-                    
+
                     bool tokenResult = await _cachingService.SaveLoginToken(responseData.LoginToken);
                     if (tokenResult)
+                    {
+                        await _cachingService.SaveIsLoggedIn(true);
                         responseData.Status = true;
+                    }
                 }
 
                 return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = true, Message = "Request Success", ResponseData = responseData };
