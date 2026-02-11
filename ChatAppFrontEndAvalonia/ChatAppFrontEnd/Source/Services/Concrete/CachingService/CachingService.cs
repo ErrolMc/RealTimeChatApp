@@ -51,6 +51,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return await _cacher.SaveString(IS_LOGGED_IN_KEY, isLoggedIn.ToString());
         }
 
+        public void OnDisconnect()
+        {
+            _cacher.SaveStringSync(IS_LOGGED_IN_KEY, false.ToString());
+        }
+
         public async Task<bool> GetIsLoggedIn()
         {
             (bool success, string value) = await _cacher.GetString(IS_LOGGED_IN_KEY);

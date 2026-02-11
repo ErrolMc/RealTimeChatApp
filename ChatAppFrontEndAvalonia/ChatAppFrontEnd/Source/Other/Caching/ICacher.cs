@@ -11,6 +11,7 @@ namespace ChatAppFrontEnd.Source.Other.Caching
         Task<bool> ClearCache();
         
         Task<bool> SaveString(string key, string value);
+        bool SaveStringSync(string key, string value);
         Task<(bool, string)> GetString(string key);
         
         Task<List<UserSimple>> GetFriends();

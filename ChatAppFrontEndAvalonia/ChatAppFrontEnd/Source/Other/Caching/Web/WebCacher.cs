@@ -90,6 +90,11 @@ namespace ChatAppFrontEnd.Source.Other.Caching.Web
             }
         }
 
+        public bool SaveStringSync(string key, string value)
+        {
+            return SaveString(key, value).GetAwaiter().GetResult();
+        }
+
         public async Task<(bool, string)> GetString(string key)
         {
             try

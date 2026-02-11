@@ -78,6 +78,29 @@ namespace ChatAppFrontEnd.Source.Other.Caching.Desktop
             }
         }
 
+        public bool SaveStringSync(string key, string value)
+        {
+            try
+            {
+                using var db = new LiteDatabase(CONNECTION_STRING);
+                var collection = db.GetCollection<StringWrapper>(STRING_COLLECTION_NAME);
+
+                StringWrapper wrapper = new StringWrapper()
+                {
+                    Key = key,
+                    Value = value
+                };
+
+                collection.Upsert(wrapper);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SaveStringSync Error: " + e.Message);
+                return false;
+            }
+        }
+
         public async Task<(bool, string)> GetString(string key)
         {
             try

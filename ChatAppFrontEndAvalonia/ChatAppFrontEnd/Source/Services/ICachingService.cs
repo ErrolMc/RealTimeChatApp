@@ -16,6 +16,7 @@ namespace ChatAppFrontEnd.Source.Services
         Task<bool> SaveIsLoggedIn(bool isLoggedIn);
         Task<bool> GetIsLoggedIn();
         Task<bool> ClearCache();
+        void OnDisconnect();
         
         // threads
         Task<List<ThreadCache>> GetAllThreads();
