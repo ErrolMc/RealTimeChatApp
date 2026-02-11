@@ -34,4 +34,9 @@ builder.AddProject<Projects.ChatAppFrontEnd_Desktop>("desktop")
     .WithReference(signalrServer)
     .WaitFor(backend);
 
+// Browser Frontend (served via nginx)
+builder.AddContainer("browser-frontend", "nginx")
+    .WithBindMount("../../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/bin/Debug/net10.0/browser-wasm/AppBundle", "/usr/share/nginx/html", isReadOnly: true)
+    .WithHttpEndpoint(port: 5200, targetPort: 80);
+
 builder.Build().Run();
