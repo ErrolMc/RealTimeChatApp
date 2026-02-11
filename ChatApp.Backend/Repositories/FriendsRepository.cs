@@ -76,22 +76,25 @@ namespace ChatApp.Backend.Repositories
             if (toUser == null || fromUser == null)
                 return (new RespondToFriendRequestResponseData { Success = false, Message = $"Couldnt get users from database - ToUser: {requestData.ToUserID} IsNull: {toUser == null} FromUser: {requestData.FromUserID} IsNull: {fromUser == null}" }, null, null);
 
-            ChatThread thread = new ChatThread()
+            if (requestData.Status)
             {
-                ID = SharedStaticMethods.CreateHashedDirectMessageID(fromUser.UserID, toUser.UserID),
-                IsGroupDM = false,
-                Users = new List<string> { fromUser.UserID, toUser.UserID },
-                OwnerUserID = null,
-                Name = null,
-            };
+                ChatThread thread = new ChatThread()
+                {
+                    ID = SharedStaticMethods.CreateHashedDirectMessageID(fromUser.UserID, toUser.UserID),
+                    IsGroupDM = false,
+                    Users = new List<string> { fromUser.UserID, toUser.UserID },
+                    OwnerUserID = null,
+                    Name = null,
+                };
 
-            try
-            {
-                await _db.ChatThreadsContainer.CreateItemAsync(thread, new PartitionKey(thread.ID));
-            }
-            catch (Exception)
-            {
-                return (new RespondToFriendRequestResponseData { Success = false, Message = "Error when creating thread" }, null, null);
+                try
+                {
+                    await _db.ChatThreadsContainer.CreateItemAsync(thread, new PartitionKey(thread.ID));
+                }
+                catch (Exception)
+                {
+                    return (new RespondToFriendRequestResponseData { Success = false, Message = "Error when creating thread" }, null, null);
+                }
             }
 
             toUser.FriendRequests.Remove(fromUser.UserID);
