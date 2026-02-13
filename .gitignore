@@ -73,4 +73,10 @@ ChatApp/ChatApp.ServiceDefaults/bin/
 ChatApp/ChatApp.ServiceDefaults/obj/
 ChatApp.Backend/bin/
 ChatApp.Backend/obj/
+
+# App settings (contain keys/secrets)
+**/appsettings.json
+**/appsettings.*.json
+SignalRServer/ChatAppSignalRServer/appsettings.json
+SignalRServer/ChatAppSignalRServer/appsettings.*.json
 nul
