@@ -14,7 +14,7 @@
     <Compile Include="..\ChatApp\ChatApp.Shared\Keys.cs" Link="Source\Shared\Keys.cs" />
     <Compile Include="..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Source\Shared\MessageData.cs" />
     <Compile Include="..\ChatApp\ChatApp.Shared\Misc.cs" Link="Source\Shared\Misc.cs" />
-    <Compile Include="..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Source\Shared\NetworkConstants.cs" />
+
     <Compile Include="..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Source\Shared\NotificationData.cs" />
     <Compile Include="..\ChatApp\ChatApp.Shared\Result.cs" Link="Source\Shared\Result.cs" />
     <Compile Include="..\ChatApp\ChatApp.Shared\SharedStaticMethods.cs" Link="Source\Shared\SharedStaticMethods.cs" />

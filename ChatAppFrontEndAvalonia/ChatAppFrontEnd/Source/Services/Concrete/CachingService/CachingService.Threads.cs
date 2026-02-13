@@ -75,8 +75,19 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public async Task<bool> AddThreads(List<ThreadCache> threads)
         {
             if (_hasGottenThreads)
-                threads.ForEach(thread => _threadDict.Add(thread.ThreadID, thread));
-            
+            {
+                foreach (ThreadCache thread in threads)
+                {
+                    if (_threadDict.ContainsKey(thread.ThreadID))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Thread with ID {thread.ThreadID} already exists in cache, skipping add.");
+                        continue;
+                    }
+
+                    _threadDict.Add(thread.ThreadID, thread);
+                }
+            }
+
             return await _cacher.AddThreads(threads);
         }
     }    

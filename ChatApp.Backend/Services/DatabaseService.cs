@@ -1,5 +1,4 @@
 using Microsoft.Azure.Cosmos;
-using ChatApp.Shared.Constants;
 
 namespace ChatApp.Backend.Services
 {
@@ -7,7 +6,6 @@ namespace ChatApp.Backend.Services
     {
         public const string SECRET_LOGIN_KEY = "f&LvzN7e@&J$XHe&F$7jPR@C6dw#RFKm";
 
-        private static readonly string PrimaryKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private static readonly string DatabaseId = "chatappdb";
 
         private static readonly string UsersContainerID = "users";
@@ -40,8 +38,10 @@ namespace ChatApp.Backend.Services
             }
             else
             {
-                var cosmosUri = configuration["CosmosDb:Uri"] ?? NetworkConstants.COSMOSDB_URI;
-                var cosmosKey = configuration["CosmosDb:PrimaryKey"] ?? PrimaryKey;
+                var cosmosUri = Environment.GetEnvironmentVariable("services__cosmos__https__0")
+                    ?? configuration["ServiceUrls:CosmosDbUri"];
+                var cosmosKey = Environment.GetEnvironmentVariable("COSMOS_PRIMARY_KEY")
+                    ?? configuration["CosmosDb:PrimaryKey"];
                 _cosmosClient = new CosmosClient(cosmosUri, cosmosKey);
             }
 

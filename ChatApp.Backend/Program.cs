@@ -1,14 +1,18 @@
 using ChatApp.Backend.Services;
 using ChatApp.Backend.Repositories;
-using ChatApp.Shared.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var signalRUri = Environment.GetEnvironmentVariable("services__signalr-server__https__0")
+    ?? builder.Configuration["ServiceUrls:SignalRUri"];
+var webAppUri = Environment.GetEnvironmentVariable("services__browser-frontend__http__0")
+    ?? builder.Configuration["ServiceUrls:WebAppUri"];
 
 builder.Services.AddSingleton<DatabaseService>();
 builder.Services.AddSingleton<QueryService>();
 builder.Services.AddHttpClient<NotificationService>(client =>
 {
-    client.BaseAddress = new Uri(NetworkConstants.SIGNALR_URI);
+    client.BaseAddress = new Uri(signalRUri);
 }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
@@ -26,7 +30,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy => policy
-        .WithOrigins(NetworkConstants.WEBAPP_URI)
+        .WithOrigins(webAppUri)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials());

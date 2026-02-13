@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ChatApp.Shared.Keys;
-using ChatApp.Shared.Constants;
 
 namespace ChatAppSignalRServer
 {
@@ -17,6 +16,13 @@ namespace ChatAppSignalRServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var backendUri = Environment.GetEnvironmentVariable("services__backend__https__0")
+                ?? builder.Configuration["ServiceUrls:BackendUri"];
+            var signalRUri = Environment.GetEnvironmentVariable("services__signalr-server__https__0")
+                ?? builder.Configuration["ServiceUrls:SignalRUri"];
+            var webAppUri = Environment.GetEnvironmentVariable("services__browser-frontend__http__0")
+                ?? builder.Configuration["ServiceUrls:WebAppUri"];
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -31,7 +37,7 @@ namespace ChatAppSignalRServer
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                    .WithOrigins(NetworkConstants.BACKEND_URI, NetworkConstants.WEBAPP_URI)
+                    .WithOrigins(backendUri, webAppUri)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
@@ -48,8 +54,8 @@ namespace ChatAppSignalRServer
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = NetworkConstants.BACKEND_URI,
-                        ValidAudience = NetworkConstants.SIGNALR_URI,
+                        ValidIssuer = backendUri,
+                        ValidAudience = signalRUri,
                         NameClaimType = "userid",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Keys.SIGNALR_AUTH_ISSUER_SIGNING_KEY))
                     };

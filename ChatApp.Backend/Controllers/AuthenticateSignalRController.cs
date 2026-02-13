@@ -6,7 +6,6 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ChatApp.Shared.Keys;
-using ChatApp.Shared.Constants;
 
 namespace ChatApp.Backend.Controllers
 {
@@ -14,10 +13,12 @@ namespace ChatApp.Backend.Controllers
     public class AuthenticateSignalRController : ControllerBase
     {
         private readonly ILogger<AuthenticateSignalRController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public AuthenticateSignalRController(ILogger<AuthenticateSignalRController> logger)
+        public AuthenticateSignalRController(ILogger<AuthenticateSignalRController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpPost("api/AuthenticateSignalR")]
@@ -43,9 +44,14 @@ namespace ChatApp.Backend.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Keys.SIGNALR_AUTH_ISSUER_SIGNING_KEY));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var backendUri = Environment.GetEnvironmentVariable("services__backend__https__0")
+                ?? _configuration["ServiceUrls:BackendUri"];
+            var signalRUri = Environment.GetEnvironmentVariable("services__signalr-server__https__0")
+                ?? _configuration["ServiceUrls:SignalRUri"];
+
             var token = new JwtSecurityToken(
-                issuer: NetworkConstants.BACKEND_URI,
-                audience: NetworkConstants.SIGNALR_URI,
+                issuer: backendUri,
+                audience: signalRUri,
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: creds);

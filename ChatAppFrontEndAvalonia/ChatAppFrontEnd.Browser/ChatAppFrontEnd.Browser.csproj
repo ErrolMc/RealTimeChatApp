@@ -6,7 +6,28 @@
         <WasmMainJSPath>wwwroot\main.js</WasmMainJSPath>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <WasmRuntimeAssetsLocation>./_framework</WasmRuntimeAssetsLocation>
+        <BackendUri>https://localhost:7071</BackendUri>
+        <SignalRUri>https://localhost:7003</SignalRUri>
     </PropertyGroup>
+
+    <Target Name="GenerateBuildConfig" BeforeTargets="CoreCompile">
+        <PropertyGroup>
+            <BuildConfigContent>
+namespace ChatAppFrontEnd.Source.Utils
+{
+    public static class BuildConfig
+    {
+        public const string BackendUri = "$(BackendUri)"%3B
+        public const string SignalRUri = "$(SignalRUri)"%3B
+    }
+}
+            </BuildConfigContent>
+        </PropertyGroup>
+        <WriteLinesToFile File="$(IntermediateOutputPath)BuildConfig.g.cs" Lines="$(BuildConfigContent)" Overwrite="true" />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)BuildConfig.g.cs" />
+        </ItemGroup>
+    </Target>
 
     <ItemGroup>
         <WasmExtraFilesToDeploy Include="wwwroot\**" />

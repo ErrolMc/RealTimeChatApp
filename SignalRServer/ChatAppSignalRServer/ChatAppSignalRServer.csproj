@@ -13,7 +13,7 @@
     <Compile Include="..\..\ChatApp\ChatApp.Shared\GroupDMs.cs" Link="Other\GroupDMs.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\Keys.cs" Link="Other\Keys.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\MessageData.cs" Link="Other\MessageData.cs" />
-    <Compile Include="..\..\ChatApp\ChatApp.Shared\NetworkConstants.cs" Link="Other\NetworkConstants.cs" />
+
     <Compile Include="..\..\ChatApp\ChatApp.Shared\NotificationData.cs" Link="Other\NotificationData.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\TableData.cs" Link="Other\TableData.cs" />
     <Compile Include="..\..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Other\TableDataSimple.cs" />

@@ -3,24 +3,29 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using ChatApp.Shared.Constants;
 using Newtonsoft.Json;
 
 namespace ChatAppFrontEnd.Source.Utils
 {
+    public static class ServiceConfig
+    {
+        public static string BackendUri { get; set; } = Environment.GetEnvironmentVariable("services__backend__https__0") ?? "https://localhost:7071";
+        public static string SignalRUri { get; set; } = Environment.GetEnvironmentVariable("services__signalr-server__https__0") ?? "https://localhost:7003";
+    }
+
     public class BackendPostResponse<T> where T : class
     {
         public bool ConnectionSuccess { get; set; }
         public string Message { get; set; }
         public T ResponseData { get; set; }
     }
-    
+
     public static class NetworkHelper
     {
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public static async Task<BackendPostResponse<TRespClass>> PerformBackendPostRequest<TReqClass, TRespClass>(string endpointName, TReqClass requestData) 
-            where TReqClass : class 
+        public static async Task<BackendPostResponse<TRespClass>> PerformBackendPostRequest<TReqClass, TRespClass>(string endpointName, TReqClass requestData)
+            where TReqClass : class
             where TRespClass : class
         {
             try
@@ -28,7 +33,7 @@ namespace ChatAppFrontEnd.Source.Utils
                 string json = JsonConvert.SerializeObject(requestData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await httpClient.PostAsync($"{NetworkConstants.BACKEND_URI}/api/{endpointName}", content);
+                HttpResponseMessage response = await httpClient.PostAsync($"{ServiceConfig.BackendUri}/api/{endpointName}", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

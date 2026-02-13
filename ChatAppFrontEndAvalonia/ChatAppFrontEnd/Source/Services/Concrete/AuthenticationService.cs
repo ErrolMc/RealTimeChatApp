@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ChatApp.Shared;
 using ChatApp.Shared.Authentication;
-using ChatApp.Shared.Constants;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Utils;
 using Newtonsoft.Json;
@@ -89,14 +88,14 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         }
 
         private static readonly HttpClient httpClient = new HttpClient();
-        private async Task<BackendPostResponse<UserLoginResponseData>> PerformLoginRequest(UserLoginData requestData) 
+        private async Task<BackendPostResponse<UserLoginResponseData>> PerformLoginRequest(UserLoginData requestData)
         {
             try
             {
                 string json = JsonConvert.SerializeObject(requestData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
-                HttpResponseMessage response = await httpClient.PostAsync($"{NetworkConstants.BACKEND_URI}/api/{EndpointNames.LOGIN}", content);
+
+                HttpResponseMessage response = await httpClient.PostAsync($"{ServiceConfig.BackendUri}/api/{EndpointNames.LOGIN}", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

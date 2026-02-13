@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using ChatApp.Shared;
-using ChatApp.Shared.Constants;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Utils;
@@ -43,7 +42,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 try
                 {
                     _connection = new HubConnectionBuilder()
-                        .WithUrl($"{NetworkConstants.SIGNALR_URI}/{Hub}", options =>
+                        .WithUrl($"{ServiceConfig.SignalRUri}/{Hub}", options =>
                         {
                             options.AccessTokenProvider = () => Task.FromResult(responseData.AccessToken);
                             
