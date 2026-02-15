@@ -16,16 +16,24 @@ var signalr = builder.AddAzureSignalR("signalr")
     .RunAsEmulator(emulator =>
         emulator.WithLifetime(ContainerLifetime.Persistent));
 
+// Browser Frontend (served via nginx)
+var browserFrontend = builder.AddDockerfile("browser-frontend", contextPath: "../..", dockerfilePath: "ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/Dockerfile")
+       .WithHttpEndpoint(targetPort: 80);
+
+var browserFrontendUrl = browserFrontend.GetEndpoint("http");
+
 // Backend API
 var backend = builder.AddProject<Projects.ChatApp_Backend>("backend")
     .WithReference(cosmos)
     .WithReference(signalr)
+    .WithEnvironment("services__browser-frontend__http__0", browserFrontendUrl)
     .WaitFor(cosmos)
     .WaitFor(signalr);
 
 // SignalR Server
 var signalrServer = builder.AddProject<Projects.ChatAppSignalRServer>("signalr-server")
     .WithReference(signalr)
+    .WithEnvironment("services__browser-frontend__http__0", browserFrontendUrl)
     .WaitFor(signalr);
 
 // Desktop Frontend
@@ -33,9 +41,5 @@ builder.AddProject<Projects.ChatAppFrontEnd_Desktop>("desktop")
     .WithReference(backend)
     .WithReference(signalrServer)
     .WaitFor(backend);
-
-// Browser Frontend (served via nginx)
-builder.AddDockerfile("browser-frontend", contextPath: "../..", dockerfilePath: "ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/Dockerfile")
-       .WithHttpEndpoint(port: 5200, targetPort: 80);
 
 builder.Build().Run();

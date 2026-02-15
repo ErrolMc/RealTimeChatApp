@@ -133,7 +133,7 @@ This will automatically:
 - Launch the Backend API (connected to Cosmos DB and SignalR)
 - Launch the SignalR Server
 - Launch the Desktop frontend
-- Serve the Browser frontend via nginx on port 5200
+- Serve the Browser frontend via nginx on port 80
 
 3. Open the Aspire dashboard (URL shown in terminal output) to monitor all services.
 
