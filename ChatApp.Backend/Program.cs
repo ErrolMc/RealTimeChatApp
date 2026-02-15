@@ -27,10 +27,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Allow both http and https origins (Azure Container Apps upgrades to HTTPS)
+var corsOrigins = new List<string> { webAppUri };
+if (webAppUri.StartsWith("http://"))
+    corsOrigins.Add(webAppUri.Replace("http://", "https://"));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy => policy
-        .WithOrigins(webAppUri)
+        .WithOrigins(corsOrigins.ToArray())
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials());

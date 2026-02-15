@@ -140,7 +140,7 @@ namespace ChatAppFrontEnd.ViewModels
             }
             
             ResponseText = "Trying to login...";
-            
+
             var loginResponse = await _authenticationService.TryLogin(Username, Password);
             if (loginResponse.success == false)
             {
@@ -149,13 +149,26 @@ namespace ChatAppFrontEnd.ViewModels
                 return;
             }
 
-            var notificationResponse = await _signalRService.ConnectToSignalR(loginResponse.user);
-            if (notificationResponse.success == false)
+            ResponseText = "Login OK. Connecting to SignalR...";
+
+            try
             {
-                ResponseText = notificationResponse.message;
+                var notificationResponse = await _signalRService.ConnectToSignalR(loginResponse.user);
+                if (notificationResponse.success == false)
+                {
+                    ResponseText = $"SignalR failed: {notificationResponse.message}";
+                    TalkingToServer = false;
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                ResponseText = $"SignalR exception: {ex.Message}";
                 TalkingToServer = false;
                 return;
             }
+
+            ResponseText = "SignalR connected. Loading data...";
 
             // setup data that other viewmodels will use
             _authenticationService.CurrentUser = loginResponse.user;

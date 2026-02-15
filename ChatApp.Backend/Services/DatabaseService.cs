@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 
 namespace ChatApp.Backend.Services
@@ -22,19 +23,34 @@ namespace ChatApp.Backend.Services
         public DatabaseService(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("cosmos");
+            Console.WriteLine($"[CosmosDB] Connection string starts with: {connectionString?[..Math.Min(50, connectionString?.Length ?? 0)]}...");
             var databaseId = configuration["CosmosDb:DatabaseId"] ?? DatabaseId;
 
             if (!string.IsNullOrEmpty(connectionString))
             {
-                _cosmosClient = new CosmosClient(connectionString, new CosmosClientOptions
+                // Aspire Azure CosmosDB may inject an endpoint URL (managed identity) or a full connection string
+                if (connectionString.StartsWith("AccountEndpoint=", StringComparison.OrdinalIgnoreCase))
                 {
-                    HttpClientFactory = () => new HttpClient(new HttpClientHandler
+                    // Traditional connection string with key
+                    _cosmosClient = new CosmosClient(connectionString, new CosmosClientOptions
                     {
-                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    }),
-                    ConnectionMode = ConnectionMode.Gateway,
-                    LimitToEndpoint = true
-                });
+                        HttpClientFactory = () => new HttpClient(new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        }),
+                        ConnectionMode = ConnectionMode.Gateway,
+                        LimitToEndpoint = true
+                    });
+                }
+                else
+                {
+                    // Endpoint URL only — use managed identity (DefaultAzureCredential)
+                    Console.WriteLine($"[CosmosDB] Using managed identity for endpoint: {connectionString}");
+                    _cosmosClient = new CosmosClient(connectionString, new DefaultAzureCredential(), new CosmosClientOptions
+                    {
+                        ConnectionMode = ConnectionMode.Gateway
+                    });
+                }
             }
             else
             {
@@ -54,12 +70,29 @@ namespace ChatApp.Backend.Services
 
         private async Task<Database> InitializeDatabase(string databaseId)
         {
-            var dbResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
-            var db = dbResponse.Database;
+            Database db;
+            try
+            {
+                var dbResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+                db = dbResponse.Database;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                // Managed identity may not have permission to create databases — assume it exists
+                Console.WriteLine($"[CosmosDB] Cannot create database (Forbidden) — assuming '{databaseId}' already exists");
+                db = _cosmosClient.GetDatabase(databaseId);
+            }
 
-            await db.CreateContainerIfNotExistsAsync(UsersContainerID, "/userid");
-            await db.CreateContainerIfNotExistsAsync(MessagesContainerID, "/threadid");
-            await db.CreateContainerIfNotExistsAsync(ChatThreadsContainerID, "/id");
+            try
+            {
+                await db.CreateContainerIfNotExistsAsync(UsersContainerID, "/userid");
+                await db.CreateContainerIfNotExistsAsync(MessagesContainerID, "/threadid");
+                await db.CreateContainerIfNotExistsAsync(ChatThreadsContainerID, "/id");
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                Console.WriteLine("[CosmosDB] Cannot create containers (Forbidden) — assuming they already exist");
+            }
 
             return db;
         }

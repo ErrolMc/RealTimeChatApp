@@ -24,6 +24,8 @@ namespace ChatAppSignalRServer
             var webAppUri = Environment.GetEnvironmentVariable("services__browser-frontend__http__0")
                 ?? builder.Configuration["ServiceUrls:WebAppUri"];
 
+            Console.WriteLine($"[SignalR Server] JWT ValidIssuer={backendUri}, ValidAudience={signalRUri}, CORS webApp={webAppUri}");
+
             // Add services to the container.
             builder.Services.AddControllers();
 
@@ -33,11 +35,15 @@ namespace ChatAppSignalRServer
             // Register the custom IUserIdProvider
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIDProvider>();
 
-            // Configure CORS to allow specific origins
+            // Configure CORS to allow specific origins (include HTTPS variants for Azure Container Apps)
+            var corsOrigins = new List<string> { backendUri, webAppUri };
+            if (webAppUri.StartsWith("http://"))
+                corsOrigins.Add(webAppUri.Replace("http://", "https://"));
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                    .WithOrigins(backendUri, webAppUri)
+                    .WithOrigins(corsOrigins.ToArray())
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()

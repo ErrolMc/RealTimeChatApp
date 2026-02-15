@@ -33,55 +33,85 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public async Task<(bool success, string message)> ConnectToSignalR(User user)
         {
             _connected = false;
-            AuthenticateResponseData responseData = await PerformTokenRequest(user);
 
-            if (responseData.Status)
+            Console.WriteLine($"[SignalR] Starting ConnectToSignalR for user {user?.Username}");
+            Console.WriteLine($"[SignalR] SignalRUri = {ServiceConfig.SignalRUri}");
+            Console.WriteLine($"[SignalR] BackendUri = {ServiceConfig.BackendUri}");
+
+            AuthenticateResponseData responseData;
+            try
             {
-                Console.WriteLine("SignalRService: Got token");
-                
+                responseData = await PerformTokenRequest(user);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[SignalR] Token request exception: {e}");
+                return (false, $"Token request failed: {e.Message}");
+            }
+
+            if (!responseData.Status)
+            {
+                Console.WriteLine($"[SignalR] Token request failed: {responseData.Message}");
+                return (false, responseData.Message);
+            }
+
+            Console.WriteLine($"[SignalR] Got token (length={responseData.AccessToken?.Length ?? 0})");
+
+            var hubUrl = $"{ServiceConfig.SignalRUri}/{Hub}";
+            Console.WriteLine($"[SignalR] Connecting to hub: {hubUrl}");
+
+            try
+            {
+                _connection = new HubConnectionBuilder()
+                    .WithUrl(hubUrl, options =>
+                    {
+                        options.AccessTokenProvider = () => Task.FromResult(responseData.AccessToken);
+                    })
+                    .AddMessagePackProtocol()
+                    .Build();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[SignalR] Build error: {e}");
+                return (false, $"Hub build error: {e.Message}");
+            }
+
+            _connection.On("OnNotificationReceived", (string message) =>
+            {
                 try
                 {
-                    _connection = new HubConnectionBuilder()
-                        .WithUrl($"{ServiceConfig.SignalRUri}/{Hub}", options =>
-                        {
-                            options.AccessTokenProvider = () => Task.FromResult(responseData.AccessToken);
-                            
-                        })
-                        .AddMessagePackProtocol()
-                        .Build();
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        bool res = _notificationService.HandleNotification(message);
+                    });
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("SignalRService Error: " + e.Message);
-                    return (false, e.Message);
+                    Console.WriteLine($"[SignalR] Notification exception: {e.Message}");
                 }
-                
-                _connection.On("OnNotificationReceived", (string message) =>
-                {
-                    try
-                    {
-                        // need to convert from the signalR thread to the UI thread to avoid any potential issues
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            bool res = _notificationService.HandleNotification(message); 
-                        });
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($"SignalRService Exception: {e.Message}");
-                    }
-                });
-                
-                await _connection.StartAsync();
-                
-                Console.WriteLine("Successfully connected to SignalR");
-                _connected = true;
+            });
 
-                return (true, responseData.Message);
+            try
+            {
+                Console.WriteLine("[SignalR] Calling StartAsync...");
+                using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(15));
+                await _connection.StartAsync(cts.Token);
+                Console.WriteLine("[SignalR] StartAsync completed successfully");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("[SignalR] StartAsync timed out after 15 seconds");
+                return (false, $"SignalR connection timed out (15s). Hub URL: {hubUrl}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[SignalR] StartAsync error: {e}");
+                return (false, $"SignalR connect failed: {e.Message}");
             }
 
-            Console.WriteLine(responseData.Message);
-            return (false, responseData.Message);
+            _connected = true;
+            Console.WriteLine("[SignalR] Connected successfully");
+            return (true, responseData.Message);
         }
         
         private async Task<AuthenticateResponseData> PerformTokenRequest(User user)

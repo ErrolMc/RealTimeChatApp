@@ -49,6 +49,8 @@ namespace ChatApp.Backend.Controllers
             var signalRUri = Environment.GetEnvironmentVariable("services__signalr-server__https__0")
                 ?? _configuration["ServiceUrls:SignalRUri"];
 
+            _logger.LogInformation("JWT token issuer={BackendUri}, audience={SignalRUri}", backendUri, signalRUri);
+
             var token = new JwtSecurityToken(
                 issuer: backendUri,
                 audience: signalRUri,
