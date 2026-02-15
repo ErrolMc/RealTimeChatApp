@@ -2,6 +2,8 @@
 
 A modern, cross-platform real-time chat application built with .NET Aspire, Avalonia UI, ASP.NET Core, and Azure SignalR.
 
+**Live Demo:** https://browser-frontend.proudforest-826495aa.australiaeast.azurecontainerapps.io/
+
 ## Features
 
 - Real-time messaging with SignalR (MessagePack binary protocol)
@@ -156,6 +158,59 @@ dotnet run
 ```
 
 > **Note:** When running without Aspire, services fall back to localhost URLs defined in `NetworkConstants.cs`.
+
+### Deploying to Azure
+
+The application can be deployed to Azure Container Apps using the Azure Developer CLI (`azd`), which provisions all infrastructure directly from the Aspire AppHost configuration.
+
+**Prerequisites:**
+- [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd) (`azd`)
+- An Azure subscription
+- Docker Desktop (for building container images)
+
+**Deploy:**
+```bash
+cd ChatApp/ChatApp.AppHost
+azd init
+azd up
+```
+
+`azd up` will:
+- Provision an Azure resource group with all required infrastructure
+- Create an **Azure Cosmos DB** account and an **Azure SignalR Service** instance
+- Deploy the **Backend API** and **SignalR Server** as Azure Container Apps
+- Build the **Browser frontend** Docker image (Avalonia WASM served via nginx) and deploy it as a Container App
+- Configure service discovery, environment variables, and external ingress automatically
+
+**Post-deployment: Create Cosmos DB database and containers**
+
+Azure Cosmos DB with managed identity (AAD) authentication does not allow creating databases or containers via data plane tokens. You need to create them manually after `azd up` provisions the Cosmos DB account:
+
+```bash
+# Find your Cosmos DB account name
+az cosmosdb list --query "[].name" -o tsv
+
+# Create the database and containers
+az cosmosdb sql database create --account-name <account-name> --resource-group <resource-group> --name chatappdb
+
+az cosmosdb sql container create --account-name <account-name> --resource-group <resource-group> \
+    --database-name chatappdb --name users --partition-key-path /userid
+
+az cosmosdb sql container create --account-name <account-name> --resource-group <resource-group> \
+    --database-name chatappdb --name messages --partition-key-path /threadid
+
+az cosmosdb sql container create --account-name <account-name> --resource-group <resource-group> \
+    --database-name chatappdb --name threads --partition-key-path /id
+```
+
+**How the WASM frontend works in Azure:**
+
+Since the Avalonia WASM app runs entirely in the browser, it can't read server-side environment variables. Instead, the Docker container's `entrypoint.sh` generates a `config.js` file at startup that intercepts `fetch()` and `WebSocket` calls, rewriting localhost URLs to the actual Azure service URLs. This allows the compiled WASM app to reach the correct backend and SignalR endpoints without any code changes.
+
+**Tearing down:**
+```bash
+azd down
+```
 
 ## Project Structure
 
