@@ -25,7 +25,7 @@ RUN sed -i 's|</head>|<script src="./config.js"></script></head>|' /app/index.ht
 # Inject env var passthrough into main.js so ServiceConfig reads them via Environment.GetEnvironmentVariable
 RUN sed -i '/const dotnetRuntime = await dotnet/i \
 const cfg = window.__APP_CONFIG__ || {};' /app/main.js && \
-    sed -i 's|const dotnetRuntime = await dotnet|const dotnetRuntime = await dotnet\n    .withEnvironmentVariable("services__backend__https__0", cfg.BackendUri \|\| "")\n    .withEnvironmentVariable("services__signalr-server__https__0", cfg.SignalRUri \|\| "")|' /app/main.js
+    sed -i 's|const dotnetRuntime = await dotnet|const dotnetRuntime = await dotnet\n    .withEnvironmentVariable("services__backend__https__0", cfg.BackendUri \|\| "")\n    .withEnvironmentVariable("services__signalr-server__https__0", cfg.SignalRUri \|\| "")\n    .withEnvironmentVariable("DEBUG_MODE", cfg.DebugMode \|\| "")|' /app/main.js
 
 FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf

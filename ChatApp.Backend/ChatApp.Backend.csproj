@@ -22,6 +22,7 @@
     <Compile Include="..\ChatApp\ChatApp.Shared\TableDataSimple.cs" Link="Source\Shared\TableDataSimple.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Aspire.Microsoft.Azure.Cosmos" Version="13.1.1" />
     <PackageReference Include="Azure.Identity" Version="1.17.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />

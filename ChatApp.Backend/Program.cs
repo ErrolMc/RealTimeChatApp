@@ -8,6 +8,7 @@ var signalRUri = Environment.GetEnvironmentVariable("services__signalr-server__h
 var webAppUri = Environment.GetEnvironmentVariable("services__browser-frontend__http__0")
     ?? builder.Configuration["ServiceUrls:WebAppUri"];
 
+builder.AddAzureCosmosClient("cosmos");
 builder.Services.AddSingleton<DatabaseService>();
 builder.Services.AddSingleton<QueryService>();
 builder.Services.AddHttpClient<NotificationService>(client =>

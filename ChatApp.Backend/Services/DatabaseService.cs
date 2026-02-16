@@ -1,4 +1,3 @@
-using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 
 namespace ChatApp.Backend.Services
@@ -20,46 +19,10 @@ namespace ChatApp.Backend.Services
         public Container MessagesContainer { get; }
         public Container ChatThreadsContainer { get; }
 
-        public DatabaseService(IConfiguration configuration)
+        public DatabaseService(CosmosClient cosmosClient, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("cosmos");
-            Console.WriteLine($"[CosmosDB] Connection string starts with: {connectionString?[..Math.Min(50, connectionString?.Length ?? 0)]}...");
+            _cosmosClient = cosmosClient;
             var databaseId = configuration["CosmosDb:DatabaseId"] ?? DatabaseId;
-
-            if (!string.IsNullOrEmpty(connectionString))
-            {
-                // Aspire Azure CosmosDB may inject an endpoint URL (managed identity) or a full connection string
-                if (connectionString.StartsWith("AccountEndpoint=", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Traditional connection string with key
-                    _cosmosClient = new CosmosClient(connectionString, new CosmosClientOptions
-                    {
-                        HttpClientFactory = () => new HttpClient(new HttpClientHandler
-                        {
-                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                        }),
-                        ConnectionMode = ConnectionMode.Gateway,
-                        LimitToEndpoint = true
-                    });
-                }
-                else
-                {
-                    // Endpoint URL only — use managed identity (DefaultAzureCredential)
-                    Console.WriteLine($"[CosmosDB] Using managed identity for endpoint: {connectionString}");
-                    _cosmosClient = new CosmosClient(connectionString, new DefaultAzureCredential(), new CosmosClientOptions
-                    {
-                        ConnectionMode = ConnectionMode.Gateway
-                    });
-                }
-            }
-            else
-            {
-                var cosmosUri = Environment.GetEnvironmentVariable("services__cosmos__https__0")
-                    ?? configuration["ServiceUrls:CosmosDbUri"];
-                var cosmosKey = Environment.GetEnvironmentVariable("COSMOS_PRIMARY_KEY")
-                    ?? configuration["CosmosDb:PrimaryKey"];
-                _cosmosClient = new CosmosClient(cosmosUri, cosmosKey);
-            }
 
             _database = InitializeDatabase(databaseId).GetAwaiter().GetResult();
 

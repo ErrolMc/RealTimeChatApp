@@ -32,11 +32,29 @@ var backend = builder.AddProject<Projects.ChatApp_Backend>("backend")
     .WithExternalHttpEndpoints();
 
 // Browser Frontend (served via nginx)
+var backendEndpoint = backend.GetEndpoint("https");
+var signalrEndpoint = signalrServer.GetEndpoint("https");
+
 var browserFrontend = builder.AddDockerfile("browser-frontend", contextPath: "../..", dockerfilePath: "ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/Dockerfile")
        .WithHttpEndpoint(targetPort: 80)
-       .WithEnvironment("BACKEND_URI", backend.GetEndpoint("https"))
-       .WithEnvironment("SIGNALR_URI", signalrServer.GetEndpoint("https"))
        .WithExternalHttpEndpoints();
+
+if (builder.ExecutionContext.IsRunMode)
+{
+    // Local dev: backend.GetEndpoint resolves to host.docker.internal inside Docker,
+    // but config.js runs in the user's browser which needs localhost URLs.
+    var browserBackendUri = ReferenceExpression.Create($"https://localhost:{backendEndpoint.Property(EndpointProperty.Port)}");
+    var browserSignalRUri = ReferenceExpression.Create($"https://localhost:{signalrEndpoint.Property(EndpointProperty.Port)}");
+    browserFrontend.WithEnvironment("BACKEND_URI", browserBackendUri);
+    browserFrontend.WithEnvironment("SIGNALR_URI", browserSignalRUri);
+    browserFrontend.WithEnvironment("DEBUG_MODE", "true");
+}
+else
+{
+    // Production: use the actual deployed endpoint URLs
+    browserFrontend.WithEnvironment("BACKEND_URI", backendEndpoint);
+    browserFrontend.WithEnvironment("SIGNALR_URI", signalrEndpoint);
+}
 
 var browserFrontendUrl = browserFrontend.GetEndpoint("http");
 
@@ -56,9 +74,14 @@ signalrServer.WithEnvironment("services__backend__https__0", backend.GetEndpoint
 signalrServer.WithEnvironment("services__signalr-server__https__0", signalrServer.GetEndpoint("https"));
 
 // Desktop Frontend
-builder.AddProject<Projects.ChatAppFrontEnd_Desktop>("desktop")
+var desktop = builder.AddProject<Projects.ChatAppFrontEnd_Desktop>("desktop")
     .WithReference(backend)
     .WithReference(signalrServer)
     .WaitFor(backend);
+
+if (builder.ExecutionContext.IsRunMode)
+{
+    desktop.WithEnvironment("DEBUG_MODE", "true");
+}
 
 builder.Build().Run();

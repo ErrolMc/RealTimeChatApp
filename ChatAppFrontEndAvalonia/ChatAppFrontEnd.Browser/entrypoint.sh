@@ -6,6 +6,7 @@ cat > /usr/share/nginx/html/config.js <<'TEMPLATE'
 (function() {
   var backendUri = "BACKEND_PLACEHOLDER";
   var signalRUri = "SIGNALR_PLACEHOLDER";
+  window.__APP_CONFIG__ = { BackendUri: backendUri, SignalRUri: signalRUri, DebugMode: "DEBUG_MODE_PLACEHOLDER" };
 
   if (backendUri === "https://localhost:7071" && signalRUri === "https://localhost:7003") return;
 
@@ -52,6 +53,7 @@ TEMPLATE
 # Replace placeholders with actual env var values
 sed -i "s|BACKEND_PLACEHOLDER|${BACKEND_URI:-https://localhost:7071}|g" /usr/share/nginx/html/config.js
 sed -i "s|SIGNALR_PLACEHOLDER|${SIGNALR_URI:-https://localhost:7003}|g" /usr/share/nginx/html/config.js
+sed -i "s|DEBUG_MODE_PLACEHOLDER|${DEBUG_MODE:-false}|g" /usr/share/nginx/html/config.js
 
 # Start nginx
 exec nginx -g 'daemon off;'
