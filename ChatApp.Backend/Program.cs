@@ -31,6 +31,9 @@ builder.Services.AddSwaggerGen();
 var corsOrigins = new List<string> { webAppUri };
 if (webAppUri.StartsWith("http://"))
     corsOrigins.Add(webAppUri.Replace("http://", "https://"));
+var customOrigin = Environment.GetEnvironmentVariable("CUSTOM_FRONTEND_ORIGIN");
+if (!string.IsNullOrEmpty(customOrigin))
+    corsOrigins.Add(customOrigin);
 
 builder.Services.AddCors(options =>
 {

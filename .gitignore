@@ -80,3 +80,5 @@ ChatApp.Backend/obj/
 SignalRServer/ChatAppSignalRServer/appsettings.json
 SignalRServer/ChatAppSignalRServer/appsettings.*.json
 nul
+ChatApp/ChatApp.AppHost/appsettings.json
+ChatApp/ChatApp.AppHost/appsettings.*.json

@@ -44,6 +44,11 @@ var browserFrontendUrl = browserFrontend.GetEndpoint("http");
 backend.WithEnvironment("services__browser-frontend__http__0", browserFrontendUrl);
 signalrServer.WithEnvironment("services__browser-frontend__http__0", browserFrontendUrl);
 
+// Custom frontend domain for CORS (set this when using a custom domain in Azure)
+var customFrontendOrigin = builder.Configuration["CUSTOM_FRONTEND_ORIGIN"] ?? "";
+backend.WithEnvironment("CUSTOM_FRONTEND_ORIGIN", customFrontendOrigin);
+signalrServer.WithEnvironment("CUSTOM_FRONTEND_ORIGIN", customFrontendOrigin);
+
 // Each service needs to know its own URL and the other's URL for JWT issuer/audience validation
 // .WithReference() only injects URLs of OTHER services, not the service's own URL
 backend.WithEnvironment("services__backend__https__0", backend.GetEndpoint("https"));

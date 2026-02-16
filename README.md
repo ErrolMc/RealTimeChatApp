@@ -203,6 +203,18 @@ az cosmosdb sql container create --account-name <account-name> --resource-group 
     --database-name chatappdb --name threads --partition-key-path /id
 ```
 
+**Custom domain CORS configuration:**
+
+If you configure a custom domain for the browser frontend in Azure, you need to set the `CUSTOM_FRONTEND_ORIGIN` value in `ChatApp/ChatApp.AppHost/appsettings.json` so that the backend and SignalR server allow CORS requests from your custom domain:
+
+```json
+{
+  "CUSTOM_FRONTEND_ORIGIN": "https://yourcustomdomain.com"
+}
+```
+
+Then redeploy with `azd up`.
+
 **How the WASM frontend works in Azure:**
 
 Since the Avalonia WASM app runs entirely in the browser, it can't read server-side environment variables. Instead, the Docker container's `entrypoint.sh` generates a `config.js` file at startup that intercepts `fetch()` and `WebSocket` calls, rewriting localhost URLs to the actual Azure service URLs. This allows the compiled WASM app to reach the correct backend and SignalR endpoints without any code changes.
