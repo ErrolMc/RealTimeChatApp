@@ -79,6 +79,8 @@ namespace ChatAppFrontEnd.ViewModels
             MessageBoxText = "";
             ChatHistoryViewModel = chatHistoryViewModel;
             ChatTopBarViewModel = new ChatTopBarViewModel();
+            
+            _authenticationService.OnLogout += OnAuthLogout;
         }
         
         public async void ShowChat(IChatEntity chatEntity)
@@ -179,6 +181,15 @@ namespace ChatAppFrontEnd.ViewModels
             if (_chatService != null)
                 _chatService.OnMessageReceived -= OnReceiveMessage;
             _currentRunner?.UnRegisterEvents();
+        }
+        
+        private void OnAuthLogout()
+        {
+            _currentRunner?.UnRegisterEvents();
+            _currentRunner = null;
+            _chatEntity = null;
+            _chatService.CurrentChat = null;
+            HideChat();
         }
         #endregion
     }

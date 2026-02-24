@@ -18,7 +18,8 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         public bool IsLoggedIn { get; set; }
         public User CurrentUser { get; set; }
-     
+        public event Action OnLogout;
+
         public AuthenticationService(ICachingService cachingService)
         {
             _cachingService = cachingService;
@@ -84,7 +85,9 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public async Task<bool> TryLogout()
         {
-            return await _cachingService.ClearCache();
+            bool result = await _cachingService.ClearCache();
+            OnLogout?.Invoke();
+            return result;
         }
 
         private static readonly HttpClient httpClient = new HttpClient();
