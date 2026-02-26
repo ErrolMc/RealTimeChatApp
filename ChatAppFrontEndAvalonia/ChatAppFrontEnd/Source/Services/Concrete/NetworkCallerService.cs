@@ -1,30 +1,17 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace ChatAppFrontEnd.Source.Utils
+namespace ChatAppFrontEnd.Source.Services.Concrete
 {
-    public static class ServiceConfig
-    {
-        public static string BackendUri { get; set; } = Environment.GetEnvironmentVariable("services__backend__https__0") ?? "https://localhost:7071";
-        public static string SignalRUri { get; set; } = Environment.GetEnvironmentVariable("services__signalr-server__https__0") ?? "https://localhost:7003";
-    }
-
-    public class BackendPostResponse<T> where T : class
-    {
-        public bool ConnectionSuccess { get; set; }
-        public string Message { get; set; }
-        public T ResponseData { get; set; }
-    }
-
-    public static class NetworkHelper
+    public class NetworkCallerService : INetworkCallerService
     {
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public static async Task<BackendPostResponse<TRespClass>> PerformBackendPostRequest<TReqClass, TRespClass>(string endpointName, TReqClass requestData)
+        public async Task<BackendPostResponse<TRespClass>> PerformBackendPostRequest<TReqClass, TRespClass>(string endpointName, TReqClass requestData)
             where TReqClass : class
             where TRespClass : class
         {

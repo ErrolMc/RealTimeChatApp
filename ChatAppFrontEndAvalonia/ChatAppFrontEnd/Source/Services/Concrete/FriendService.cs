@@ -18,6 +18,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly ICachingService _cachingService;
+        private readonly INetworkCallerService _networkCaller;
         
         public List<UserSimple> Friends { get; set; }
         public List<UserSimple> FriendRequests { get; set; }
@@ -29,10 +30,11 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         public event Action<UnfriendNotification> OnUnfriended;
         public event Action FriendsListUpdated;
 
-        public FriendService(IAuthenticationService authenticationService, ICachingService cachingService)
+        public FriendService(IAuthenticationService authenticationService, ICachingService cachingService, INetworkCallerService networkCaller)
         {
             _authenticationService = authenticationService;
             _cachingService = cachingService;
+            _networkCaller = networkCaller;
             
             Friends = new List<UserSimple>();
             FriendRequests = new List<UserSimple>();
@@ -70,7 +72,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 return false;
             
             var response = 
-                await NetworkHelper.PerformBackendPostRequest<UserSimple, GetFriendRequestsResponseData>(EndpointNames.GET_FRIEND_REQUESTS, _authenticationService.CurrentUser.ToUserSimple());
+                await _networkCaller.PerformBackendPostRequest<UserSimple, GetFriendRequestsResponseData>(EndpointNames.GET_FRIEND_REQUESTS, _authenticationService.CurrentUser.ToUserSimple());
 
             if (response.ConnectionSuccess == false)
             {
@@ -155,7 +157,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 LocalVNum = vNum
             };
             
-            var response = await NetworkHelper.PerformBackendPostRequest<GetFriendsRequestData, GetFriendsResponseData>(EndpointNames.GET_FRIENDS, requestData);
+            var response = await _networkCaller.PerformBackendPostRequest<GetFriendsRequestData, GetFriendsResponseData>(EndpointNames.GET_FRIENDS, requestData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -219,7 +221,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformBackendPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>(EndpointNames.SEND_FRIEND_REQUEST, notificationData);
+                await _networkCaller.PerformBackendPostRequest<FriendRequestNotification, FriendRequestNotificationResponseData>(EndpointNames.SEND_FRIEND_REQUEST, notificationData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -244,7 +246,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformBackendPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>(EndpointNames.RESPOND_TO_FRIEND_REQUEST, notificationData);
+                await _networkCaller.PerformBackendPostRequest<RespondToFriendRequestData, RespondToFriendRequestResponseData>(EndpointNames.RESPOND_TO_FRIEND_REQUEST, notificationData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -268,7 +270,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 ThreadID = SharedStaticMethods.CreateHashedDirectMessageID(fromUserID, toUserID)
             };
             
-            var response = await NetworkHelper.PerformBackendPostRequest<UnfriendNotification, GenericResponseData>(EndpointNames.REMOVE_FRIEND, notificationData);
+            var response = await _networkCaller.PerformBackendPostRequest<UnfriendNotification, GenericResponseData>(EndpointNames.REMOVE_FRIEND, notificationData);
             
             if (response.ConnectionSuccess == false)
             {

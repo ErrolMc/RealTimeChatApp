@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ChatApp.Shared;
 using ChatApp.Shared.Authentication;
 using ChatApp.Shared.Tables;
-using ChatAppFrontEnd.Source.Utils;
 using Newtonsoft.Json;
 
 namespace ChatAppFrontEnd.Source.Services.Concrete
@@ -15,14 +14,16 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     public class AuthenticationService : IAuthenticationService
     {
         private readonly ICachingService _cachingService;
+        private readonly INetworkCallerService _networkCaller;
         
         public bool IsLoggedIn { get; set; }
         public User CurrentUser { get; set; }
         public event Action OnLogout;
 
-        public AuthenticationService(ICachingService cachingService)
+        public AuthenticationService(ICachingService cachingService, INetworkCallerService networkCaller)
         {
             _cachingService = cachingService;
+            _networkCaller = networkCaller;
         }
         
         public async Task<(bool success, string message, User user)> TryLogin(string username, string password)
@@ -54,7 +55,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 Password = password
             };
 
-            var response = await NetworkHelper.PerformBackendPostRequest<UserLoginData, UserLoginResponseData>(EndpointNames.REGISTER, requestData);
+            var response = await _networkCaller.PerformBackendPostRequest<UserLoginData, UserLoginResponseData>(EndpointNames.REGISTER, requestData);
 
             if (response.ConnectionSuccess == false)
                 return (false, response.Message);
@@ -70,7 +71,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         private async Task<(bool success, string message, User user)> PerformLoginRequest<T>(T requestData, string endpoint) where T : class
         {
-            var response = await NetworkHelper.PerformBackendPostRequest<T, UserLoginResponseData>(endpoint, requestData);
+            var response = await _networkCaller.PerformBackendPostRequest<T, UserLoginResponseData>(endpoint, requestData);
 
             if (response.ConnectionSuccess == false)
                 return (false, response.Message, null);

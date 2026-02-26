@@ -7,7 +7,6 @@ using ChatApp.Shared.Messages;
 using ChatApp.Shared.TableDataSimple;
 using ChatApp.Shared.Tables;
 using ChatAppFrontEnd.Source.Other.Caching.Data;
-using ChatAppFrontEnd.Source.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 
@@ -18,17 +17,19 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         private readonly ISignalRService _signalRService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ICachingService _cachingService;
+        private readonly INetworkCallerService _networkCaller;
         
         private HubConnection Connection => _signalRService.Connection;
 
         public IChatEntity CurrentChat { get; set; }
         public event Action<MessageCache> OnMessageReceived;
 
-        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService, ICachingService cachingService)
+        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService, ICachingService cachingService, INetworkCallerService networkCaller)
         {
             _signalRService = signalRService;
             _authenticationService = authenticationService;
             _cachingService = cachingService;
+            _networkCaller = networkCaller;
         }
         
         public async void OnReceiveMessage(Message message)
@@ -74,7 +75,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 };
                 
                 var response = 
-                    await NetworkHelper.PerformBackendPostRequest<SendMessageRequestData, SendMessageResponseData>(EndpointNames.SEND_MESSAGE, requestData);
+                    await _networkCaller.PerformBackendPostRequest<SendMessageRequestData, SendMessageResponseData>(EndpointNames.SEND_MESSAGE, requestData);
 
                 if (response.ConnectionSuccess == false)
                 {
@@ -126,7 +127,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
                     
             var response = 
-                await NetworkHelper.PerformBackendPostRequest<GetMessagesRequestData, GetMessagesResponseData>(EndpointNames.GET_MESSAGES, requestData);
+                await _networkCaller.PerformBackendPostRequest<GetMessagesRequestData, GetMessagesResponseData>(EndpointNames.GET_MESSAGES, requestData);
 
             if (response.ConnectionSuccess)
                 return response.ResponseData.Messages;

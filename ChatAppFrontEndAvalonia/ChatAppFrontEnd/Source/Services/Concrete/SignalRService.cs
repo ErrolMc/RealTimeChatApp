@@ -18,6 +18,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     public class SignalRService : ISignalRService
     {
         private readonly INotificationService _notificationService;
+        private readonly INetworkCallerService _networkCaller;
         
         private const string Hub = "NotificationHub";
         private HubConnection _connection;
@@ -25,9 +26,10 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public HubConnection Connection => _connection;
         
-        public SignalRService(INotificationService notificationService)
+        public SignalRService(INotificationService notificationService, INetworkCallerService networkCaller)
         {
             _notificationService = notificationService;
+            _networkCaller = networkCaller;
         }
 
         public async Task<(bool success, string message)> ConnectToSignalR(User user)
@@ -128,7 +130,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response = 
-                await NetworkHelper.PerformBackendPostRequest<AuthenticateRequestData, AuthenticateResponseData>(EndpointNames.AUTHENTICATE_SIGNALR, requestData);
+                await _networkCaller.PerformBackendPostRequest<AuthenticateRequestData, AuthenticateResponseData>(EndpointNames.AUTHENTICATE_SIGNALR, requestData);
             
             if (response.ConnectionSuccess == false)
             {

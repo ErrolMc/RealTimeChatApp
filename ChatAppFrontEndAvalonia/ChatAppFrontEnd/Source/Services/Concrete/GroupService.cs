@@ -19,15 +19,17 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly ICachingService _cachingService;
+        private readonly INetworkCallerService _networkCaller;
         
         public event Action OnGroupDMsUpdated;
         public event Action<(GroupDMSimple groupDM, GroupUpdateReason reason)> OnGroupUpdated;
         public List<GroupDMSimple> GroupDMs { get; set; }
         
-        public GroupService(IAuthenticationService authenticationService, ICachingService cachingService)
+        public GroupService(IAuthenticationService authenticationService, ICachingService cachingService, INetworkCallerService networkCaller)
         {
             _authenticationService = authenticationService;
             _cachingService = cachingService;
+            _networkCaller = networkCaller;
             GroupDMs = new List<GroupDMSimple>();
         }
 
@@ -43,7 +45,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
 
             var response =
-                await NetworkHelper.PerformBackendPostRequest<CreateGroupDMRequestData, CreateGroupDMResponseData>(EndpointNames.CREATE_GROUP_DM, requestData);
+                await _networkCaller.PerformBackendPostRequest<CreateGroupDMRequestData, CreateGroupDMResponseData>(EndpointNames.CREATE_GROUP_DM, requestData);
 
             if (response.ConnectionSuccess == false)
             {
@@ -69,7 +71,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformBackendPostRequest<AddFriendsToGroupDMRequestData, AddFriendsToGroupDMResponseData>(EndpointNames.ADD_FRIENDS_TO_GROUP, requestData);
+                await _networkCaller.PerformBackendPostRequest<AddFriendsToGroupDMRequestData, AddFriendsToGroupDMResponseData>(EndpointNames.ADD_FRIENDS_TO_GROUP, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -96,7 +98,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             };
             
             var response =
-                await NetworkHelper.PerformBackendPostRequest<RemoveFromGroupRequestData, RemoveFromGroupResponseData>(EndpointNames.REMOVE_USER_FROM_GROUP, requestData);
+                await _networkCaller.PerformBackendPostRequest<RemoveFromGroupRequestData, RemoveFromGroupResponseData>(EndpointNames.REMOVE_USER_FROM_GROUP, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -119,7 +121,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 
         public async Task<(bool success, string message)> DeleteGroup(string groupID)
         {
-            var response = await NetworkHelper.PerformBackendPostRequest<string, DeleteGroupDMResponseData>(EndpointNames.DELETE_GROUP, groupID);
+            var response = await _networkCaller.PerformBackendPostRequest<string, DeleteGroupDMResponseData>(EndpointNames.DELETE_GROUP, groupID);
             
             if (response.ConnectionSuccess == false)
             {
@@ -148,7 +150,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 UserID = _authenticationService.CurrentUser.UserID,
             };
             
-            var response = await NetworkHelper.PerformBackendPostRequest<UserSimple, GetGroupDMsResponseData>(EndpointNames.GET_GROUP_DMS, requestData);
+            var response = await _networkCaller.PerformBackendPostRequest<UserSimple, GetGroupDMsResponseData>(EndpointNames.GET_GROUP_DMS, requestData);
             
             if (response.ConnectionSuccess == false)
             {
@@ -211,7 +213,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         
         public async Task<GetGroupParticipantsResponseData> GetGroupParticipants(string groupID)
         {
-            var response = await NetworkHelper.PerformBackendPostRequest<string, GetGroupParticipantsResponseData>(EndpointNames.GET_GROUP_PARTICIPANTS, groupID);
+            var response = await _networkCaller.PerformBackendPostRequest<string, GetGroupParticipantsResponseData>(EndpointNames.GET_GROUP_PARTICIPANTS, groupID);
             
             if (response.ConnectionSuccess == false)
             {
@@ -229,4 +231,3 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
         }
     }
 }
-
