@@ -79,7 +79,7 @@ namespace ChatApp.Backend.Repositories
             return (new CreateGroupDMResponseData() { CreatedGroupSuccess = true, UpdateDatabaseSuccess = true, Message = $"Successfully created group!", GroupDMSimple = groupDM.ToGroupDMSimple() }, notifyUserIds);
         }
 
-        public async Task<GetGroupDMsResponseData> GetGroupDMs(UserSimple requestData)
+        public virtual async Task<GetGroupDMsResponseData> GetGroupDMs(UserSimple requestData)
         {
             var userResp = await _queries.GetUserFromUserID(requestData.UserID);
             if (userResp.IsSuccessful == false)

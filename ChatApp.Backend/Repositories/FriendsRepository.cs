@@ -129,7 +129,7 @@ namespace ChatApp.Backend.Repositories
             return (new RespondToFriendRequestResponseData { Success = true, Message = "Successfully responded to friend request" }, fromUser.ToUserSimple(), toUser.ToUserSimple());
         }
 
-        public async Task<GetFriendsResponseData> GetFriends(GetFriendsRequestData requestData)
+        public virtual async Task<GetFriendsResponseData> GetFriends(GetFriendsRequestData requestData)
         {
             var userResp = await _queries.GetUserFromUserID(requestData.UserID);
             if (userResp.IsSuccessful == false)

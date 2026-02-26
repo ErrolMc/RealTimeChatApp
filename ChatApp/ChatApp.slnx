@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="../ChatApp.Backend.Tests/ChatApp.Backend.Tests.csproj" Id="b8d4a6a5-7c50-44e1-b305-13bed5139857" />
   <Project Path="../ChatApp.Backend/ChatApp.Backend.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/ChatAppFrontEnd.Browser.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Desktop/ChatAppFrontEnd.Desktop.csproj" />

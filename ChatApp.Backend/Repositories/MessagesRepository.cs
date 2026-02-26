@@ -67,7 +67,7 @@ namespace ChatApp.Backend.Repositories
             return (new SendMessageResponseData { Success = true, NotificationSuccess = true, ResponseMessage = $"Message {message.ID} sent and added to DB", Message = message }, recipientUserIds);
         }
 
-        public async Task<GetMessagesResponseData> GetMessages(GetMessagesRequestData requestData)
+        public virtual async Task<GetMessagesResponseData> GetMessages(GetMessagesRequestData requestData)
         {
             var messagesResp = await _queries.GetMessagesByThreadIDAfterTimeStamp(requestData.ThreadID, requestData.LocalTimeStamp);
 

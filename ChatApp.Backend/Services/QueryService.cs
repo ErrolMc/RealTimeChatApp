@@ -16,7 +16,7 @@ namespace ChatApp.Backend.Services
             _db = db;
         }
 
-        public async Task<Result<User>> GetUserFromUsername(string username)
+        public virtual async Task<Result<User>> GetUserFromUsername(string username)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace ChatApp.Backend.Services
             }
         }
 
-        public async Task<Result<User>> GetUserFromUserID(string userID)
+        public virtual async Task<Result<User>> GetUserFromUserID(string userID)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace ChatApp.Backend.Services
             }
         }
 
-        public async Task<Result<List<User>>> GetUsers(List<string> userIDs)
+        public virtual async Task<Result<List<User>>> GetUsers(List<string> userIDs)
         {
             if (userIDs == null || userIDs.Count() == 0)
                 return new Result<List<User>>(ResultType.InputError, "No user ids provided", new List<User>());
@@ -113,7 +113,7 @@ namespace ChatApp.Backend.Services
             }
         }
 
-        public async Task<Result<List<Message>>> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
+        public virtual async Task<Result<List<Message>>> GetMessagesByThreadIDAfterTimeStamp(string threadID, long timeStamp)
         {
             try
             {

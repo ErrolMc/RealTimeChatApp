@@ -73,6 +73,8 @@ ChatApp/ChatApp.ServiceDefaults/bin/
 ChatApp/ChatApp.ServiceDefaults/obj/
 ChatApp.Backend/bin/
 ChatApp.Backend/obj/
+ChatApp.Backend.Tests/bin/
+ChatApp.Backend.Tests/obj/
 
 # App settings (contain keys/secrets)
 **/appsettings.json

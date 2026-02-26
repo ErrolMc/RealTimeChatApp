@@ -23,7 +23,7 @@ namespace ChatApp.Backend.Repositories
             _queries = queries;
         }
 
-        public async Task<UserLoginResponseData> Login(UserLoginData loginData)
+        public virtual async Task<UserLoginResponseData> Login(UserLoginData loginData)
         {
             var resp = await _queries.GetUserFromUsername(loginData.UserName);
 
