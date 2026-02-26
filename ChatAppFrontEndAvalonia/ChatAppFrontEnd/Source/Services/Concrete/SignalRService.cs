@@ -6,7 +6,6 @@ using Avalonia.Threading;
 using ChatApp.Shared;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.Tables;
-using ChatAppFrontEnd.Source.Utils;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;

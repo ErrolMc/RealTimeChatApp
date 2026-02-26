@@ -7,7 +7,6 @@ using ChatApp.Shared;
 using ChatApp.Shared.Misc;
 using ChatApp.Shared.Notifications;
 using ChatApp.Shared.TableDataSimple;
-using ChatAppFrontEnd.Source.Utils;
 using ChatApp.Shared.Friends;
 using ChatApp.Shared.Messages;
 using ChatAppFrontEnd.Source.Other.Caching.Data;
