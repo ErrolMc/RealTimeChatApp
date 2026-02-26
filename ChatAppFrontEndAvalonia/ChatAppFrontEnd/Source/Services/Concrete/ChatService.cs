@@ -14,19 +14,15 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
 {
     public class ChatService : IChatService
     {
-        private readonly ISignalRService _signalRService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ICachingService _cachingService;
         private readonly INetworkCallerService _networkCaller;
-        
-        private HubConnection Connection => _signalRService.Connection;
 
         public IChatEntity CurrentChat { get; set; }
         public event Action<MessageCache> OnMessageReceived;
 
-        public ChatService(ISignalRService signalRService, IAuthenticationService authenticationService, ICachingService cachingService, INetworkCallerService networkCaller)
+        public ChatService(IAuthenticationService authenticationService, ICachingService cachingService, INetworkCallerService networkCaller)
         {
-            _signalRService = signalRService;
             _authenticationService = authenticationService;
             _cachingService = cachingService;
             _networkCaller = networkCaller;

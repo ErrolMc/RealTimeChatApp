@@ -3,6 +3,7 @@
   <Project Path="../ChatApp.Backend/ChatApp.Backend.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Browser/ChatAppFrontEnd.Browser.csproj" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd.Desktop/ChatAppFrontEnd.Desktop.csproj" />
+  <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontend.Tests/ChatAppFrontend.Tests.csproj" Id="b39744d1-3429-40ef-94c5-b874d0bf7fd9" />
   <Project Path="../ChatAppFrontEndAvalonia/ChatAppFrontEnd/ChatAppFrontEnd.csproj" />
   <Project Path="../SignalRServer/ChatAppSignalRServer/ChatAppSignalRServer.csproj" />
   <Project Path="ChatApp.Shared/ChatApp.Shared.csproj" Id="bf45c5d6-4b13-46be-92bf-43fd90ed134b" />
