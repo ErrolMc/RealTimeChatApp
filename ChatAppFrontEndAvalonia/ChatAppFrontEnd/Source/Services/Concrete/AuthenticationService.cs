@@ -32,11 +32,8 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 UserName = username,
                 Password = password
             };
-            
-            var resp = await PerformLoginRequest(requestData);
-            if (resp.ConnectionSuccess == false)
-                return (false, resp.Message, null);
-            return (resp.ResponseData.Status, resp.ResponseData.Message, resp.ResponseData.User);
+
+            return await PerformLoginRequest<UserLoginData>(requestData, EndpointNames.LOGIN);
         }
 
         public async Task<(bool success, string message, User user)> TryAutoLogin(string token)
@@ -46,26 +43,7 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
                 Token = token
             };
             
-            var response = await NetworkHelper.PerformBackendPostRequest<AutoLoginData, UserLoginResponseData>(EndpointNames.AUTO_LOGIN, requestData);
-
-            if (response.ConnectionSuccess == false)
-                return (false, response.Message, null);
-
-            UserLoginResponseData responseData = response.ResponseData;
-            
-            if (responseData.Status)
-            {
-                responseData.Status = false;
-
-                bool tokenResult = await _cachingService.SaveLoginToken(responseData.LoginToken);
-                if (tokenResult)
-                {
-                    await _cachingService.SaveIsLoggedIn(true);
-                    responseData.Status = true;
-                }
-            }
-
-            return (responseData.Status, responseData.Message, responseData.User);
+            return await PerformLoginRequest<AutoLoginData>(requestData, EndpointNames.AUTO_LOGIN);
         }
 
         public async Task<(bool success, string message)> TryRegister(string username, string password)
@@ -90,43 +68,28 @@ namespace ChatAppFrontEnd.Source.Services.Concrete
             return result;
         }
 
-        private static readonly HttpClient httpClient = new HttpClient();
-        private async Task<BackendPostResponse<UserLoginResponseData>> PerformLoginRequest(UserLoginData requestData)
+        private async Task<(bool success, string message, User user)> PerformLoginRequest<T>(T requestData, string endpoint) where T : class
         {
-            try
+            var response = await NetworkHelper.PerformBackendPostRequest<T, UserLoginResponseData>(endpoint, requestData);
+
+            if (response.ConnectionSuccess == false)
+                return (false, response.Message, null);
+
+            UserLoginResponseData responseData = response.ResponseData;
+
+            if (responseData.Status)
             {
-                string json = JsonConvert.SerializeObject(requestData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                responseData.Status = false;
 
-                HttpResponseMessage response = await httpClient.PostAsync($"{ServiceConfig.BackendUri}/api/{EndpointNames.LOGIN}", content);
-
-                if (!response.IsSuccessStatusCode)
+                bool tokenResult = await _cachingService.SaveLoginToken(responseData.LoginToken);
+                if (tokenResult)
                 {
-                    return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = response.ReasonPhrase, ResponseData = null };
+                    await _cachingService.SaveIsLoggedIn(true);
+                    responseData.Status = true;
                 }
-                
-                string responseContent = await response.Content.ReadAsStringAsync();
-                UserLoginResponseData responseData = JsonConvert.DeserializeObject<UserLoginResponseData>(responseContent);
-
-                // Retrieve the Set-Cookie header
-                if (responseData.Status)
-                {
-                    responseData.Status = false;
-
-                    bool tokenResult = await _cachingService.SaveLoginToken(responseData.LoginToken);
-                    if (tokenResult)
-                    {
-                        await _cachingService.SaveIsLoggedIn(true);
-                        responseData.Status = true;
-                    }
-                }
-
-                return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = true, Message = "Request Success", ResponseData = responseData };
             }
-            catch (Exception ex)
-            {
-                return new BackendPostResponse<UserLoginResponseData>() { ConnectionSuccess = false, Message = $"Exception: {ex.Message}", ResponseData = null };
-            }
+
+            return (responseData.Status, responseData.Message, responseData.User);
         }
     }
 }
