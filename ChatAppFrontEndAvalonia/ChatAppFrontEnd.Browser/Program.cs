@@ -7,6 +7,7 @@ using Avalonia.Browser;
 using Avalonia.ReactiveUI;
 using ChatAppFrontEnd;
 using ChatAppFrontEnd.Source.Utils;
+using ChatAppFrontEnd.Source.Services;
 
 [assembly: SupportedOSPlatform("browser")]
 
